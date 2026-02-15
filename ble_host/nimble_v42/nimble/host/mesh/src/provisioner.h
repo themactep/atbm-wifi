@@ -6,7 +6,7 @@
 
 
 #if (MYNEWT_VAL(BLE_MESH_PB_ADV))
-#define CONFIG_BT_MESH_PBA_SAME_TIME 2 
+#define CONFIG_BT_MESH_PBA_SAME_TIME 2
 #else
 #define CONFIG_BT_MESH_PBA_SAME_TIME 0
 #endif
@@ -48,7 +48,7 @@ struct bt_mesh_prov_node_info {
     u16_t net_idx;          /* Netkey index got during provisioning */
     u8_t  flags;            /* Key refresh flag and iv update flag */
     u32_t iv_index;         /* IV Index */
-	u8_t  dev_key[16];		
+	u8_t  dev_key[16];
 	char  node_name[MESH_NAME_SIZE];
 };
 
@@ -133,7 +133,7 @@ int bt_mesh_provisioner_set_dev_uuid_match(u8_t offset, u8_t length,
 void bt_mesh_provisioner_prov_adv_recv(struct os_mbuf *buf,
                                        const bt_mesh_addr_t *addr, s8_t rssi);
 #if 0
-typedef void (*prov_adv_pkt_cb)(const u8_t addr[6], const u8_t addr_type,	
+typedef void (*prov_adv_pkt_cb)(const u8_t addr[6], const u8_t addr_type,
                                 const u8_t adv_type, const u8_t dev_uuid[16],
                                 u16_t oob_info, bt_mesh_prov_bearer_t bearer);
 

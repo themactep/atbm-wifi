@@ -111,14 +111,14 @@ static int atbm_pm_init_common(struct atbm_pm_state *pm,
 	int ret;
 
 	spin_lock_init(&pm->lock);
-	
+
 	memset(&pm->pm_driver,0,sizeof(pm->pm_driver));
 	pm->pm_driver.probe = atbm_pm_probe;
 	pm->pm_driver.driver.pm = &atbm_pm_ops;
 	pm->pm_driver.driver.name = ieee80211_alloc_name(hw_priv->hw,"atbm_power");
 	if(pm->pm_driver.driver.name == NULL)
 		return -1;
-	
+
 	ret = platform_driver_register(&pm->pm_driver);
 	if (ret)
 		return ret;
@@ -143,14 +143,14 @@ static int atbm_pm_init_stayawake_lock(struct atbm_pm_stayawake_lock *stayawake_
 	spin_lock_init(&stayawake_lock->stayawak_spinlock);
 	#ifdef CONFIG_PM
 	#ifdef CONFIG_WAKELOCK
-	wake_lock_init(&stayawake_lock->stayawak_lock,WAKE_LOCK_SUSPEND, 
+	wake_lock_init(&stayawake_lock->stayawak_lock,WAKE_LOCK_SUSPEND,
 				  ieee80211_alloc_name(stayawake_lock->hw_priv->hw,"atbm_wlan_stayawake"));
 	#endif
 	#endif
 	spin_lock_irqsave(&stayawake_lock->stayawak_spinlock,flags);
 	stayawake_lock->stayawak_cnt = 0;
 	spin_unlock_irqrestore(&stayawake_lock->stayawak_spinlock,flags);
-	
+
 	return 0;
 }
 static int atbm_pm_deinit_stayawake_lock(struct atbm_pm_stayawake_lock *stayawake_lock)
@@ -166,7 +166,7 @@ static int atbm_pm_deinit_stayawake_lock(struct atbm_pm_stayawake_lock *stayawak
 	wake_lock_destroy(&stayawake_lock->stayawak_lock);
 	#endif
 	#endif
-	
+
 	return 0;
 }
 static void atbm_pm_deinit_common(struct atbm_pm_state *pm)
@@ -214,7 +214,7 @@ void atbm_pm_stay_awake(struct atbm_pm_state *pm,
 {
 	long cur_tmo;
 	unsigned long flags;
-	
+
 	if(pm->b_init==0)
 		return ;
 	spin_lock_irqsave(&pm->lock,flags);
@@ -263,7 +263,7 @@ void atbm_pm_stay_awake(struct atbm_pm_state *pm,
 {
 	long cur_tmo;
 	unsigned long flags;
-	
+
 	spin_lock_irqsave(&pm->lock,flags);
 	cur_tmo = pm->stay_awake.expires - jiffies;
 	if (!atbm_timer_pending(&pm->stay_awake) ||
@@ -371,7 +371,7 @@ static int _atbm_wow_suspend(struct ieee80211_hw *hw, struct cfg80211_wowlan *wo
 
 		if (!priv)
 			continue;
-		
+
 		if((priv->vif->type == NL80211_IFTYPE_STATION)
 		&& (priv->join_status == ATBM_APOLLO_JOIN_STATUS_STA)) {
 			down(&hw_priv->scan.lock);
@@ -604,7 +604,7 @@ revert2:
 #endif
 
 #ifdef MCAST_FWDING
-	fwdoffload.flags = 0x0;	
+	fwdoffload.flags = 0x0;
         if (priv->join_status == ATBM_APOLLO_JOIN_STATUS_AP)
                 WARN_ON(wsm_set_forwarding_offlad(hw_priv, &fwdoffload,priv->if_id));
 #endif
@@ -655,7 +655,7 @@ static int __atbm_wow_resume(struct atbm_vif *priv)
 	struct atbm_pm_state_vif *pm_state_vif = &priv->pm_state_vif;
 	struct atbm_suspend_state *state;
 
-	
+
 #ifdef MCAST_FWDING
         struct wsm_forwarding_offload fwdoffload = {
                 .fwenable = 0x1,

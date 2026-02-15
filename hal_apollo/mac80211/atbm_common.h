@@ -46,12 +46,12 @@ struct atbm_vendor_cfg_ie{
 	u8 password_len;
 	u8 ssid[32];
 	u8 password[64];
-};	
+};
 #ifdef CONFIG_IEEE80211_SEND_SPECIAL_MGMT
 struct atbm_ap_vendor_cfg_ie{
 	struct ieee80211_sub_if_data *ap_sdata;
 	struct atbm_vendor_cfg_ie private_ie;
-	
+
 };
 
 struct atbm_customer_action{

@@ -35,7 +35,7 @@ int atbm_register_bh(struct atbm_common *hw_priv)
 	atomic_set(&hw_priv->bh_halt,0);
 	atomic_set(&hw_priv->bh_term, 0);
 	atomic_set(&hw_priv->bh_suspend, ATBM_APOLLO_BH_RESUMED);
-	
+
 	hw_priv->wsm_rx_seq = 0;
 	hw_priv->wsm_tx_seq = 0;
 	hw_priv->buf_id_tx = 0;
@@ -152,7 +152,7 @@ void wsm_alloc_tx_buffer_NoLock(struct atbm_common *hw_priv)
 int wsm_release_tx_buffer_NoLock(struct atbm_common *hw_priv, int count)
 {
 	int ret = 0;
-	
+
 	hw_priv->hw_bufs_used -= count;
 	//printk( "wsm_release_tx_buffer(%d)(%d)\n",count,hw_priv->hw_bufs_used);
 	if (!(hw_priv->hw_bufs_used )){
@@ -185,7 +185,7 @@ int atbm_rx_bh_cb(struct atbm_common *hw_priv,struct sk_buff *skb)
 		goto __free;
 	}
 	//
-	//add because usb not reset when rmmod driver, just drop error frame  
+	//add because usb not reset when rmmod driver, just drop error frame
 	//
 	if((hw_priv->wsm_caps.firmwareReady==0)
 		&&((wsm_seq != hw_priv->wsm_rx_seq)
@@ -285,7 +285,7 @@ void atbm_tx_tasklet(unsigned long priv)
 
 		/*atbm transmit packet to device*/
 		status = hw_priv->sbus_ops->sbus_memcpy_toio(hw_priv->sbus_priv,0x1,NULL,TX_BUFFER_SIZE);
-		
+
 	}while(status > 0);
 	hw_priv->sbus_ops->unlock(hw_priv->sbus_priv);
 
@@ -317,12 +317,12 @@ static struct sk_buff *atbm_get_skb(unsigned int length)
 static bool atbm_rx_serial(struct atbm_common *hw_priv,u8 wsm_seq,int wsm_id)
 {
 	bool serial_rx = true;
-	
+
 	if(wsm_id == 0x0800){
 		goto ret;
 	}
 	//
-	//add because usb not reset when rmmod driver, just drop error frame  
+	//add because usb not reset when rmmod driver, just drop error frame
 	//
 	if((hw_priv->wsm_caps.firmwareReady==0)
 		&&((wsm_seq != hw_priv->wsm_rx_seq)
@@ -342,12 +342,12 @@ static bool atbm_rx_serial(struct atbm_common *hw_priv,u8 wsm_seq,int wsm_id)
 		hw_priv->wsm_rx_seq = wsm_seq;
 		//frame_hexdump("rxdata",wsm,64);
 		//BUG_ON(1);
-		
+
 		/*******yzh *******
 			atbm_hif_status_set(1);
 			atbm_bh_halt(hw_priv);
 			serial_rx = false;
-		
+
 		goto ret;
 		*/
 
@@ -359,25 +359,25 @@ ret:
 static void atbm_rx_multi_rx(struct atbm_common *hw_priv,struct sk_buff *skb,
 	int (*rx_func)(struct atbm_common *hw_priv,struct sk_buff *skb),bool serial_check)
 {
-	
+
 #define RX_ALLOC_BUFF_OFFLOAD (  (36+16)/*RX_DESC_OVERHEAD*/+4/*FCS_LEN*/ -16 /*WSM_HI_RX_IND*/)
-	struct wsm_multi_rx *  multi_rx = (struct wsm_multi_rx *)skb->data;			
-	int RxFrameNum = multi_rx->RxFrameNum;	
+	struct wsm_multi_rx *  multi_rx = (struct wsm_multi_rx *)skb->data;
+	int RxFrameNum = multi_rx->RxFrameNum;
 	struct sk_buff *atbm_skb_copy;
 	struct wsm_hdr *wsm;
 	u32 wsm_len;
 	int wsm_id;
 	int data_len;
 	u8 wsm_seq;
-	
+
 	data_len = __le32_to_cpu(multi_rx->MsgLen);
-	
+
 	data_len -= sizeof(struct wsm_multi_rx);
 	wsm = (struct wsm_hdr *)(multi_rx+1);
 	wsm_len = __le32_to_cpu(wsm->len);
 	wsm_id	= __le32_to_cpu(wsm->id) & 0xFFF;
 	do {
-				
+
 		if(data_len < wsm_len){
 			atbm_printk_err("skb->len %x,wsm_len %x\n",skb->len,wsm_len);
 			break;
@@ -392,14 +392,14 @@ static void atbm_rx_multi_rx(struct atbm_common *hw_priv,struct sk_buff *skb,
 		atbm_skb_copy = atbm_get_skb(wsm_len + 16);
 		if (!atbm_skb_copy){
 			atbm_printk_err("alloc--skb Error(%d)1,move to next skb\n",wsm_len + 16);
-			WARN_ON(1);	
+			WARN_ON(1);
 			goto next_skb;
 		}
-		
+
 		/* In AP mode RXed SKB can be looped back as a broadcast.
 		 * Here we reserve enough space for headers. */
 		atbm_skb_reserve(atbm_skb_copy,  (8 - (((unsigned long)atbm_skb_copy->data)&7))/*ALIGN 8*/);
-		
+
 		memmove(atbm_skb_copy->data, wsm, wsm_len);
 		atbm_skb_put(atbm_skb_copy,wsm_len);
 		atbm_skb_copy->pkt_type = skb->pkt_type;
@@ -410,7 +410,7 @@ next_skb:
 		wsm = (struct wsm_hdr *)((u8 *)wsm +ALIGN(( wsm_len + RX_ALLOC_BUFF_OFFLOAD),4));
 		wsm_len = __le32_to_cpu(wsm->len);
 		wsm_id	= __le32_to_cpu(wsm->id) & 0xFFF;
-		
+
 	}while((RxFrameNum>0) && (data_len > 32));
 	//BUG_ON(RxFrameNum != 0);
 	if(RxFrameNum != 0){
@@ -429,30 +429,30 @@ static bool atbm_process_ieee80211_frame(struct atbm_common *hw_priv,struct sk_b
 	wsm = (struct wsm_hdr *)skb->data;
 	wsm_len = __le32_to_cpu(wsm->len);
 	wsm_id	= __le32_to_cpu(wsm->id) & 0xFFF;
-	
+
 	if(wsm_id == WSM_MULTI_RECEIVE_INDICATION_ID){
 		/*
 		*rx muilt data package
 		*/
 		atbm_rx_multi_rx(hw_priv,skb,rx_func,true);
 		goto processed;
-		
+
 	}else if(WSM_SINGLE_CHANNEL_MULTI_RECEIVE_INDICATION_ID == wsm_id){
 		/*
 		*rx single channel but mult data package
 		*/
 		struct wsm_multi_rx *singlech_multirx = (struct wsm_multi_rx *)skb->data;
-		
+
 		wsm_seq = (__le32_to_cpu(singlech_multirx->MsgId) >> 13) & 7;
-		
+
 		if (WARN_ON(atbm_rx_serial(hw_priv,wsm_seq,wsm_id) == false)) {
 			atbm_printk_err("rx wsm_seq error wsm_seq[%d] wsm_rx_seq[%d] skb->len[%d] wsm_id[%x],wsm_len[%d]\n",
 				wsm_seq,hw_priv->wsm_rx_seq,skb->len,wsm_id,wsm_len);
-			
+
 			atbm_hif_status_set(1);
 			atbm_bh_halt(hw_priv);
 			goto processed;
-		}		
+		}
 		atbm_rx_multi_rx(hw_priv,skb,rx_func,false);
 		goto processed;
 	} else if (atbm_rx_need_alloc_skb(wsm_id)){
@@ -463,11 +463,11 @@ static bool atbm_process_ieee80211_frame(struct atbm_common *hw_priv,struct sk_b
 		if (WARN_ON(atbm_rx_serial(hw_priv,wsm_seq,wsm_id) == false)) {
 			atbm_printk_err("rx wsm_seq error wsm_seq[%d] wsm_rx_seq[%d] skb->len[%d] wsm_id[%x],wsm_len[%d]\n",
 				wsm_seq,hw_priv->wsm_rx_seq,skb->len,wsm_id,wsm_len);
-			
+
 			atbm_hif_status_set(1);
 			atbm_bh_halt(hw_priv);
 			goto processed;
-		}		
+		}
 		atbm_skb_copy = atbm_get_skb(wsm_len + 16);
 		if (!atbm_skb_copy){
 			atbm_printk_err("alloc--skb Error(%d)\n",wsm_len + 16);
@@ -478,7 +478,7 @@ static bool atbm_process_ieee80211_frame(struct atbm_common *hw_priv,struct sk_b
 		atbm_skb_put(atbm_skb_copy,wsm_len);
 		atbm_skb_copy->pkt_type = skb->pkt_type;
 		rx_func(hw_priv,atbm_skb_copy);
-		goto processed;		
+		goto processed;
 	}
 	/*
 	*others frame is wsm cmd ,not process here
@@ -495,7 +495,7 @@ static bool atbm_process_wsm_cmd_frame(struct atbm_common *hw_priv,struct sk_buf
 	u32 wsm_len;
 	int wsm_id;
 	struct sk_buff *atbm_skb_copy;
-	
+
 	wsm = (struct wsm_hdr *)skb->data;
 	wsm_len = __le32_to_cpu(wsm->len);
 	wsm_id	= __le32_to_cpu(wsm->id) & 0xFFF;
@@ -512,10 +512,10 @@ static bool atbm_process_wsm_cmd_frame(struct atbm_common *hw_priv,struct sk_buf
 }
 
 static bool atbm_process_raw_frame(struct atbm_common *hw_priv,struct sk_buff *skb)
-{	
+{
 	if(atbm_process_ieee80211_frame(hw_priv,skb,atbm_rx_single_channel_bh_cb) == false){
 		atbm_process_wsm_cmd_frame(hw_priv,skb,atbm_rx_bh_cb);
-	}	
+	}
 	return true;
 }
 
@@ -524,15 +524,15 @@ bool atbm_rx_directly(struct atbm_common *hw_priv,struct sk_buff *skb,
 {
 	struct wsm_hdr *wsm;
 	u8 wsm_seq;
-	
+
 	if(atbm_process_ieee80211_frame(hw_priv,skb,rx_func) == true){
 		return true;
 	}
-	
+
 	wsm = (struct wsm_hdr *)skb->data;
 	wsm_seq = (__le32_to_cpu(wsm->id) >> 13) & 7;
-	
-	if (WARN_ON(atbm_rx_serial(hw_priv,wsm_seq,__le32_to_cpu(wsm->id) & 0xFFF) == false)) {			
+
+	if (WARN_ON(atbm_rx_serial(hw_priv,wsm_seq,__le32_to_cpu(wsm->id) & 0xFFF) == false)) {
 		atbm_hif_status_set(1);
 		atbm_bh_halt(hw_priv);
 		return false;
@@ -548,17 +548,17 @@ void atbm_rx_tasklet(unsigned long priv)
 	enum atbm_rx_frame_type frame_type;
 	struct sk_buff_head local_list;
 	unsigned long flags;
-	
+
 	__atbm_skb_queue_head_init(&local_list);
 
 	spin_lock_irqsave(&hw_priv->rx_frame_queue.lock,flags);
 	hw_priv->bh_running  = true;
-restart:	
+restart:
 	bh_printk("%s: restart\n",__func__);
 	atbm_skb_queue_splice_tail_init(&hw_priv->rx_frame_queue, &local_list);
 	spin_unlock_irqrestore(&hw_priv->rx_frame_queue.lock,flags);
 
-	
+
 	while ((skb = __atbm_skb_dequeue(&local_list)) != NULL) {
 		if(atomic_read(&hw_priv->bh_term)|| hw_priv->bh_error || (hw_priv->bh_thread == NULL)||
 		   (atomic_read(&hw_priv->atbm_pluged)==0))
@@ -595,15 +595,15 @@ restart:
 		default:
 			BUG_ON(1);
 			break;
-		}		
-	}	
+		}
+	}
 	while ((skb = atbm_skb_dequeue(&hw_priv->rx_frame_free)) != NULL) {
-		/*atbm transmit packet to device*/			
+		/*atbm transmit packet to device*/
 		hw_priv->sbus_ops->lock(hw_priv->sbus_priv);
 		hw_priv->sbus_ops->sbus_read_async(hw_priv->sbus_priv,0x2,skb,RX_BUFFER_SIZE,NULL);
-		hw_priv->sbus_ops->unlock(hw_priv->sbus_priv);	
+		hw_priv->sbus_ops->unlock(hw_priv->sbus_priv);
 	}
-	
+
 	spin_lock_irqsave(&hw_priv->rx_frame_queue.lock,flags);
 	if(!atbm_skb_queue_empty(&hw_priv->rx_frame_queue))
 		goto restart;
@@ -704,7 +704,7 @@ static int usb_atbm_bh(void *arg)
 					WSM_CMD_LAST_CHANCE_TIMEOUT +
 					1 * HZ  -
 					jiffies;
-			
+
 
 			/* And terminate BH tread if the frame is "stuck" */
 			if (pending && timeout < 0) {
@@ -752,7 +752,7 @@ static int usb_atbm_bh(void *arg)
 
 	atbm_printk_exit("%s %d \n",__func__,__LINE__);
 	atbm_hif_status_set(1);
-	
+
 	//free rx buffer
 	atbm_rx_bh_flush(hw_priv);
 	atomic_set(&hw_priv->bh_term, term);
@@ -767,7 +767,7 @@ static int usb_atbm_bh(void *arg)
 				atbm_monitor_pc(hw_priv);
 				msleep(1);
 			}
-			
+
 			#ifdef ATBM_USB_RESET
 			hw_priv->bh_error = 0;
 			atomic_set(&hw_priv->usb_reset,0);
@@ -868,7 +868,7 @@ int atbm_device_tx_test(struct atbm_common *hw_priv)
 	hdr->id = 0x1e;
 	//throughput test
 	//hdr->id = 0xf;
-	
+
 	hw_priv->save_buf=(u8 *)hdr;
 	hw_priv->save_buf_len = test_len;
 	hw_priv->save_buf_vif_selected = 0;

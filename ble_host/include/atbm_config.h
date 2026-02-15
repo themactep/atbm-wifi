@@ -1,9 +1,9 @@
 /**************************************************************************************************************
- * altobeam RTOS wifi hmac source code 
+ * altobeam RTOS wifi hmac source code
  *
  * Copyright (c) 2018, altobeam.inc   All rights reserved.
  *
- *  The source code contains proprietary information of AltoBeam, and shall not be distributed, 
+ *  The source code contains proprietary information of AltoBeam, and shall not be distributed,
  *  copied, reproduced, or disclosed in whole or in part without prior written permission of AltoBeam.
 *****************************************************************************************************************/
 #ifndef ATBM_CFG_H_
@@ -19,11 +19,11 @@
 #define PLATFORM_XUNWEI				(1)
 #define PLATFORM_SUN6I  			(2)
 #define PLATFORM_FRIENDLY			(3)
-#define PLATFORM_SUN6I_64			(4)	
+#define PLATFORM_SUN6I_64			(4)
 #define PLATFORM_CDLINUX			(12)
-#define PLATFORM_AMLOGIC_S805		(13)	
-#define PLATFORM_AMLOGIC_905		(8)	
-#define PLATFORM_SIGMASATR		(18)	
+#define PLATFORM_AMLOGIC_S805		(13)
+#define PLATFORM_AMLOGIC_905		(8)
+#define PLATFORM_SIGMASATR		(18)
 
 #ifndef  ATBM_WIFI_PLATFORM
 #define ATBM_WIFI_PLATFORM			PLATFORM_SIGMASATR

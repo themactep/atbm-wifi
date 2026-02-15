@@ -80,7 +80,7 @@ atbm_ble_gap_event(struct ble_gap_event *event, void *arg)
 	case BLE_GAP_EVENT_SUBSCRIBE:
 		   MODLOG_DFLT(INFO, "subscribe event attr_handle=%d\n",
 					   event->subscribe.attr_handle);
-	
+
 		   if (event->subscribe.attr_handle == hrs_hrm_handle) {
 			   notify_state = event->subscribe.cur_notify;
 			   MODLOG_DFLT(INFO, "heart rate  measurement notify state = %d\n",
@@ -135,7 +135,7 @@ static atbm_ble_advertise(void){
 
     rc = ble_gap_adv_start(own_addr_type, NULL, BLE_HS_FOREVER,
                            &gap_adv_params, atbm_ble_gap_event, NULL);
-	
+
     if (rc != 0) {
         /* If BLE Host is disabled, it probably means device is already
          * provisioned in previous session. Avoid error prints for this case.*/

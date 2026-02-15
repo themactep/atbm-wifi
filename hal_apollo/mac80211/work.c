@@ -76,7 +76,7 @@ void free_work(struct ieee80211_work *wk)
 
 #endif
 void ieee80211_work_enter_pending(struct ieee80211_local *local)
-{	
+{
 	/*
 	*suspend worker
 	*/
@@ -94,7 +94,7 @@ void ieee80211_work_exit_pending(struct ieee80211_local *local)
 	ieee80211_queue_work(&local->hw, &local->work_work);
 }
 static void __ieee80211_work_cook_lists(struct ieee80211_local *local)
-{	
+{
 	list_splice_tail_init(&local->work_pending_list, &local->work_list);
 }
 static void ieee80211_work_cook_lists(struct ieee80211_local *local)
@@ -165,10 +165,10 @@ static void ieee80211_work_rx_queued_mgmt(struct ieee80211_local *local,
 		*/
 		if(ieee80211_work_aborted(wk))
 			continue;
-		
+
 		if(ieee80211_work_skip_rx(wk))
 			continue;
-		
+
 		if(ieee80211_work_fc_mismatch(wk,fc))
 			continue;
 		/*
@@ -209,7 +209,7 @@ static void ieee80211_work_rx_queued_mgmt(struct ieee80211_local *local,
 	default:
 		WARN(1, "unexpected: %d", rma);
 	}
-	
+
 	mutex_unlock(&local->mtx);
 
 	if (rma != WORK_ACT_DONE)
@@ -261,7 +261,7 @@ static void ieee80211_work_timer(unsigned long data)
 static void ieee80211_work_empty_start_pendding(struct ieee80211_local *local)
 {
 	lockdep_assert_held(&local->mtx);
-#ifdef CONFIG_ATBM_SUPPORT_P2P	
+#ifdef CONFIG_ATBM_SUPPORT_P2P
 	if(local->roc_pendding&&local->roc_pendding_sdata){
 		struct ieee80211_roc_work * roc = local->roc_pendding;
 		int ret;
@@ -277,7 +277,7 @@ static void ieee80211_work_empty_start_pendding(struct ieee80211_local *local)
 		roc_duration_left = init_duration;
 		if(init_duration>70)
 			roc_duration_left = init_duration -70;
-			
+
 		atbm_printk_mgmt("%s:roc_pendding,roc_duration_left(%d),init_duration(%d)\n",__func__,
 			roc_duration_left,init_duration);
 		roc_timeout = !time_is_after_jiffies(roc->pending_start_time+(roc_duration_left*HZ)/1000);
@@ -370,7 +370,7 @@ static void ieee80211_work_work(struct atbm_work_struct *work)
 	enum work_action rma;
 	bool remain_off_channel = false;
 	u8 in_listenning = 1;
-	
+
 	if (local->scanning)
 		return;
 
@@ -391,30 +391,30 @@ static void ieee80211_work_work(struct atbm_work_struct *work)
 		ieee80211_work_rx_queued_mgmt(local, skb);
 
 	mutex_lock(&local->mtx);
-#ifdef CONFIG_ATBM_SUPPORT_P2P	
+#ifdef CONFIG_ATBM_SUPPORT_P2P
 	in_listenning = !list_empty(&local->roc_list);
 #else
 	in_listenning = 0;
 #endif
-	
+
 	ieee80211_work_cook_lists(local);
 
 	ieee80211_recalc_idle(local);
 
 	list_for_each_entry_safe(wk, tmp, &local->work_list, list) {
 		bool started = wk->started;
-		
+
 		if(in_listenning){
 			if(!started){
 				atbm_printk_mgmt("%s:in_listenning delay work\n",__func__);
 				continue;
 			}
 		}
-		
+
 		/* mark work as started if it's on the current off-channel */
 		if (!started && chan_state->tmp_channel &&
 		    wk->chan == chan_state->tmp_channel &&
-		    wk->chan_type == chan_state->tmp_channel_type) {		   
+		    wk->chan_type == chan_state->tmp_channel_type) {
 			started = true;
 			wk->timeout = jiffies;
 		}
@@ -441,7 +441,7 @@ static void ieee80211_work_work(struct atbm_work_struct *work)
 			wk->timeout = jiffies;
 		}
 		/* don't try to work with items that aren't started */
-		if (!started){			
+		if (!started){
 			atbm_printk_mgmt("%s:not start work ch(%d)\n",__func__,wk->type);
 			continue;
 		}
@@ -456,7 +456,7 @@ static void ieee80211_work_work(struct atbm_work_struct *work)
 		}
 
 		rma = ieee80211_work_aborted(wk) ? WORK_ACT_TIMEOUT : ieee80211_work_start(wk);
-		
+
 		wk->started = started;
 
 		switch (rma) {
@@ -472,7 +472,7 @@ static void ieee80211_work_work(struct atbm_work_struct *work)
 			break;
 		default:
 			WARN(1, "unexpected: %d", rma);
-		}		
+		}
 	}
 
 	list_for_each_entry(wk, &local->work_list, list) {
@@ -523,9 +523,9 @@ static void ieee80211_work_work(struct atbm_work_struct *work)
 	}
 
 	local->worker_working = false;
-	
+
 	mutex_lock(&local->mtx);
-	
+
 	ieee80211_work_empty_start_pendding(local);
 
 	ieee80211_recalc_idle(local);
@@ -581,14 +581,14 @@ bool ieee80211_work_type_switch(struct ieee80211_sub_if_data *sdata,const u8 *bs
 	struct ieee80211_local *local = sdata->local;
 	struct ieee80211_work *wk;
 	bool cleanup = false;
-	
+
 	mutex_lock(&local->mtx);
 	/*
 	*here cook the list
 	*/
 	spin_lock_bh(&local->work_pending_lock);
 	__ieee80211_work_cook_lists(local);
-	
+
 	list_for_each_entry(wk, &local->work_list, list) {
 		if (wk->sdata != sdata){
 			continue;
@@ -666,17 +666,17 @@ ieee80211_rx_result ieee80211_work_rx_mgmt(struct ieee80211_sub_if_data *sdata,
 			continue;
 		if (ieee80211_work_addr_mismatch(wk, mgmt->bssid))
 			continue;
-		
+
 		atbm_skb_queue_tail(&local->work_skb_queue, skb);
 		ieee80211_queue_work(&local->hw, &local->work_work);
 		handle = RX_QUEUED;
-		break;	
+		break;
 	}
 	spin_unlock_bh(&local->work_pending_lock);
-	
+
 	return handle;
 }
-					   
+
 ieee80211_tx_result ieee80211_work_tx_mgmt(struct ieee80211_sub_if_data *sdata,
 					  struct sk_buff *skb)
 {
@@ -687,10 +687,10 @@ ieee80211_tx_result ieee80211_work_tx_mgmt(struct ieee80211_sub_if_data *sdata,
    ieee80211_tx_result handle = TX_CONTINUE;
 
    mgmt = (struct atbm_ieee80211_mgmt *) skb->data;
-   
+
    if (!ieee80211_is_mgmt(mgmt->frame_control))
 	   return TX_CONTINUE;
-   
+
    if (skb->len < 24){
 	   atbm_printk_mgmt("%s:skb->len < 24\n",__func__);
 	   return TX_DROP;
@@ -710,14 +710,14 @@ ieee80211_tx_result ieee80211_work_tx_mgmt(struct ieee80211_sub_if_data *sdata,
 		   continue;
 	   if (ieee80211_work_addr_mismatch(wk, mgmt->bssid))
 		   continue;
-	   
+
 	   atbm_skb_queue_tail(&local->work_skb_queue, skb);
 	   ieee80211_queue_work(&local->hw, &local->work_work);
 	   handle = TX_QUEUED;
-	   break;  
+	   break;
    }
    spin_unlock_bh(&local->work_pending_lock);
-   
+
    return handle;
 }
 void ieee80211_assign_authen_bss(struct ieee80211_sub_if_data *sdata,struct cfg80211_bss *pub)
@@ -739,7 +739,7 @@ void ieee80211_assign_authen_bss(struct ieee80211_sub_if_data *sdata,struct cfg8
 		pub = NULL;
 	}
 	rcu_assign_pointer(ifmgd->authen_bss,pub);
-	synchronize_rcu();	
+	synchronize_rcu();
 }
 
 void ieee80211_free_authen_bss(struct ieee80211_sub_if_data *sdata)
@@ -748,7 +748,7 @@ void ieee80211_free_authen_bss(struct ieee80211_sub_if_data *sdata)
 	struct ieee80211_if_managed *ifmgd = &sdata->u.mgd;
 	struct cfg80211_bss *free_bss;
 	lockdep_assert_held(&local->mtx);
-	
+
 	atbm_printk_always("%s:free authen bss ++\n",sdata->name);
 	if(sdata->vif.type != NL80211_IFTYPE_STATION){
 		atbm_printk_err("%s: is not sta mode\n",sdata->name);
@@ -759,8 +759,8 @@ void ieee80211_free_authen_bss(struct ieee80211_sub_if_data *sdata)
 		return;
 	}
 	rcu_assign_pointer(ifmgd->authen_bss, NULL);
-	synchronize_rcu();	
-	
+	synchronize_rcu();
+
 	atbm_printk_always("%s:free authen bss --\n",sdata->name);
 	atbm_printk_mgmt("%s:free authen bss[%p]\n",sdata->name,free_bss);
 	ieee80211_atbm_release_bss(local->hw.wiphy,free_bss);
@@ -779,11 +779,11 @@ static enum work_done_result ieee80211_work_cancle_work_done(struct ieee80211_wo
 void  ieee80211_work_start_cancle_work(struct ieee80211_sub_if_data *sdata,u8 *bssid,enum ieee80211_work_type cancle_type)
 {
 	struct ieee80211_work *wk;
-	
+
 	wk = atbm_kzalloc(sizeof(*wk), GFP_ATOMIC);
 	if (WARN_ON(!wk))
 		return ;
-	
+
 	wk->sdata = sdata;
 	wk->done  = ieee80211_work_cancle_work_done;
 	wk->start = NULL;
@@ -792,6 +792,6 @@ void  ieee80211_work_start_cancle_work(struct ieee80211_sub_if_data *sdata,u8 *b
 	wk->rx   = NULL;
 	memcpy(wk->filter_bssid , bssid,ETH_ALEN);
 	wk->work_cancle.type = cancle_type;
-	
+
 	ieee80211_add_work(wk);
 }

@@ -34,7 +34,7 @@ typedef struct CMDLINE_LOCAL_S
 	uint32_t cmd_put;
 	uint32_t cmd_get;
     struct cli_cmd_struct *cmds;
-}CMDLINE_LOCAL; 
+}CMDLINE_LOCAL;
 
 extern void cli_add_cmd(struct cli_cmd_struct *cmd);
 extern void cli_add_cmds(struct cli_cmd_struct *cmds, int len);
@@ -46,11 +46,11 @@ extern void cli_add_cmds(struct cli_cmd_struct *cmds, int len);
 /**************************************************************************
 **
 ** NAME        cli_get_token
-** 
+**
 ** PARAMETERS:    *pLine -    current line location to parse.
 **
-** RETURNS:        the token located. It never be NULL, but can be "\0" 
-**              *pLine - next line location to parse.              
+** RETURNS:        the token located. It never be NULL, but can be "\0"
+**              *pLine - next line location to parse.
 **
 ** DESCRIPTION    Locate the next token from a cli.
 **
@@ -61,12 +61,12 @@ char *cli_get_token(char **pLine);
 /**************************************************************************
 **
 ** NAME        CmdLine_GetHex
-** 
+**
 ** PARAMETERS:  *pLine - the current line location to parse.
 **
 ** RETURNS:        TRUE if the next token is a hexdecimal integer.
 **              *pDword - the integer returned. Unchanged if return FALSE.
-**              *pLine - next line location to parse.              
+**              *pLine - next line location to parse.
 **
 ** DESCRIPTION    Read a hexdecimal integer from a cli.
 **
@@ -76,12 +76,12 @@ int cli_get_hex(char **pLine, uint32_t *pDword);
 /**************************************************************************
 **
 ** NAME        CmdLine_GetInteger
-** 
+**
 ** PARAMETERS:  *pLine - the current line location to parse.
 **
 ** RETURNS:        TRUE if the next token is an unsigned decimal integer.
 **              *pDword - the integer returned. Unchanged if return FALSE.
-**              *pLine - next line location to parse.              
+**              *pLine - next line location to parse.
 **
 ** DESCRIPTION    Read an unsigned decimal integer from a cli.
 **

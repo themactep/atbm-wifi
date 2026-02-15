@@ -15,7 +15,7 @@ char *cli_skip_space(char * line)
 {
     char ch;
 	int loop =0;
-	
+
     /* escape white space */
     ch = line[0];
     while(ch != 0)
@@ -28,7 +28,7 @@ char *cli_skip_space(char * line)
 			loop ++;
 			if(loop >= ATBM_AT_CMD_LEN_MAX)
 				break;
-			
+
             continue;
         }
         break;
@@ -42,7 +42,7 @@ char *cli_get_token(char **pLine)
     char *    line;
     char ch;
 	int loop =0;
-	
+
     line = *pLine;
 
     /* escape white space */
@@ -57,7 +57,7 @@ char *cli_get_token(char **pLine)
 			//闂冨弶顒汚T cmd 鐡掑﹦鏅�?	    	loop++;
 			if(loop > 1600)
 				break;
-			
+
             continue;
         }
         break;
@@ -91,9 +91,9 @@ char *cli_get_token_string(char **ppLine)
 	char *	  pLine;
 	int index = 0;
 	int first_flag =0;
-	
+
 	pLine = *ppLine;
-	
+
 	pLine = cli_skip_space(pLine);
 	if(pLine[0] == '"'){
 		first_flag=1;
@@ -117,14 +117,14 @@ char *cli_get_token_string(char **ppLine)
 			index++;
 		}
 	}
-		
+
 	if (first_flag == 2)
 		pLine += index;
 	else{
 		str = cli_get_token(&pLine);
 	}
 	*ppLine=pLine;
-	
+
 	return str;
 }
 
@@ -256,7 +256,7 @@ int cli_get_sign_integer(char **pLine, int *pDword)
     	if (negativeFlag < 0)
         	*pDword = d * negativeFlag;
     	else
-    		*pDword = d;	
+    		*pDword = d;
     }
     else{
         iot_printf("Invalid unsigned decimal: %s\n", str0);
@@ -308,10 +308,10 @@ uint32_t cli_string_cmmpare(char *pStr1, const char *pStr2)
 }
 
 int cli_process_cmd(char * Line)
-{  
+{
 	struct cli_cmd_struct *p = at_cmd_line.cmds;
     char *Token;
-	
+
     Token = cli_get_token(&Line);
 
     if (Token[0] == 0){
@@ -355,40 +355,40 @@ void cli_processing_input(void)
 
 		//ATBM_ASSERT(at_cmd_line.cmd_get <= at_cmd_line.cmd_put)
 		if(at_cmd_line.cmd_get == at_cmd_line.cmd_put){
-			break; 
+			break;
 		}
-		
+
 		get = at_cmd_line.cmd_get & (ATBM_AT_CMD_MAX_SW_CACHE - 1);
 		Line = at_cmd_line.cmd_buf[get];
 
 		cli_process_cmd(Line);
-		
+
 		at_cmd_line.cmd_get ++;
-	}    
+	}
 }
 
 struct cli_cmd_struct GenericCommands[] =
 {
-	{.cmd ="help",	.fn = cli_help,		.next = (void*)0 },		
+	{.cmd ="help",	.fn = cli_help,		.next = (void*)0 },
 };
 
 
 int cli_main(void *param)
 {
 	int i;
-	
+
 	for(i=0; i<ATBM_AT_CMD_MAX_SW_CACHE; i++){
 		at_cmd_line.cmd_buf[i] = atbm_kzalloc(ATBM_AT_CMD_LEN_MAX, GFP_KERNEL);
 		ATBM_BUG_ON(at_cmd_line.cmd_buf[i] == NULL);
 	}
 	at_cmd_line.cmd_get = 0;
 	at_cmd_line.cmd_put = 0;
-	
+
     cli_add_cmds(&GenericCommands[0],
 		sizeof(GenericCommands)/sizeof(GenericCommands[0]));
 	ble_npl_sem_init(&at_cmd_sem, 0);
 	at_cmd_sem_init = 1;
-	
+
 	while (1) {
 		ble_npl_sem_pend(&at_cmd_sem, BLE_NPL_TIME_FOREVER);
 		if(cli_th_exit){
@@ -405,17 +405,17 @@ int cli_set_event(uint8_t *data, uint16_t len)
 {
 	uint32_t put;
 	os_sr_t sr;
-	
+
 	if((at_cmd_line.cmd_put - at_cmd_line.cmd_get) >= ATBM_AT_CMD_MAX_SW_CACHE){
 		iot_printf("atcmd software cache full.\n");
-		return -1;		
+		return -1;
 	}
-	
+
 	if(len > ATBM_AT_CMD_LEN_MAX){
 		iot_printf("atcmd length is too large.\n");
-		return -1;			
+		return -1;
 	}
-	
+
 	OS_ENTER_CRITICAL(sr);
 	put = at_cmd_line.cmd_put & (ATBM_AT_CMD_MAX_SW_CACHE - 1);
 	ATBM_ASSERT(at_cmd_line.cmd_buf[put] != NULL);
@@ -423,11 +423,11 @@ int cli_set_event(uint8_t *data, uint16_t len)
 	memcpy(at_cmd_line.cmd_buf[put], data, len);
 	at_cmd_line.cmd_put ++;
 	OS_EXIT_CRITICAL(sr);
-	
+
 	if(at_cmd_sem_init){
 		ble_npl_sem_release(&at_cmd_sem);
 	}
-	
+
 	return 0;
 }
 
@@ -440,7 +440,7 @@ void cli_init(void)
 void cli_free(void)
 {
 	int i;
-	
+
 	if(cli_thread){
 		cli_th_exit = 1;
 		ble_npl_sem_release(&at_cmd_sem);
@@ -449,9 +449,9 @@ void cli_free(void)
 	while(at_cmd_sem_init){
 		ble_npl_time_delay(ble_npl_time_ms_to_ticks32(10));
 	}
-	
+
 	atbm_stopThread(cli_thread);
-	cli_thread = NULL;	
+	cli_thread = NULL;
 	ble_npl_sem_free(&at_cmd_sem);
 
 	for(i=0; i<ATBM_AT_CMD_MAX_SW_CACHE; i++){

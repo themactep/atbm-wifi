@@ -800,8 +800,8 @@ int bt_mesh_net_resend(struct bt_mesh_subnet *sub, struct os_mbuf *buf,
 
 	return 0;
 }
-			   
-			   
+
+
 static void bt_mesh_net_local(struct ble_npl_event *work)
 {
 	struct os_mbuf *buf;
@@ -948,7 +948,7 @@ int bt_mesh_net_send(struct bt_mesh_net_tx *tx, struct os_mbuf *buf,
             goto done;
         }
     }
-			
+
 	/* Deliver to local network interface if necessary */
 	if (bt_mesh_fixed_group_match(tx->ctx->addr) ||
 	    bt_mesh_elem_find(tx->ctx->addr)) {
@@ -1134,7 +1134,7 @@ static bool net_find_and_decrypt(const u8_t *data, size_t data_len,
 		{
 			sub = &bt_mesh.sub[i];
 		}
-		
+
 		if (sub->net_idx == BT_MESH_KEY_UNUSED) {
 			continue;
 		}

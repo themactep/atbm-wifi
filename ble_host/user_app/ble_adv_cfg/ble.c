@@ -118,7 +118,7 @@ update_adv_data(void)
 	struct ble_hs_adv_fields fields;
 
 	memset(&fields, 0, sizeof(fields));
-	
+
 	 /*
 	  * Advertise two flags:
 	  * 	 o Discoverability in forthcoming advertisement (general)
@@ -126,7 +126,7 @@ update_adv_data(void)
 	  */
 	 fields.flags = BLE_HS_ADV_F_DISC_GEN |
 					 BLE_HS_ADV_F_BREDR_UNSUP;
-	
+
 	 /*
 	  * Indicate that the TX power level field should be included; have the
 	  * stack fill this value automatically.  This is done by assigning the
@@ -134,11 +134,11 @@ update_adv_data(void)
 	  */
 	 fields.tx_pwr_lvl_is_present = 1;
 	 fields.tx_pwr_lvl = BLE_HS_ADV_TX_PWR_LVL_AUTO;
-	
+
 	 fields.name = (uint8_t *)gap_name;
 	 fields.name_len = strlen(gap_name);
 	 fields.name_is_complete = 1;
-	
+
 	 rc = ble_gap_adv_set_fields(&fields);
 	 if (rc != 0) {
 		 iot_printf("ble_gap_adv_set_fields err:%d\n", rc);
@@ -166,10 +166,10 @@ gap_event_cb(struct ble_gap_event *event, void *arg)
 {
 	int rc;
 	struct ble_hs_adv_fields fields;
-	
+
     switch (event->type) {
     case BLE_GAP_EVENT_CONNECT:
-		
+
         if (event->connect.status) {
             start_advertise();
         }

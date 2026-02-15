@@ -18,7 +18,7 @@
  */
 
 #include "syscfg/syscfg.h"
- 
+
 #if MYNEWT_VAL_SHELL_CMD
 
 #include <assert.h>
@@ -223,7 +223,7 @@ btshell_print_adv_fields(const struct ble_hs_adv_fields *fields)
 			//putchar(((char *)fields->name)[i]);
 			iot_printf("%c", ((char *)fields->name)[i]);
         }
-		
+
         iot_printf("\n");
     }
 
@@ -929,17 +929,17 @@ btshell_show_scan_addr(uint8_t* addr, uint8_t addr_len)
 {
     int i;
     int find = 0;
-    
+
     if(g_scan_addr_cnt == 63)
 	return ;
 
     for(i=0; i < g_scan_addr_cnt; i++)
     {
-        if(memcmp(g_scan_addr_table[i], addr, 6)==0)  
+        if(memcmp(g_scan_addr_table[i], addr, 6)==0)
         {
  	    find = 1;
 	    break;
-	}  
+	}
     }
 
     if(0 == find)
@@ -1165,7 +1165,7 @@ btshell_gap_event(struct ble_gap_event *event, void *arg)
 					btshell_print_adv_fields(&fields);
 					iot_printf("\n");
 				}
-			}	
+			}
 		}
         else {
             if (g_scan_show) {
@@ -1187,7 +1187,7 @@ btshell_gap_event(struct ble_gap_event *event, void *arg)
 		    if(g_show_addr)
                     {
 		        btshell_show_scan_addr(event->disc.addr.val, 6);
-	            } 
+	            }
 	        }
 
 	        btshell_decode_adv_data(event->disc.data, event->disc.length_data, arg);
@@ -1751,7 +1751,7 @@ SRAM_CODE int
 btshell_pvcy_add(ble_addr_t *addr, uint8_t *irk)
 {
     int rc;
-	
+
 	rc = ble_hs_pvcy_add_entry(addr->val, addr->type, irk);
     return rc;
 }
@@ -1760,7 +1760,7 @@ SRAM_CODE int
 btshell_pvcy_rmv(ble_addr_t *addr)
 {
 	int rc;
-	
+
 	rc = ble_hs_pvcy_remove_entry(addr->type, addr->val);
 	return rc;
 }

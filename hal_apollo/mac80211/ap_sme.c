@@ -80,7 +80,7 @@ static int ieee80211_ap_sme_auth_alg(struct ieee80211_sub_if_data *sdata);
 
 #define ATBM_SET_SUPP_RATE_IE(des_ie,des_off,src_ie,src_len)				\
 	ATBM_GET_IE_FORM_SRC_IE(ATBM_WLAN_EID_SUPP_RATES,des_ie,des_off,src_ie,src_len)
-	
+
 #define ATBM_SET_EXT_RATE_IE(des_ie,des_off,src_ie,src_len)				\
 	ATBM_GET_IE_FORM_SRC_IE(ATBM_WLAN_EID_EXT_SUPP_RATES,des_ie,des_off,src_ie,src_len)
 
@@ -89,13 +89,13 @@ static int ieee80211_ap_sme_auth_alg(struct ieee80211_sub_if_data *sdata);
 
 #define ATBM_SET_HT_INFO_IE(des_ie,des_off,src_ie,src_len)					\
 	ATBM_GET_IE_FORM_SRC_IE(ATBM_WLAN_EID_HT_INFORMATION,des_ie,des_off,src_ie,src_len)
-	
+
 #define ATBM_SET_VENDOR_WPS_IE(des_ie,des_off,src_ie,src_len)					\
 	ATBM_GET_VENDOR_IE_FORM_SRC_IE(ATBM_OUI_MICROSOFT,4,des_ie,des_off,src_ie,src_len)
 
 #define ATBM_SET_VENDOR_P2P_IE(des_ie,des_off,src_ie,src_len)					\
 	ATBM_GET_VENDOR_IE_FORM_SRC_IE(ATBM_OUI_WFA,ATBM_P2P_OUI_TYPE,des_ie,des_off,src_ie,src_len)
-	
+
 #define ATBM_SET_VENDOR_WFD_IE(des_ie,des_off,src_ie,src_len)					\
 	ATBM_GET_VENDOR_IE_FORM_SRC_IE(ATBM_OUI_WFA,ATBM_WFD_OUI_TYPE,des_ie,des_off,src_ie,src_len)
 
@@ -118,8 +118,8 @@ static int ieee80211_ap_sme_auth_alg(struct ieee80211_sub_if_data *sdata);
 		clear_sta_flag(_sta, WLAN_STA_ASSOC_AP);		\
 		clear_sta_flag(_sta, WLAN_STA_ASSOCED);		\
 	}while(0)
-		
-#define RSN_SELECTOR_GET(s) ATBM_WPA_GET_BE32((const u8 *)s) 
+
+#define RSN_SELECTOR_GET(s) ATBM_WPA_GET_BE32((const u8 *)s)
 
 enum ap_sme_rx_mgmt_action {
 	/* no action required */
@@ -150,17 +150,17 @@ void ieee80211_ap_sme_sta_sync_lock(struct ieee80211_sub_if_data *sdata)
 	static unsigned int lock_cnt = 0;
 	lock_cnt++;
 	atbm_printk_ap("%s:lock_cnt(%d)\n",__func__,lock_cnt);
-	down(&sdata->sta_mlme_lock);	
+	down(&sdata->sta_mlme_lock);
 }
 void ieee80211_ap_sme_sta_sync_unlock(struct ieee80211_sub_if_data *sdata)
 {
 	static unsigned int unlock_cnt = 0;
 	unlock_cnt++;
 	atbm_printk_ap("%s:unlock_cnt(%d)\n",__func__,unlock_cnt);
-	up(&sdata->sta_mlme_lock);	
+	up(&sdata->sta_mlme_lock);
 }
 void ieee80211_ap_sme_sta_sync_lock_init(struct ieee80211_sub_if_data *sdata)
-{	
+{
 	sema_init(&sdata->sta_mlme_lock, 0);
 }
 
@@ -175,7 +175,7 @@ void ieee80211_ap_sme_queue_mgmt_init(struct ieee80211_sub_if_data *sdata)
 void ieee80211_ap_sme_event_free(struct ieee80211_sub_if_data *sdata,
 	struct list_head *event_list)
 {
-	
+
 	while (!list_empty(event_list)) {
 			struct ap_sme_event *event =
 				list_first_entry(event_list, struct ap_sme_event,
@@ -213,14 +213,14 @@ int ieee80211_ap_sme_queue_event(struct ieee80211_sub_if_data *sdata,
 		atbm_printk_ap("%s:sdata is not running\n",__func__);
 		goto queue_event_err;
 	}
-	
+
 	if(addr == NULL)
 	{
 		goto queue_event_err;
 	}
 	if (addr[0] == 0xff && addr[1] == 0xff &&
 	    addr[2] == 0xff && addr[3] == 0xff &&
-	    addr[4] == 0xff && addr[5] == 0xff) 
+	    addr[4] == 0xff && addr[5] == 0xff)
 	{
 		goto queue_event_err;
 	}
@@ -230,10 +230,10 @@ int ieee80211_ap_sme_queue_event(struct ieee80211_sub_if_data *sdata,
 		ret = -1;
 		goto queue_event_err;
 	}
-	
+
 	event->event = event_id;
 	memcpy(event->sta_addr,addr,ETH_ALEN);
-	
+
 	mutex_lock(&sdata->ap_sme_event_lock);
 	first = list_empty(&sdata->ap_sme_event);
 	list_add_tail(&event->list,&sdata->ap_sme_event);
@@ -241,7 +241,7 @@ int ieee80211_ap_sme_queue_event(struct ieee80211_sub_if_data *sdata,
 	atbm_printk_ap("%s,event(%d),mac(%pM)\n",__func__,event_id,addr);
 	if(first)
 		atbm_queue_work(sdata->local->workqueue, &sdata->ap_sme_event_work);
-	
+
 	ret = 0;
 queue_event_err:
 	return ret;
@@ -251,12 +251,12 @@ int ieee80211_ap_sme_rx_mgmt(struct ieee80211_sub_if_data *sdata,
 {
 	struct atbm_ieee80211_mgmt *mgmt = (void *)skb->data;
 	__le16 stype;
-	
+
 	if (!ieee80211_sdata_running(sdata)){
 		atbm_printk_ap("%s:sdata is not running\n",__func__);
 		return -1;
 	}
-	
+
 	stype  = mgmt->frame_control & cpu_to_le16(IEEE80211_FCTL_STYPE);
 
 	switch (stype) {
@@ -320,7 +320,7 @@ int ieee80211_ap_sme_paras_ap_info(struct ieee80211_sub_if_data *sdata,
 		atbm_printk_ap("ap_info: support RSN\n");
 		wpa_data->proto |= ATBM_WPA_PROTO_RSN;
 	}
-	
+
 	for(i = 0;i < ap_info->crypto.n_ciphers_pairwise;i++)
 	{
 		switch(ap_info->crypto.ciphers_pairwise[i]){
@@ -351,7 +351,7 @@ int ieee80211_ap_sme_paras_ap_info(struct ieee80211_sub_if_data *sdata,
 		}
 	}
 
-	
+
 	for (i = 0; i < ap_info->crypto.n_akm_suites; i++) {
 		switch (ap_info->crypto.akm_suites[i]) {
 		case WLAN_AKM_SUITE_8021X:
@@ -435,7 +435,7 @@ int ieee80211_ap_sme_paras_ap_info(struct ieee80211_sub_if_data *sdata,
 	struct ieee802_atbm_11_elems ap_elems;
 	struct atbm_wpa_ie_data ap_wpa_data;
 	struct atbm_wpa_ie_data ap_rsn_data;
-	
+
 	bss_conf->auth_type = 0;
 	bss_conf->privacy = 0;
 	bss_conf->auth_type_bit = 0;
@@ -462,13 +462,13 @@ int ieee80211_ap_sme_paras_ap_info(struct ieee80211_sub_if_data *sdata,
 		wpa_data->proto |= ATBM_WPA_PROTO_RSN;
 		ieee80211_ap_sme_parse_rsn(ap_elems.rsn,ap_elems.rsn_len,&ap_rsn_data);
 	}
-	
+
 	wpa_data->pairwise_cipher |= (ap_wpa_data.pairwise_cipher | ap_rsn_data.pairwise_cipher);
 	wpa_data->key_mgmt |= (ap_wpa_data.key_mgmt | ap_rsn_data.key_mgmt);
 	wpa_data->group_cipher |= (ap_wpa_data.group_cipher | ap_rsn_data.group_cipher);
 	wpa_data->rsn_capabilities = ap_rsn_data.rsn_capabilities;
 	wpa_data->mgmt_group_cipher = ap_rsn_data.mgmt_group_cipher;
-	
+
 }
 #endif
 int ieee80211_ap_sme_tx_mgmt_status(struct ieee80211_sub_if_data *sdata,
@@ -607,7 +607,7 @@ static void ieee80211_ap_sme_tx_mgmt_authen_status(struct ieee80211_sub_if_data 
 		atbm_printk_ap("%s:sta == NULL\n",__func__);
 		goto authen_status_err;
 	}
-	
+
 	auth_alg = mgmt->u.auth.auth_alg;
 	auth_transaction = mgmt->u.auth.auth_transaction;
 	status_code =  mgmt->u.auth.status_code;
@@ -696,7 +696,7 @@ ieee80211_ap_sme_rx_mgmt_authen(struct ieee80211_sub_if_data *sdata,
 		goto athen_end;
 	}
 
-	
+
 	if (!((auth_transaction == 1 ) ||
 		  (auth_alg == ATBM_WLAN_AUTH_SHARED_KEY && auth_transaction == 3))) {
 			atbm_printk_ap("Unknown authentication transaction number (%d)\n",
@@ -745,7 +745,7 @@ static void ieee80211_ap_sme_send_auth(struct ieee80211_sub_if_data *sdata,
 	mgmt->u.auth.status_code = cpu_to_le16(status);
 	if (extra)
 		memcpy(atbm_skb_put(skb, extra_len), extra, extra_len);
- 
+
  	atbm_printk_ap("%s %d transaction =%d \n",__func__,__LINE__,transaction);
 	IEEE80211_SKB_CB(skb)->flags |= IEEE80211_TX_INTFL_DONT_ENCRYPT;
 	IEEE80211_SKB_CB(skb)->flags |= IEEE80211_TX_AP_HANDLE_STATUS;
@@ -779,7 +779,7 @@ static void ieee80211_ap_sme_send_deauth(struct ieee80211_sub_if_data *sdata,
 		mgmt->u.deauth.reason_code = cpu_to_le16(23);
 	else
 		mgmt->u.deauth.reason_code = cpu_to_le16(3);
-	
+
 	atbm_skb_put(skb, 2);
 	atbm_printk_ap("%s:sta(%pM),reason_code(%u)\n",__func__,da,mgmt->u.deauth.reason_code);
 	IEEE80211_SKB_CB(skb)->flags |= IEEE80211_TX_INTFL_DONT_ENCRYPT;
@@ -808,7 +808,7 @@ static void ieee80211_ap_sme_tx_mgmt_authen(struct ieee80211_sub_if_data *sdata,
 		atbm_printk_ap("%s:not in authen state\n",__func__);
 		goto tx_mgmt_authen_err;
 	}
-	
+
 	auth_alg = mgmt->u.auth.auth_alg;
 	auth_transaction = mgmt->u.auth.auth_transaction;
 	atbm_printk_ap("%s:status(%d)\n",__func__,status);
@@ -844,7 +844,7 @@ static void ieee80211_ap_sme_tx_mgmt_authen(struct ieee80211_sub_if_data *sdata,
 				  	ATBM_WLAN_AUTH_CHALLENGE_LEN);
 				resp_ies_len = 2 + ATBM_WLAN_AUTH_CHALLENGE_LEN;
 			}
-			
+
 			if(status == WLAN_STATUS_SUCCESS){
 				if(auth_transaction == 3)
 					set_sta_flag(sta,WLAN_STA_AUTH_STATUS);
@@ -874,7 +874,7 @@ ieee80211_ap_sme_rx_mgmt_deauth(struct ieee80211_sub_if_data *sdata,
 	bool is_wps = false;
 	if (len < 24 + 2)
 		return RX_MGMT_NONE;
-	
+
 	rcu_read_lock();
 	sta = sta_info_get_rx(sdata, mgmt->sa);
 	if(sta == NULL)
@@ -886,7 +886,7 @@ ieee80211_ap_sme_rx_mgmt_deauth(struct ieee80211_sub_if_data *sdata,
 
 	atbm_printk_ap("%s: deauthenticated from %pM (Reason: %u)\n",
 			sdata->name, mgmt->sa, reason_code);
-	
+
 	ATBM_AP_SME_CLAER_STA_ASSOC_INFO(sta);
 	is_wps = test_sta_flag(sta,WLAN_STA_WPS)?true:false;
 	rcu_read_unlock();
@@ -942,8 +942,8 @@ static u16 ieee80211_ap_sme_check_supp_rates(struct ieee80211_sub_if_data *sdata
 	u8  i = 0;
 	u8  j = 0;
 	sband = local->hw.wiphy->bands[chan_state->oper_channel->band];
-	
-	
+
+
 	if(!sta_elems->supp_rates)
 		return WLAN_STATUS_UNSPECIFIED_FAILURE;
 
@@ -966,16 +966,16 @@ static u16 ieee80211_ap_sme_check_ht_cap(struct ieee80211_sub_if_data *sdata,str
 	struct ieee80211_local *local = sdata->local;
 	struct ieee80211_channel_state *chan_state = ieee80211_get_channel_state(local, sdata);
 	struct ieee80211_supported_band *sband;
-	
+
 	sband = local->hw.wiphy->bands[chan_state->oper_channel->band];
 	atbm_printk_ap("%s:ap_elems->ht_cap_elem(%x),sta_elems->ht_cap_elem(%x)\n",__func__,(int)ap_elems->ht_cap_elem
 		,(int)sta_elems->ht_cap_elem);
 	if((!ap_elems->ht_cap_elem)&&(sta_elems->ht_cap_elem))
 		return WLAN_STATUS_UNSPECIFIED_FAILURE;
-	
-	if(!sta_elems->ht_cap_elem)		
+
+	if(!sta_elems->ht_cap_elem)
 		return WLAN_STATUS_SUCCESS;
-	
+
 	ieee80211_ht_cap_ie_to_sta_ht_cap(sband,
 							  sta_elems->ht_cap_elem,
 							  &sta->sta.ht_cap);
@@ -997,7 +997,7 @@ static u16 ieee80211_ap_sme_check_p2p(struct ieee80211_sub_if_data *sdata,struct
 
 static int rsn_selector_to_bitfield(const u8 *s)
 {
-	
+
 	if (RSN_SELECTOR_GET(s) == ATBM_RSN_CIPHER_SUITE_NONE)
 		return ATBM_WPA_CIPHER_NONE;
 	if (RSN_SELECTOR_GET(s) == ATBM_RSN_CIPHER_SUITE_WEP40)
@@ -1083,7 +1083,7 @@ static int ieee80211_ap_sme_parse_rsn(const u8 *rsn_ie, size_t rsn_ie_len,
 
 	if (left >= ATBM_RSN_SELECTOR_LEN) {
 		data->group_cipher = rsn_selector_to_bitfield(pos);
-		
+
 		if (data->group_cipher == ATBM_WPA_CIPHER_AES_128_CMAC) {
 			atbm_printk_ap("%s: AES-128-CMAC used as group "
 				   "cipher", __func__);
@@ -1149,7 +1149,7 @@ static int ieee80211_ap_sme_parse_rsn(const u8 *rsn_ie, size_t rsn_ie_len,
 		pos += 2;
 		left -= 2;
 	}
-	
+
 	if (left >= 2) {
 		data->num_pmkid = ATBM_WPA_GET_LE16(pos);
 		pos += 2;
@@ -1167,7 +1167,7 @@ static int ieee80211_ap_sme_parse_rsn(const u8 *rsn_ie, size_t rsn_ie_len,
 			left -= data->num_pmkid * ATBM_PMKID_LEN;
 		}
 	}
-	
+
 	if (left >= 4) {
 		data->mgmt_group_cipher = rsn_selector_to_bitfield(pos);
 		if (data->mgmt_group_cipher != ATBM_WPA_CIPHER_AES_128_CMAC) {
@@ -1179,7 +1179,7 @@ static int ieee80211_ap_sme_parse_rsn(const u8 *rsn_ie, size_t rsn_ie_len,
 		pos += ATBM_RSN_SELECTOR_LEN;
 		left -= ATBM_RSN_SELECTOR_LEN;
 	}
-	
+
 	if (left > 0) {
 		atbm_printk_ap("%s: ie has %u trailing bytes - ignored",
 			   __func__, left);
@@ -1305,13 +1305,13 @@ static u16 ieee80211_ap_sme_check_wpa(struct ieee80211_sub_if_data *sdata,struct
 	}
 	atbm_printk_ap("%s:sta_wpa_ie(%x),sta_wpa_ie_len(%x)\n",__func__,(int)sta_wpa_ie,(int)sta_wpa_ie_len);
 	if((sta_wpa_ie==NULL)&&(ap_wpa_ie==NULL)){
-		
+
 		if((sta_elems->wpa || sta_elems->rsn)&&(ap_elems->wpa || ap_elems->rsn))
 		{
 			atbm_printk_ap("%s:wpa rsn err\n",__func__);
 			return WLAN_STATUS_UNSPECIFIED_FAILURE;
 		}
-		
+
 	}else if(sta_wpa_ie&&ap_wpa_ie){
 
 		atbm_printk_ap("%s:ap_wpa_ie(%x),ap_elems->wpa(%x),ap_elems->rsn(%x)\n",__func__,
@@ -1411,20 +1411,20 @@ static u16 ieee80211_ap_sme_check_assoc_ies(struct ieee80211_sub_if_data *sdata,
 	struct ieee802_atbm_11_elems sta_elems;
 	struct ieee802_atbm_11_elems ap_elems;
 	u16 status=WLAN_STATUS_SUCCESS;
-		
+
 	memset(&sta_elems,0,sizeof(struct ieee802_atbm_11_elems));
 	memset(&ap_elems,0,sizeof(struct ieee802_atbm_11_elems));
-	
+
 	clear_sta_flag(sta, WLAN_STA_WPA_RSN);
 	clear_sta_flag(sta, WLAN_STA_WPS);
-	
+
 	ieee802_11_parse_elems((u8*)ies,ies_len,&sta_elems);
 	ieee802_11_parse_elems((u8*)ap_ie,ap_ie_len,&ap_elems);
-	
+
 	/*
 	*check ssid
 	*/
-	status = ieee80211_ap_sme_check_ssid(sdata,sta_elems.ssid,sta_elems.ssid_len); 
+	status = ieee80211_ap_sme_check_ssid(sdata,sta_elems.ssid,sta_elems.ssid_len);
 	if(status != WLAN_STATUS_SUCCESS)
 	{
 		atbm_printk_ap( "%s:ssid err\n",__func__);
@@ -1494,7 +1494,7 @@ static u16 ieee80211_ap_sme_check_assoc_ies(struct ieee80211_sub_if_data *sdata,
 		goto assoc_ies_end;
 	}
 assoc_ies_end:
-	
+
 	return status;
 
 }
@@ -1508,7 +1508,7 @@ static u16 ieee80211_ap_sme_alloc_aid(struct ieee80211_sub_if_data *sdata, struc
 	}
 
 	if(sdata->vif.bss_conf.aid_map >= (u8)(-1)){
-		
+
 		atbm_printk_ap( "%s:aid_map err(%x)\n",__func__,sta->sta.aid);
 
 		return WLAN_STATUS_UNSPECIFIED_FAILURE;
@@ -1536,7 +1536,7 @@ ieee80211_ap_sme_rx_mgmt_assoc(struct ieee80211_sub_if_data *sdata,
 	u8* ap_ie = NULL;
 	size_t ap_ie_len = 0;
 	struct beacon_data *beacon = NULL;
-	
+
 	if(len < 24 + (reassoc ? sizeof(mgmt->u.reassoc_req) :
 				      sizeof(mgmt->u.assoc_req))){
 		atbm_printk_ap( "%s:len err(%d)\n",__func__,len);
@@ -1545,12 +1545,12 @@ ieee80211_ap_sme_rx_mgmt_assoc(struct ieee80211_sub_if_data *sdata,
 	}
 	rcu_read_lock();
 	sta = sta_info_get_rx(sdata, mgmt->sa);
-	
+
 	if(sta == NULL)
 	{
 		goto mgmt_assoc_err;
 	}
-	
+
 	/*
 	*sta maybe has received the athen success frame, but
 	*we not receive the ack,so here change the sta sta;
@@ -1563,7 +1563,7 @@ ieee80211_ap_sme_rx_mgmt_assoc(struct ieee80211_sub_if_data *sdata,
 	**/
 	if(!test_sta_flag(sta,WLAN_STA_AUTHORIZED))
 		goto mgmt_assoc_err;
-	
+
 	if(test_sta_flag(sta, WLAN_STA_ASSOC_AP))
 	{
 		atbm_printk_ap( "%s:sta has connected with ap , so return err\n",__func__);
@@ -1578,7 +1578,7 @@ ieee80211_ap_sme_rx_mgmt_assoc(struct ieee80211_sub_if_data *sdata,
 	}
 	ap_ie = beacon->tail;
 	ap_ie_len = beacon->tail_len;
-	
+
 	if (reassoc) {
 		capab_info = le16_to_cpu(mgmt->u.reassoc_req.capab_info);
 		listen_interval = le16_to_cpu(mgmt->u.reassoc_req.listen_interval);
@@ -1591,12 +1591,12 @@ ieee80211_ap_sme_rx_mgmt_assoc(struct ieee80211_sub_if_data *sdata,
 		left = len - offsetof(struct atbm_ieee80211_mgmt, u.assoc_req.variable);
 		pos = mgmt->u.assoc_req.variable;
 	}
-	
+
 	resp = ieee80211_ap_sme_check_assoc_ies(sdata, sta, pos, left, reassoc,ap_ie,ap_ie_len);
 	if(resp != WLAN_STATUS_SUCCESS){
 		goto mgmt_assoc_err;
 	}
-	
+
 	if (capab_info & ATBM_WLAN_CAPABILITY_SHORT_PREAMBLE)
 		set_sta_flag(sta, WLAN_STA_SHORT_PREAMBLE);
 	else
@@ -1612,9 +1612,9 @@ ieee80211_ap_sme_rx_mgmt_assoc(struct ieee80211_sub_if_data *sdata,
 		sdata->vif.bss_conf.num_sta_no_short_slot_time++;
 		clear_sta_flag(sta, WLAN_STA_SHORT_SLOT);
 	}
-	
+
 	resp = ieee80211_ap_sme_alloc_aid(sdata,sta);
-	
+
 	if(resp == WLAN_STATUS_SUCCESS&&(sta->associate_ie == NULL))
 	{
 		sta->associate_ie = atbm_kmalloc(left,GFP_KERNEL);
@@ -1633,7 +1633,7 @@ mgmt_assoc_err:
 	return RX_MGMT_REP_ASSOC_SEND;
 }
 static void ieee80211_ap_sme_assoc_resp(struct ieee80211_sub_if_data *sdata,
-			 u16 aid, u16 capab_info,u8 *extra, size_t extra_len, 
+			 u16 aid, u16 capab_info,u8 *extra, size_t extra_len,
 			 const u8 *da,u8 reassoc,u16 status)
 {
 	struct atbm_ieee80211_mgmt *reply;
@@ -1661,7 +1661,7 @@ static void ieee80211_ap_sme_assoc_resp(struct ieee80211_sub_if_data *sdata,
 
 	if (extra)
 		memcpy(atbm_skb_put(assoc_skb, extra_len), extra, extra_len);
- 
+
  	atbm_printk_ap( "%s %d aid =%d,capab_info %d\n",__func__,__LINE__,aid,capab_info);
 	IEEE80211_SKB_CB(assoc_skb)->flags |= IEEE80211_TX_INTFL_DONT_ENCRYPT;
 	IEEE80211_SKB_CB(assoc_skb)->flags |= IEEE80211_TX_AP_HANDLE_STATUS;
@@ -1680,10 +1680,10 @@ static void ieee80211_ap_sme_tx_mgmt_assoc_resp(struct ieee80211_sub_if_data *sd
 	u8* rep_ie = NULL;
 	size_t rep_ie_len = 0;
 	u16 capab_info = 0;
-	
+
 	rcu_read_lock();
 	sta = sta_info_get_rx(sdata, mgmt->sa);
-	
+
 	if(sta == NULL)
 	{
 		goto tx_mgmt_assoc_err;
@@ -1703,7 +1703,7 @@ static void ieee80211_ap_sme_tx_mgmt_assoc_resp(struct ieee80211_sub_if_data *sd
 		atbm_printk_ap( "%s:rep_ie == NULL\n",__func__);
 		goto tx_mgmt_assoc_err;
 	}
-	
+
 	if (sdata->vif.bss_conf.privacy)
 		capab_info |= ATBM_WLAN_CAPABILITY_PRIVACY;
 	if(sdata->vif.bss_conf.use_short_preamble&&
@@ -1721,7 +1721,7 @@ static void ieee80211_ap_sme_tx_mgmt_assoc_resp(struct ieee80211_sub_if_data *sd
 		struct associate_data *assoc_ie;
 		/*
 		*add assoc resp ie as follow
-		*support rate ie 
+		*support rate ie
 		*externd rate ie
 		*ht cap ie
 		*ht info ie
@@ -1762,15 +1762,15 @@ static void ieee80211_ap_sme_tx_mgmt_assoc_resp(struct ieee80211_sub_if_data *sd
 	{
 		atbm_printk_ap( "%s:beacon==NULL\n",__func__);
 	}
-	
+
 	atbm_printk_ap( "%s:sta(%pM),aid(%d),cap(%x),req_ie(%x),rep_ie_len(%d),status(%d)\n",__func__,
 		mgmt->sa,sta->sta.aid,capab_info,(int)rep_ie,rep_ie_len,status);
 	if(status == WLAN_STATUS_SUCCESS)
 		set_sta_flag(sta, WLAN_STA_ASSOC);
 	ieee80211_ap_sme_assoc_resp(sdata,sta->sta.aid,capab_info,rep_ie,
 		rep_ie_len,mgmt->sa,reassoc,status);
-	
-tx_mgmt_assoc_err:	
+
+tx_mgmt_assoc_err:
 	rcu_read_unlock();
 	atbm_dev_kfree_skb(skb);
 	if(rep_ie)
@@ -1786,7 +1786,7 @@ static void ieee80211_ap_sme_tx_mgmt_assoc_status(struct ieee80211_sub_if_data *
 	struct ieee80211_local *local = sdata->local;
 	struct sta_info *sta = NULL;
 	u16 status_code;
-	
+
 	rcu_read_lock();
 	sta = sta_info_get_rx(sdata, mgmt->da);
 	if(sta == NULL)
@@ -1857,10 +1857,10 @@ ieee80211_ap_sme_rx_mgmt_disassoc(struct ieee80211_sub_if_data *sdata,
 	__le16 reason_code = 0;
 	struct sta_info *sta = NULL;
 	bool assoced = false;
-	
+
 	if (len < 24 + 2)
 		return RX_MGMT_NONE;
-	
+
 	rcu_read_lock();
 	sta = sta_info_get_rx(sdata, mgmt->sa);
 	if(sta == NULL)
@@ -1900,7 +1900,7 @@ ieee80211_ap_sme_rx_mgmt_disassoc(struct ieee80211_sub_if_data *sdata,
 	reason_code = le16_to_cpu(mgmt->u.disassoc.reason_code);
 	atbm_printk_ap( "rx_mgmt_disassoc sa(%pM),reason_code(%d)\n",mgmt->sa,reason_code);
 	rcu_read_unlock();
-	ieee80211_ap_sme_queue_event(sdata,(assoced == true) ? 
+	ieee80211_ap_sme_queue_event(sdata,(assoced == true) ?
 		STA_EVENT__DEAUTHEN:STA_EVENT__FREE,mgmt->sa);
 rx_mgmt_disassoc_err:
 	return RX_MGMT_NONE;
@@ -1912,7 +1912,7 @@ static void ieee80211_ap_sme_deauthen_and_disassoc_send_status(
 	struct atbm_ieee80211_mgmt *mgmt = (void *)skb->data;
 	bool unlock = false;
 	bool is_wps = false;
-	
+
 	rcu_read_lock();
 	sta = sta_info_get_rx(sdata, mgmt->da);
 	if(sta == NULL){
@@ -1920,21 +1920,21 @@ static void ieee80211_ap_sme_deauthen_and_disassoc_send_status(
 		atbm_printk_ap( "%s:sta == NULL\n",__func__);
 		goto status_err;
 	}
-	
+
 	atbm_printk_ap( "%s:sta(%pM) rx deauthen or disassoc status\n",__func__,mgmt->da);
 
 	ATBM_AP_SME_CLAER_STA_ASSOC_INFO(sta);
 	if(test_sta_flag(sta,WLAN_STA_DEAUTHENNING)){
 //		set_sta_flag(sta,WLAN_STA_DEAUTHENED);
-		clear_sta_flag(sta,WLAN_STA_DEAUTHENNING);				
+		clear_sta_flag(sta,WLAN_STA_DEAUTHENNING);
 		unlock = true;
 	}
 	is_wps = test_sta_flag(sta,WLAN_STA_WPS)?true:false;
 	rcu_read_unlock();
-	
+
 	if(unlock == true)
 		ieee80211_ap_sme_sta_sync_unlock(sdata);
-	
+
 	if(is_wps == false)
 		ieee80211_ap_sme_queue_event(sdata,STA_EVENT__FREE,mgmt->da);
 status_err:
@@ -1948,12 +1948,12 @@ static void ieee80211_ap_sme_work(struct atbm_work_struct *work)
 	enum ap_sme_rx_mgmt_action rma = RX_MGMT_NONE;
 	u16 status = WLAN_STATUS_UNSPECIFIED_FAILURE;
 	u8 reassoc = 0;
-	
+
 	if (!ieee80211_sdata_running(sdata)){
 		atbm_printk_ap( "%s:sdata not running\n",__func__);
 		return;
 	}
-	
+
 	mutex_lock(&sdata->ap_sme_mlme_lock);
 	while ((skb = atbm_skb_dequeue(&sdata->ap_sme_skb_queue))) {
 		struct atbm_ieee80211_mgmt *mgmt = (void *)skb->data;
@@ -1972,7 +1972,7 @@ static void ieee80211_ap_sme_work(struct atbm_work_struct *work)
 				rma = ieee80211_ap_sme_rx_mgmt_assoc(sdata,mgmt,skb->len,rx_status,reassoc,&status);
 				break;
 			case IEEE80211_STYPE_REASSOC_REQ:
-				reassoc = 1;				
+				reassoc = 1;
 				rma = ieee80211_ap_sme_rx_mgmt_assoc(sdata,mgmt,skb->len,rx_status,reassoc,&status);
 				break;
 			case IEEE80211_STYPE_DISASSOC:
@@ -2048,7 +2048,7 @@ static void ieee80211_ap_sme_event_work(struct atbm_work_struct *work)
 	struct ieee80211_local *local = sdata->local;
 	struct ap_sme_event *event = NULL;
 	struct sta_info * sta = NULL;
-	
+
 	if (!ieee80211_sdata_running(sdata)){
 		atbm_printk_ap( "%s:sdata not running\n",__func__);
 		return;
@@ -2060,7 +2060,7 @@ static void ieee80211_ap_sme_event_work(struct atbm_work_struct *work)
 			{
 				struct station_info sinfo;
 				u8* associate_ie = NULL;
-				
+
 				rcu_read_lock();
 				sta = sta_info_get_rx(sdata, event->sta_addr);
 				if((sta == NULL)||(sta->associate_ie_len == 0)||(sta->associate_ie == NULL)){

@@ -59,15 +59,15 @@
 
 #define PHY_RDT_NRGAINIMB           (0x00080234 + PHY_RDT_BASE_ADDR) // Receive I/Q Update Gain Imbalance Register AC80234[9:0]
 #define PHY_RDT_NRPHASEIMB          (0x00080234 + PHY_RDT_BASE_ADDR) // Receive I/Q Update Phase Imbalance Register  AC80234[19:10]
-#define PHY_RDT_NRAGCGAIN_BASE_ADDR 	(0x00080800 + PHY_RDT_BASE_ADDR) // Receive AGC Gains Lookup Table  
+#define PHY_RDT_NRAGCGAIN_BASE_ADDR 	(0x00080800 + PHY_RDT_BASE_ADDR) // Receive AGC Gains Lookup Table
 
 /*如果使用table中的配置的mode.
 需要配置force_response_mode[6:2]相应bit为1’h1
-0 GF_MODE             
-1:MM_MODE             
-2: LEG_MODE             
-3: DSSS_LONG             
-4: DSSS_SHORT*/  
+0 GF_MODE
+1:MM_MODE
+2: LEG_MODE
+3: DSSS_LONG
+4: DSSS_SHORT*/
 #define PHY_FORCE_RESPONSE_MODE      (0x9c00820)
 
 //for athenaB
@@ -354,14 +354,14 @@
 #define PHY_RFIP_TX_LDO_ON1_PSM							(RFIP_BASE_ADDR+PHY_RFIP_TX_LDO_ON1_PSM_OFFSET	)
 #define PHY_RFIP_TX_BIAS_ON0_PSM						(RFIP_BASE_ADDR+PHY_RFIP_TX_BIAS_ON0_PSM_OFFSET	)
 #define PHY_RFIP_TX_BIAS_ON1_PSM						(RFIP_BASE_ADDR+PHY_RFIP_TX_BIAS_ON1_PSM_OFFSET	)
-#define PHY_RFIP_TX_ANA_ON0_PSM 						(RFIP_BASE_ADDR+PHY_RFIP_TX_ANA_ON0_PSM_OFFSET 	)                                                        
-#define PHY_RFIP_TX_ANA_ON1_PSM 						(RFIP_BASE_ADDR+PHY_RFIP_TX_ANA_ON1_PSM_OFFSET 	)                                                        
-#define PHY_RFIP_TX_LDO_LQ0_PSM 						(RFIP_BASE_ADDR+PHY_RFIP_TX_LDO_LQ0_PSM_OFFSET	)                                                        
-#define PHY_RFIP_TX_LDO_LQ1_PSM 						(RFIP_BASE_ADDR+PHY_RFIP_TX_LDO_LQ1_PSM_OFFSET	)                                                        
-#define PHY_RFIP_TX_ACTIVE0_PSM						  (RFIP_BASE_ADDR+PHY_RFIP_TX_ACTIVE0_PSM_OFFSET	)                                                        
-#define PHY_RFIP_TX_ACTIVE1_PSM						  (RFIP_BASE_ADDR+PHY_RFIP_TX_ACTIVE1_PSM_OFFSET	)                                                        
-#define PHY_RFIP_TX_RF_OFF0_PSM					    (RFIP_BASE_ADDR+PHY_RFIP_TX_RF_OFF0_PSM_OFFSET	)                                                        
-#define PHY_RFIP_TX_RF_OFF1_PSM					    (RFIP_BASE_ADDR+PHY_RFIP_TX_RF_OFF1_PSM_OFFSET	)    
+#define PHY_RFIP_TX_ANA_ON0_PSM 						(RFIP_BASE_ADDR+PHY_RFIP_TX_ANA_ON0_PSM_OFFSET 	)
+#define PHY_RFIP_TX_ANA_ON1_PSM 						(RFIP_BASE_ADDR+PHY_RFIP_TX_ANA_ON1_PSM_OFFSET 	)
+#define PHY_RFIP_TX_LDO_LQ0_PSM 						(RFIP_BASE_ADDR+PHY_RFIP_TX_LDO_LQ0_PSM_OFFSET	)
+#define PHY_RFIP_TX_LDO_LQ1_PSM 						(RFIP_BASE_ADDR+PHY_RFIP_TX_LDO_LQ1_PSM_OFFSET	)
+#define PHY_RFIP_TX_ACTIVE0_PSM						  (RFIP_BASE_ADDR+PHY_RFIP_TX_ACTIVE0_PSM_OFFSET	)
+#define PHY_RFIP_TX_ACTIVE1_PSM						  (RFIP_BASE_ADDR+PHY_RFIP_TX_ACTIVE1_PSM_OFFSET	)
+#define PHY_RFIP_TX_RF_OFF0_PSM					    (RFIP_BASE_ADDR+PHY_RFIP_TX_RF_OFF0_PSM_OFFSET	)
+#define PHY_RFIP_TX_RF_OFF1_PSM					    (RFIP_BASE_ADDR+PHY_RFIP_TX_RF_OFF1_PSM_OFFSET	)
 
 
 #define PHY_RFIP_RXLO_PUP_DOWN_DELAY0					  (RFIP_BASE_ADDR+0x218)
@@ -4288,11 +4288,11 @@
 
 #define PHY_RIALCCTL_HB_PDET_CD_POS                       		 	 16
 #define PHY_RIALCCTL_HB_PDET_CD_LEN									 2
-#define PHY_RIALCCTL_HB_PDET_CD_MSK									 0x30000	
+#define PHY_RIALCCTL_HB_PDET_CD_MSK									 0x30000
 
 #define PHY_RIALCCTL_LB_PDET_CD_POS                            		18
 #define PHY_RIALCCTL_LB_PDET_CD_LEN									2
-#define PHY_RIALCCTL_LB_PDET_CD_MSK									0xC0000	
+#define PHY_RIALCCTL_LB_PDET_CD_MSK									0xC0000
 
 #define PHY_RIALCCTL_VBAT_CD_POS                                	20
 #define PHY_RIALCCTL_VBAT_CD_LEN									2

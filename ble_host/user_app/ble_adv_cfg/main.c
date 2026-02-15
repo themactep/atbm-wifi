@@ -93,14 +93,14 @@ void nimble_port_init(void)
 
 	iot_printf("nimble_port_init++\n");
     ble_npl_eventq_init(&g_eventq_dflt);
-	
+
 	//
     ble_hs_init();
 
     /* XXX Need to have template for store */
 	//start ioctl to wifi driver
 	ble_hci_ram_init();
-	
+
 }
 
 void nimble_port_release(void)

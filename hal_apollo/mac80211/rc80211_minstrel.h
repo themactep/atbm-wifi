@@ -10,7 +10,7 @@
 
 
 #ifdef MINSTREL_RSSI_USED
-//#define MINSTREL_PHY_DEBUG_PRINT 
+//#define MINSTREL_PHY_DEBUG_PRINT
 #endif
 struct minstrel_rate {
 	int bitrate;
@@ -78,10 +78,10 @@ struct minstrel_sta_info {
 	struct minstrel_rate *r;
 	bool prev_sample;
 #ifdef  MINSTREL_RSSI_USED
-	int mean_rssi; //add rx rssi 
+	int mean_rssi; //add rx rssi
 	int max_rssi;
 	int min_rssi;
-	int total_rssi; //add rx rssi 
+	int total_rssi; //add rx rssi
 	int rssi_count;
         int table_flag;
         int table_count;

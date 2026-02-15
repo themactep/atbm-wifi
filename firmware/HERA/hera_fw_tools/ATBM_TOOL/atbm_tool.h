@@ -111,7 +111,7 @@ struct bss_info{
 
 	struct cfg80211_rate rate;
 
-	void *rc_priv;	
+	void *rc_priv;
 }__packed;
 
 struct HostConnectEvent{
@@ -119,7 +119,7 @@ struct HostConnectEvent{
 	u8 ssidlen;
 	u8 bssid[6];
 	u8 crypto_pairwise;
-	
+
 	u8 crypto_group;
 	u8 keymgmt;
 	u8 bgnMode;//11B bit0,11G bit 1; 11n bit2
@@ -146,7 +146,7 @@ struct status_info{
 	u32 NumOfHwXmitedAddr;
 	u32 firmwareVersion;
 	u32 firmwareCap;
-	
+
 	struct HostConnectEvent con_event;
 	struct bss_info bss;
 }__packed;
@@ -363,7 +363,7 @@ struct check_alive_req{
 	u32 status;
 	u32 alive_notify;//host to 6441--1212, 6441 to host--2121
 	u32 period; //unit s
-	u32 tmo_cnt;	
+	u32 tmo_cnt;
 };
 
 struct status_async{

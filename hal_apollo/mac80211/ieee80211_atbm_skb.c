@@ -78,13 +78,13 @@ static ssize_t atbm_skb_show(struct kobject *kobj,
 	struct hlist_node *node_temp;
 	struct ieee8211_atbm_skb_node *skb_node;
 	int hash_index = 0;
-	
+
 	skb_show.show_buff = buf;
 	skb_show.show_count = 0;
 	skb_show.show_size = ATBM_SKB_SHOW_BUFF_MAX_SIZE;
 
 	spin_lock_irqsave(&ieee80211_atbm_skb_spin_lock, flags);
-	
+
 	for(hash_index = 0;hash_index<ATBM_SKB_HASHENTRIES;hash_index++){
 		hlist = &atbm_skb_hlist[hash_index];
 		hlist_for_each_safe(node,node_temp,hlist){
@@ -157,13 +157,13 @@ static void ieee80211_atbm_skb_hash_insert(struct sk_buff *skb,const char *func)
 	struct ieee8211_atbm_skb_node *skb_node;
 	struct ieee8211_atbm_skb_node *skb_node_target = NULL;
 	unsigned long flags;
-	
+
 	hash_index = atbm_hash_index((u8*)(&skb),sizeof(struct sk_buff *),ATBM_SKB_HASHBITS);
 
 	hlist = &atbm_skb_hlist[hash_index];
-	
+
 	spin_lock_irqsave(&ieee80211_atbm_skb_spin_lock, flags);
-	
+
 	hlist_for_each(node,hlist){
 		skb_node = hlist_entry(node,struct ieee8211_atbm_skb_node,hnode);
 		if (skb_node->skb == skb){
@@ -171,9 +171,9 @@ static void ieee80211_atbm_skb_hash_insert(struct sk_buff *skb,const char *func)
 			break;
 		}
 	}
-	
+
 	if(skb_node_target == NULL){
-		
+
 		skb_node_target = atbm_kzalloc(sizeof(struct ieee8211_atbm_skb_node),GFP_ATOMIC);
 
 		if(skb_node_target == NULL){
@@ -195,13 +195,13 @@ static void ieee80211_atbm_skb_hash_drow(struct sk_buff *skb)
 	struct ieee8211_atbm_skb_node *skb_node;
 	struct ieee8211_atbm_skb_node *skb_node_target = NULL;
 	unsigned long flags;
-	
+
 	hash_index = atbm_hash_index((u8*)(&skb),sizeof(struct sk_buff *),ATBM_SKB_HASHBITS);
 
 	hlist = &atbm_skb_hlist[hash_index];
-	
+
 	spin_lock_irqsave(&ieee80211_atbm_skb_spin_lock, flags);
-	
+
 	hlist_for_each(node,hlist){
 		skb_node = hlist_entry(node,struct ieee8211_atbm_skb_node,hnode);
 		if (skb_node->skb == skb){
@@ -209,7 +209,7 @@ static void ieee80211_atbm_skb_hash_drow(struct sk_buff *skb)
 			break;
 		}
 	}
-	
+
 	if(skb_node_target){
 		hlist_del(&skb_node_target->hnode);
 		atbm_kfree(skb_node_target);
@@ -230,14 +230,14 @@ void ieee80211_atbm_rx_debug_setflag(struct sk_buff *skb,u32 flags)
 
 void ieee80211_atbm_rx_debug_setflag2(struct sk_buff *skb,u16 fc)
 {
-	
+
 }
 
 
 struct sk_buff *__ieee80211_atbm_dev_alloc_skb(unsigned int length,gfp_t gfp_mask,const char *func)
 {
 	struct sk_buff * atbm_skb = NULL;
-	
+
 	atbm_skb = __dev_alloc_skb(length,gfp_mask);
 
 	if(atbm_skb == NULL){
@@ -250,13 +250,13 @@ struct sk_buff *__ieee80211_atbm_dev_alloc_skb(unsigned int length,gfp_t gfp_mas
 struct sk_buff *ieee80211_atbm_dev_alloc_skb(unsigned int length,const char *func)
 {
 	struct sk_buff * atbm_skb = NULL;
-	
+
 	atbm_skb = dev_alloc_skb(length);
 
 	if(atbm_skb == NULL){
 		return atbm_skb;
 	}
-	
+
 	ieee80211_atbm_skb_hash_insert(atbm_skb,func);
 	return atbm_skb;
 }
@@ -278,7 +278,7 @@ void ieee80211_atbm_dev_kfree_skb_any(struct sk_buff *skb)
 }
 
 void ieee80211_atbm_dev_kfree_skb(struct sk_buff *skb)
-{	
+{
 	if(!skb){
 		return;
 	}
@@ -392,14 +392,14 @@ void __ieee80211_atbm_skb_queue_head(struct sk_buff_head *list,
 struct sk_buff *ieee80211_atbm_skb_copy(const struct sk_buff *skb, gfp_t gfp_mask,const char *func)
 {
 	struct sk_buff *new_skb = NULL;
-	
+
 	new_skb = skb_copy(skb,gfp_mask);
 
 	if(new_skb)
 		ieee80211_atbm_skb_hash_insert(new_skb,func);
 
 	return new_skb;
-	
+
 }
 unsigned char *ieee80211_atbm_skb_pull(struct sk_buff *skb, unsigned int len)
 {
@@ -415,7 +415,7 @@ unsigned char *ieee80211_atbm_skb_push(struct sk_buff *skb, unsigned int len)
 int ieee80211_atbm_dev_queue_xmit(struct sk_buff *skb)
 {
 	ieee80211_atbm_skb_hash_drow(skb);
-		
+
 	return dev_queue_xmit(skb);
 }
 
@@ -494,7 +494,7 @@ struct sk_buff *ieee80211_atbm_skb_copy_expand(const struct sk_buff *skb,
 				gfp_t gfp_mask,const char *func)
 {
 	struct sk_buff *skb_copy = NULL;
-	
+
 	skb_copy = skb_copy_expand(skb,newheadroom,newtailroom,gfp_mask);
 
 	if(skb_copy){
@@ -502,7 +502,7 @@ struct sk_buff *ieee80211_atbm_skb_copy_expand(const struct sk_buff *skb,
 	}
 
 	return skb_copy;
-	
+
 }
 int ieee80211_atbm_skb_cloned(const struct sk_buff *skb)
 {
@@ -514,19 +514,19 @@ struct sk_buff *ieee80211_atbm_skb_clone(struct sk_buff *skb, gfp_t gfp_mask,con
 
 	cloned_skb = skb_clone(skb,gfp_mask);
 
-	if(cloned_skb){		
+	if(cloned_skb){
 		ieee80211_atbm_skb_hash_insert(cloned_skb,func);
 	}
 
 	return cloned_skb;
 }
 int ieee80211_atbm_netif_rx(struct sk_buff *skb)
-{	
+{
 	ieee80211_atbm_skb_hash_drow(skb);
 	return netif_rx(skb);
 }
 int ieee80211_atbm_netif_receive_skb(struct sk_buff *skb)
-{	
+{
 	ieee80211_atbm_skb_hash_drow(skb);
 	return netif_receive_skb(skb);
 }

@@ -152,7 +152,7 @@ static int secure_beacon_send(void)
          * succeeds to send Secure Network Beacon with GATT bearer,
          * here we will continue to send Secure Network Beacon of
          * other subnets.
-         */			
+         */
 #if MYNEWT_VAL(BLE_MESH_GATT_PROXY_CLIENT)
 				if (bt_mesh_proxy_client_beacon_send(sub)) {
 					continue;
@@ -269,7 +269,7 @@ static void beacon_send(struct ble_npl_event *work)
 
 	BT_DBG("");
 #if MYNEWT_VAL(BLE_MESH_PROVISIONER)
-	if (bt_mesh_is_provisioned()|| bt_mesh_is_provisioner_en()) 
+	if (bt_mesh_is_provisioned()|| bt_mesh_is_provisioner_en())
 #else
     if (bt_mesh_is_provisioned())
 #endif
@@ -420,15 +420,15 @@ void bt_mesh_beacon_ivu_initiator(bool enable)
 
 void bt_mesh_beacon_enable(void)
 {
-	int i; 
+	int i;
 	int array_size;
 	struct bt_mesh_subnet *sub;
-    
+
 	if (!bt_mesh_is_provisioned() && !MYNEWT_VAL(BLE_MESH_PROVISIONER)) {
 		k_work_submit(&beacon_timer.work);
 		return;
 	}
-    
+
 #if MYNEWT_VAL(BLE_MESH_PROVISIONER)
 		if (bt_mesh_is_provisioner_en()) {
 			array_size = ARRAY_SIZE(bt_mesh.p_sub);

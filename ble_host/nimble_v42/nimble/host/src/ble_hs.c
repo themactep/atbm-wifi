@@ -473,7 +473,7 @@ ble_hs_timer_sched(int32_t ticks_from_now)
     if (!ble_npl_callout_is_active(&ble_hs_timer) ||
             ((ble_npl_stime_t)(abs_time -
                                ble_npl_callout_get_ticks(&ble_hs_timer))) < 0) {
-  
+
         ble_hs_timer_reset(ticks_from_now);
     }
 }
@@ -818,7 +818,7 @@ SRAM_CODE int ble_hs_dtm_end(void)
 	rc = ble_hs_hci_cmd_tx(BLE_HCI_OP(BLE_HCI_OGF_LE, BLE_HCI_OCF_LE_TEST_END),
                             NULL, 0, rspbuf, 2, &rsplen);
 
-							
+
 	if(rc == 0){
 		iot_printf(" \r\n HCI_LE_Test_End SUCCEED\r\n");
 		return (rspbuf[1]<<8 | rspbuf[0]);
@@ -833,7 +833,7 @@ SRAM_CODE int ble_tone_tx_start(uint8_t channel, uint8_t power)
 {
 	int rc;
 	uint8_t buf[2];
-	
+
 	buf[0] = channel;
 	buf[1] = power;
 
@@ -906,13 +906,13 @@ SRAM_CODE int ble_hs_scan_set_name_filt(uint8_t name_len, uint8_t *name)
 	if(name_len > 31){
 		return -1;
 	}
-	
+
 	buf[0] = name_len;
 	memcpy(&buf[1], name, name_len);
 
     rc = ble_hs_hci_cmd_tx(BLE_HCI_OP(BLE_HCI_OGF_VENDOR, BLE_HCI_VS_SET_SCAN_NAME_FILT),
         						buf, (buf[0]+1), NULL, 0, NULL);
-	
+
 	return rc;
 }
 
@@ -994,7 +994,7 @@ ble_hs_init(void)
 #else
     ble_hs_evq_set(nimble_port_get_dflt_eventq());
 #endif
-	
+
 //    ble_npl_callout_stop(&ble_hs_timer);
 //    ble_npl_callout_init(&ble_hs_timer, ble_hs_evq, ble_hs_timer_exp, NULL);
 

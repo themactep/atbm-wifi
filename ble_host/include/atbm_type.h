@@ -3,7 +3,7 @@
  *
  * Copyright (c) 2018, altobeam.inc   All rights reserved.
  *
- *  The source code contains proprietary information of AltoBeam, and shall not be distributed, 
+ *  The source code contains proprietary information of AltoBeam, and shall not be distributed,
  *  copied, reproduced, or disclosed in whole or in part without prior written permission of AltoBeam.
 *****************************************************************************************************************/
 
@@ -29,13 +29,13 @@ typedef unsigned long long atbm_uint64;	/* Unsigned  64 bit quantity							*/
 typedef long long atbm_int64;			/* Signed    64 bit quantity							 */
 typedef void atbm_void;
 typedef atbm_uint32   ATBM_OS_CPU_SR;		/* Define size of CPU status register (PSR = 32 bits) */
-typedef atbm_int32  atbm_size_t; 
+typedef atbm_int32  atbm_size_t;
 /*ATBM_FALSE & ATBM_TRUE*/
 #define ATBM_FALSE	0
 #define ATBM_TRUE	1
 
 /*Return value defination*/
-#define WIFI_OK				0 	
+#define WIFI_OK				0
 #define WIFI_ERROR			-1
 #ifndef LINUX_OS
 #ifndef BIT

@@ -83,11 +83,11 @@ static struct task_struct *test_thread = NULL;
 
 static void atbm_workqueue_test_work(struct atbm_work_struct *work)
 {
-	
+
 }
 static void atbm_workqueue_test_delay_work(struct atbm_work_struct *work)
 {
-	
+
 }
 static void atbm_wk_test_init(struct atbm_work_struct *work)
 {
@@ -102,7 +102,7 @@ static int atbm_workqueue_test_thread(void *priv)
 	struct atbm_delayed_work delay_work;
 	struct atbm_workqueue_struct *wq = NULL;
 	bool ret = false;
-	
+
 	ieee80211_atbm_init_work(&work,atbm_workqueue_test_work,"test_work");
 	ieee80211_atbm_init_delay_work(&delay_work,atbm_workqueue_test_delay_work,"test_delay_work");
 	/*
@@ -112,15 +112,15 @@ static int atbm_workqueue_test_thread(void *priv)
 	sched_set_fifo(current);
 #else
 	sched_setscheduler(current, SCHED_FIFO, &param);
-#endif	
-	set_current_state(TASK_INTERRUPTIBLE);	
+#endif
+	set_current_state(TASK_INTERRUPTIBLE);
 	while (!kthread_should_stop()) {
 
 		set_current_state(TASK_INTERRUPTIBLE);
 		if (!kthread_should_stop())
 			schedule_timeout(2*HZ);
 		__set_current_state(TASK_RUNNING);
-		
+
 		wq = ieee80211_atbm_alloc_workqueue("wq_test",0);
 
 		if(wq == NULL){
@@ -288,12 +288,12 @@ static int atbm_workqueue_test_thread(void *priv)
 		atbm_printk_always("############################################################");
 	}
 	__set_current_state(TASK_RUNNING);
-	if(wq){	
+	if(wq){
 		ieee80211_atbm_flush_work(&work);
 		ieee80211_atbm_flush_delayed_work(&delay_work);
 		ieee80211_atbm_destroy_workqueue(wq);
 	}
-	
+
 	return 0;
 }
 static void atbm_workqueue_test_thread_int(void)
@@ -305,7 +305,7 @@ static void atbm_workqueue_test_thread_int(void)
 	}else {
 		wake_up_process(test_thread);
 	}
-	
+
 }
 
 static void atbm_workqueue_test_thread_exit(void)
@@ -366,7 +366,7 @@ static void atbm_wk_go_waiting(struct atbm_work_struct *work)
 static void atbm_wk_out_waiting(struct atbm_work_struct *work)
 {
 	wk_clear_waiting(work);
-} 
+}
 
 static void atbm_wk_go_barrier(struct atbm_work_struct *work)
 {
@@ -379,7 +379,7 @@ static void atbm_wk_out_barrier(struct atbm_work_struct *work)
 		wk_clear_barrier(work);
 		wake_up(&work->barrier);
 	}
-} 
+}
 
 static int atbm_wk_in_runing(struct atbm_work_struct *work)
 {
@@ -406,7 +406,7 @@ static int atbm_wk_in_barrier(struct atbm_work_struct *work)
 }
 static int atbm_workqueue_wait_action(struct atbm_workqueue_struct *wq)
 {
-	set_current_state(TASK_INTERRUPTIBLE);	
+	set_current_state(TASK_INTERRUPTIBLE);
 	while (!kthread_should_stop()) {
 
 		if (test_and_clear_bit(WQ_THREAD_WAKEUP,
@@ -418,7 +418,7 @@ static int atbm_workqueue_wait_action(struct atbm_workqueue_struct *wq)
 		if (!kthread_should_stop())
 			schedule_timeout(20*HZ);
 		set_current_state(TASK_INTERRUPTIBLE);
-		
+
 	}
 	__set_current_state(TASK_RUNNING);
 	return -1;
@@ -432,7 +432,7 @@ static void atbm_workqueue_process_works(struct atbm_workqueue_struct *wq)
 	spin_lock_irqsave(&wq->lock, flags);
 	while(!list_empty(&wq->works)){
 		work = list_first_entry(&wq->works, struct atbm_work_struct,entry);
-		WARN_ON(work == NULL);		
+		WARN_ON(work == NULL);
 		list_del(&work->entry);
 		atbm_wk_out_pending(work);
 		atbm_wk_go_running(work);
@@ -455,14 +455,14 @@ static int atbm_workqueue_thread(void *priv)
 {
 	struct atbm_workqueue_struct *wq = (struct atbm_workqueue_struct *)priv;
 	struct sched_param param = { .sched_priority = WQ_THREAD_PR };
-	
+
 	atbm_printk_init("%s\n",wq->name);
 #if (LINUX_VERSION_CODE > KERNEL_VERSION(5, 9, 0))
         sched_set_fifo(current);
 #else
         sched_setscheduler(current, SCHED_FIFO, &param);
 #endif
-	
+
 	while(!atbm_workqueue_wait_action(wq)){
 		atbm_workqueue_process_works(wq);
 	};
@@ -473,7 +473,7 @@ static int atbm_workqueue_thread(void *priv)
 static void ieee80211_atbm_wait_work(struct atbm_work_struct *work)
 {
 	struct work_wait *wait = container_of(work, struct work_wait, work);
-	
+
 	atbm_printk_debug("%s:wait done\n",work->name);
 }
 static void atbm_workqueue_wakeup(struct atbm_workqueue_struct *wq,struct task_struct	*work_thread)
@@ -487,9 +487,9 @@ static bool _ieee80211_atbm_queue_work(struct atbm_workqueue_struct *wq,struct a
 	unsigned long flags=0;
 	bool ret = false;
 	struct task_struct *thread = NULL;
-	
+
 	work->wq = wq;
-	
+
 	spin_lock_irqsave(&wq->lock, flags);
 	thread = wq->work_thread;
 	if(thread){
@@ -556,7 +556,7 @@ static void atbm_waitwk_insert(struct work_wait *wait,struct list_head *head,boo
 {
 	atbm_wk_go_barrier(&wait->work);
 	atbm_wk_go_pending(&wait->work);
-	
+
 	if(tail == true){
 		list_add_tail(&wait->work.entry, head);
 	}else {
@@ -593,7 +593,7 @@ struct atbm_workqueue_struct  *ieee80211_atbm_alloc_workqueue(const char *name,l
 
 	if(wq == NULL)
 		goto err;
-	
+
 	INIT_LIST_HEAD(&wq->works);
 	INIT_LIST_HEAD(&wq->flush_works);
 	INIT_LIST_HEAD(&wq->delay_works);
@@ -637,17 +637,17 @@ void ieee80211_atbm_workqueue_exit(void)
 }
 bool ieee80211_atbm_queue_work(struct atbm_workqueue_struct *wq,struct atbm_work_struct *work)
 {
-	
+
 	unsigned long flags=0;
 	bool ret = false;
-	
+
 	spin_lock_irqsave(&work->lock, flags);
 	if (!atbm_wk_in_pending(work)) {
 		atbm_wk_go_pending(work);
 		ret = _ieee80211_atbm_queue_work(wq,work);
 	}
 	spin_unlock_irqrestore(&work->lock, flags);
-	
+
 	return ret;
 }
 static bool _ieee80211_atbm_queue_delayed_work(struct atbm_workqueue_struct *wq,struct atbm_delayed_work *dwork, unsigned long delay)
@@ -656,7 +656,7 @@ static bool _ieee80211_atbm_queue_delayed_work(struct atbm_workqueue_struct *wq,
 	bool ret = false;
 	struct task_struct *thread = NULL;
 	struct atbm_timer_list *timer = &dwork->timer;
-	
+
 	spin_lock_irqsave(&wq->lock, flags);
 	thread = wq->work_thread;
 	if(thread){
@@ -679,7 +679,7 @@ bool ieee80211_atbm_queue_delayed_work(struct atbm_workqueue_struct *wq,struct a
 {
 	unsigned long flags=0;
 	bool ret = false;
-	
+
 	spin_lock_irqsave(&dwork->work.lock, flags);
 	if (!atbm_wk_in_pending(&dwork->work)) {
 		if (!delay) {
@@ -712,11 +712,11 @@ void ieee80211_atbm_flush_workqueue(struct atbm_workqueue_struct *wq)
 {
 	struct work_wait wait;
 	unsigned long flags;
-	
+
 	spin_lock_irqsave(&wq->lock, flags);
 	atbm_printk_debug("[flush wq]->[%s] in\n",wq->name);
 	atbm_waitwk_init(&wait,"flush");
-	
+
 	if(wq->work_thread == NULL){
 		spin_unlock_irqrestore(&wq->lock, flags);
 		return;
@@ -725,7 +725,7 @@ void ieee80211_atbm_flush_workqueue(struct atbm_workqueue_struct *wq)
 	atbm_workqueue_wakeup(wq,wq->work_thread);
 	spin_unlock_irqrestore(&wq->lock, flags);
 	atbm_waitwk_work_for_done(&wait);
-	
+
 	atbm_printk_debug("[flush wq]->[%s] out\n",wq->name);
 }
 
@@ -736,16 +736,16 @@ void ieee80211_atbm_destroy_workqueue(struct atbm_workqueue_struct *wq)
 	struct task_struct	*work_thread = NULL;
 
 	atbm_waitwk_init(&wait,"destroy");
-	
+
 	if(wq == NULL)
 		return;
-	
+
 	atbm_printk_debug("[destroy wq]->[%s] in\n",wq->name);
 	spin_lock_irqsave(&wq->lock, flags);
 	do{
 		work_thread = wq->work_thread;
 		wq->work_thread = NULL;
-		
+
 		if(work_thread == NULL)
 			break;
 		while(!list_empty(&wq->delay_works)){
@@ -762,11 +762,11 @@ void ieee80211_atbm_destroy_workqueue(struct atbm_workqueue_struct *wq)
 		atbm_waitwk_insert(&wait,&wq->works,true);
 		atbm_workqueue_wakeup(wq,work_thread);
 		spin_unlock_irqrestore(&wq->lock, flags);
-		
+
 		atbm_waitwk_work_for_done(&wait);
-		
+
 		spin_lock_irqsave(&wq->lock, flags);
-		
+
 	}while(0);
 	spin_unlock_irqrestore(&wq->lock, flags);
 
@@ -793,9 +793,9 @@ bool ieee80211_atbm_flush_delayed_work(struct atbm_delayed_work *dwork)
 	bool tail = false;
 
 	atbm_waitwk_init(&wait,dwork->work.name);
-	
+
 	spin_lock_irqsave(&work->lock, flags1);
-	
+
 	if (likely(atbm_del_timer(&dwork->timer))){
 		BUG_ON(dwork->wq == NULL);
 		dwork->n_timeout ++;
@@ -815,14 +815,14 @@ bool ieee80211_atbm_flush_delayed_work(struct atbm_delayed_work *dwork)
 		atbm_printk_debug("[flush_delayed_work]->[%s] wait timeout\n",work->name);
 		spin_unlock_irqrestore(&work->lock, flags1);
 		wait_event_interruptible(work->timeout,atbm_wk_in_waiting(work) == 0);
-		spin_lock_irqsave(&work->lock, flags1);	
+		spin_lock_irqsave(&work->lock, flags1);
 	}
-	
+
 	if((wq = dwork->wq )== NULL){
 		ret = false;
 		goto w_lock;
 	}
-	
+
 	spin_lock_irqsave(&wq->lock, flags2);
 
 	if(!wk_is_busy(work)){
@@ -836,9 +836,9 @@ bool ieee80211_atbm_flush_delayed_work(struct atbm_delayed_work *dwork)
 	}else if(atbm_wk_in_runing(work)){
 		head = &wq->works;
 	    tail = false;
-	}else 
+	}else
 		BUG_ON(1);
-	
+
 	if(wq->work_thread){
 		atbm_waitwk_insert(&wait,head,tail);
 		atbm_workqueue_wakeup(wq,wq->work_thread);
@@ -875,17 +875,17 @@ bool ieee80211_atbm_cancel_delayed_work_sync(struct atbm_delayed_work *dwork)
 	struct list_head *head = NULL;
 
 	atbm_waitwk_init(&wait,work->name);
-	
+
 	atbm_printk_debug("[cancel_delayed sync]->[%s] in\n",work->name);
 
-	spin_lock_irqsave(&work->lock, flags1);	
-	
+	spin_lock_irqsave(&work->lock, flags1);
+
 	if (likely(atbm_del_timer(&dwork->timer))){
 		atbm_printk_debug("[cancel_delayed sync]->[%s] success\n",work->name);
 		ret = true;
 		dwork->n_timeout ++;
 		BUG_ON(dwork->wq == NULL);
-		_ieee80211_atbm_clear_delay_work(dwork->wq,&dwork->work);	
+		_ieee80211_atbm_clear_delay_work(dwork->wq,&dwork->work);
 	}else if(atbm_wk_in_delayed(work)){
 		/*
 		*timer is time out ,wait runing timer;
@@ -894,14 +894,14 @@ bool ieee80211_atbm_cancel_delayed_work_sync(struct atbm_delayed_work *dwork)
 		atbm_printk_always("[cancel_delayed sync]->[%s] wait timeout\n",work->name);
 		spin_unlock_irqrestore(&work->lock, flags1);
 		wait_event_interruptible(work->timeout,atbm_wk_in_waiting(work) == 0);
-		spin_lock_irqsave(&work->lock, flags1);	
+		spin_lock_irqsave(&work->lock, flags1);
 		ret = true;
 	}
-	
+
 	if((wq = dwork->wq) == NULL){
 		goto w_lock;
 	}
-	
+
 	spin_lock_irqsave(&wq->lock, flags2);
 
 	if(atbm_wk_in_pending(work)){
@@ -941,11 +941,11 @@ bool ieee80211_atbm_cancel_delayed_work(struct atbm_delayed_work *dwork)
 	struct atbm_workqueue_struct *wq;
 	struct atbm_work_struct *work = &dwork->work;
 	bool ret = false;
-	
+
 	spin_lock_irqsave(&work->lock, flags1);
-	
+
 	atbm_printk_debug("[cancel_delayed]->[%s] in\n",work->name);
-	
+
 	if (likely(atbm_del_timer(&dwork->timer))){
 		BUG_ON(dwork->wq == NULL);
 		dwork->n_timeout ++;
@@ -953,19 +953,19 @@ bool ieee80211_atbm_cancel_delayed_work(struct atbm_delayed_work *dwork)
 		atbm_printk_debug("[cancel_delayed]->[%s] sucess\n",work->name);
 		ret = true;
 	}
-	
+
 	if((wq = dwork->wq) == NULL){
 		atbm_printk_debug("[cancel_delayed]->[%s] wq err\n",work->name);
 		goto exit;
 	}
-	
+
 	spin_lock_irqsave(&wq->lock, flags2);
 	if(atbm_wk_in_pending(work)){
 		_ieee80211_atbm_clear_pending_work(wq,work);
 		atbm_printk_debug("[cancel_delayed]->[%s] pendding\n",work->name);
 		ret = true;
 	}
-	
+
 	if(wk_is_busy(work)){
 		ret = false;
 	}
@@ -983,17 +983,17 @@ bool ieee80211_atbm_cancel_work_sync(struct atbm_work_struct *work)
 	bool ret = false;
 	struct work_wait wait;
 
-	atbm_waitwk_init(&wait,work->name);	
+	atbm_waitwk_init(&wait,work->name);
 	atbm_printk_debug("[cancel_work]->[%s] in\n",work->name);
-	
+
 	spin_lock_irqsave(&work->lock, flags1);
-	
+
 	if((wq = work->wq) == NULL){
 		atbm_printk_debug("[cancel_work]->[%s] out 1\n",work->name);
 		ret = false;
 		goto w_lock;
 	}
-	
+
 	spin_lock_irqsave(&wq->lock, flags2);
 
 	if(atbm_wk_in_pending(work)){
@@ -1001,28 +1001,28 @@ bool ieee80211_atbm_cancel_work_sync(struct atbm_work_struct *work)
 		atbm_printk_debug("[cancel_work]->[%s] pending\n",work->name);
 		ret = true;
 	}
-	
+
 	if(!wk_is_busy(work)){
 		atbm_printk_debug("[cancel_work]->[%s] out 1\n",work->name);
 		goto wq_lock;
 	}
-	
+
 	if(!atbm_wk_in_runing(work)){
 		BUG_ON(1);
 	}
-	
+
 	if(wq->work_thread){
 		atbm_waitwk_insert(&wait,&wq->works,false);
 		atbm_workqueue_wakeup(wq,wq->work_thread);
 	}else
 		goto wq_lock;
-	
+
 	ret = false;
 	spin_unlock_irqrestore(&wq->lock, flags2);
 	spin_unlock_irqrestore(&work->lock, flags1);
 
 	atbm_waitwk_work_for_done(&wait);
-	
+
 	atbm_printk_debug("[cancel_work]->[%s] finished\n",work->name);
 	return ret;
 wq_lock:
@@ -1042,23 +1042,23 @@ bool ieee80211_atbm_flush_work(struct atbm_work_struct *work)
 	bool tail = false;
 
 	atbm_waitwk_init(&wait,work->name);
-	
+
 	atbm_printk_debug("[flush_work]->[%s] in\n",work->name);
 	spin_lock_irqsave(&work->lock, flags1);
-	
+
 	if((wq = work->wq)== NULL){
 		ret = false;
 		atbm_printk_debug("[flush_work]->[%s] out 1\n",work->name);
 		goto w_lock;
 	}
-	
+
 	spin_lock_irqsave(&wq->lock, flags2);
-	
+
 	if(!wk_is_busy(work)){
 		atbm_printk_debug("[cancel_work]->[%s] out 1\n",work->name);
 		goto wq_lock;
 	}
-	
+
 	if(atbm_wk_in_runing(work)){
 		head = &wq->works;
 		tail = false;
@@ -1068,14 +1068,14 @@ bool ieee80211_atbm_flush_work(struct atbm_work_struct *work)
 	}else{
 		BUG_ON(1);
 	}
-	
+
 	if(wq->work_thread){
 		atbm_waitwk_insert(&wait,head,true);
 		atbm_workqueue_wakeup(wq,wq->work_thread);
 	}else {
 		goto wq_lock;
 	}
-	
+
 	spin_unlock_irqrestore(&wq->lock, flags2);
 	spin_unlock_irqrestore(&work->lock, flags1);
 	ret = true;

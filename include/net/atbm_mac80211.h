@@ -41,7 +41,7 @@ struct atbm_workqueue_struct;
 #define IEEE80211_BAND_2GHZ NL80211_BAND_2GHZ
 #define IEEE80211_BAND_5GHZ NL80211_BAND_5GHZ
 #define IEEE80211_NUM_BANDS (NL80211_BAND_5GHZ+1)
-#define ieee80211_band nl80211_band 
+#define ieee80211_band nl80211_band
 #define atbm_notify_scan_done(__local,__scan_request,__abort) \
 do	{			\
 	__local->scan_info.aborted = __abort;		\
@@ -107,7 +107,7 @@ static inline unsigned atbm_compare_ether_addr(const u8 *addr1, const u8 *addr2)
 
 #if 0
 static inline u32 le32_get_bits(u32 v, u32 field)
-{									
+{
 	return ((v) & field)/((field) & -(field));
 }
 #ifdef __LITTLE_ENDIAN
@@ -521,7 +521,7 @@ struct atbm_p2p_message {
 	u8 *operating_channel;
 	u8 *channel_list;
 	u8 channel_list_len;
-	
+
 	u8 *group_bssid;
 	u8 *invitation_flags;
 
@@ -2214,8 +2214,8 @@ struct ieee80211_hw {
 #define IEEE80211_ATBM_MAX_SCAN_CHANNEL_INDEX		64
 enum ieee80211_scan_req_wrap_flags{
 	IEEE80211_SCAN_REQ_CCA             = 1<<0,
-	IEEE80211_SCAN_REQ_INTERNAL        = 1<<1, 
-	IEEE80211_SCAN_REQ_RESULTS_HANDLE  = 1<<2, 
+	IEEE80211_SCAN_REQ_INTERNAL        = 1<<1,
+	IEEE80211_SCAN_REQ_RESULTS_HANDLE  = 1<<2,
 	IEEE80211_SCAN_REQ_PASSIVE_SCAN    = 1<<3,
 	IEEE80211_SCAN_REQ_RESULTS_SKB     = 1<<4,
 	IEEE80211_SCAN_REQ_SPILT	   	   = 1<<5,
@@ -2247,7 +2247,7 @@ struct ieee80211_internal_etf_request{
 	u32 channel_type;
 	u32 channel;
 	u32 rate;
-	u32 len;	
+	u32 len;
 	u32 greedfiled;
 	u32 precomp_sel;
 	char threshold_param[100];
@@ -2813,7 +2813,7 @@ enum ieee80211_frame_release_type {
 struct ieee80211_special_filter{
 	u8   filter_action;
 	u8   oui[3];
-	u32  flags; 
+	u32  flags;
 };
 enum ieee80211_special_filter_flags{
 	SPECIAL_F_FLAGS_FRAME_TYPE = BIT(0),
@@ -4990,13 +4990,13 @@ static inline int ieee80211_p2p_action_check(u8* data,ssize_t data_len)
 	u8* p2p_data = data;
 	ssize_t p2p_data_len = data_len;
 	u32 oui_wfa = 0;
-	
+
 	if(p2p_data[0] != 9/*vendor spec*/)
 		RETURN_ERR;
 
 	if(p2p_data_len<3)
 		RETURN_ERR;
-	
+
 	p2p_data++;
 	p2p_data_len--;
 
@@ -5078,7 +5078,7 @@ static inline void atbm_setup_timer(struct atbm_timer_list *atbm_timer,
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 14, 0))
 	timer_setup(&atbm_timer->timer, atbm_timer_handle, 0);
 #else
-	
+
 	atbm_timer->timer.function = atbm_timer_handle;
 	atbm_timer->timer.data = (unsigned long)atbm_timer;
 	init_timer(&atbm_timer->timer);
@@ -5256,15 +5256,15 @@ static inline bool atbm_accsii_to_int(const char *pos,int len,int *res)
 
 	if((len == 0) || (len>10) || (len<0))
 		return false;
-	
+
 	neg   = pos[0] == '-'  ? true:false;
 	index = neg    == true ? 1:0;
 
 	if((neg==true)&&(len == 1))
 		return false;
-	
+
 	for(;index<len;index++){
-		
+
 		if((accsii[index] < '0') || (accsii[index] > '9')){
 			return false;
 		}
@@ -5291,15 +5291,15 @@ static inline bool atbm_accsii_to_int_10x(const char *pos,int len,int *res)
 
 	if((len == 0) || (len>10) || (len<0))
 		return false;
-	
+
 	neg   = pos[0] == '-'  ? true:false;
 	index = neg    == true ? 1:0;
 
 	if((neg==true)&&(len == 1))
 		return false;
-	
+
 	for(;index<len;index++){
-		
+
 		if((accsii[index] != '.') && ((accsii[index] < '0') || (accsii[index] > '9'))){
 			return false;
 		}
@@ -5337,15 +5337,15 @@ static inline bool atbm_accsii_to_decimal(const char *pos,int len,struct atbm_de
 	int interger_len = len;
 
 	memset(res,0,sizeof(struct atbm_decimal_fraction));
-	
+
 	if(decimal){
-		
+
 		res->digits = len - (decimal + 1 - pos);
-		
+
 		if(atbm_accsii_to_int(decimal + 1,res->digits,&res->decimal) == false){
 			return false;
 		}
-		
+
 		interger_len = len - res->digits - 1;
 	}
 
@@ -5354,7 +5354,7 @@ static inline bool atbm_accsii_to_decimal(const char *pos,int len,struct atbm_de
 static inline void atbm_common_hash_list_init(struct hlist_head *hlist,size_t size)
 {
 	size_t index = 0;
-	
+
 	for(index = 0;index<size;index++){
 		INIT_HLIST_HEAD(&hlist[index]);
 	}
@@ -5425,7 +5425,7 @@ static inline u8 ieee80211_rssi_weight(s8 signal)
 		weight = 2;
 	else if(signal > -50)
 		weight = 4;
-	else 
+	else
 		weight = 0;
 
 	return weight;

@@ -263,7 +263,7 @@ static struct sk_buff *ieee80211_alloc_xmit_skb(struct sk_buff *skb,struct net_d
 
 	xmit_skb = atbm_skb_copy(skb,GFP_ATOMIC);
 	dev_kfree_skb(skb);
-	
+
 	return xmit_skb;
 #else
 	/*
@@ -271,7 +271,7 @@ static struct sk_buff *ieee80211_alloc_xmit_skb(struct sk_buff *skb,struct net_d
 	 */
 	if (atbm_skb_shared(skb)) {
 		struct sk_buff* tmp_skb;
-		
+
 		tmp_skb = skb;
 		skb = atbm_skb_clone(skb, GFP_ATOMIC);
 		atbm_kfree_skb(tmp_skb);
@@ -726,7 +726,7 @@ ieee80211_tx_h_rate_ctrl(struct ieee80211_tx_data *tx)
 	   int j = 0;
 	   u32 suport_rates = 0;
 	   int min_rate = INT_MAX, min_rate_index = -1;
-	   
+
 	   cbss = ieee80211_atbm_get_bss(tx->sdata->local->hw.wiphy,tx->channel,hdr->addr1,NULL,0,0,0);
 
 	   if(cbss == NULL){
@@ -742,11 +742,11 @@ ieee80211_tx_h_rate_ctrl(struct ieee80211_tx_data *tx)
 	   atbm_printk_mgmt("%s:supp_rates_len(%zu),rate_index(%d)\n",__func__,bss->supp_rates_len,info->control.rates[0].idx);
 	  	for (i = 0; i < bss->supp_rates_len; i++) {
 			int rate = (bss->supp_rates[i] & 0x7f) * 5;
-	
+
 			for (j = 0; j < sband->n_bitrates; j++) {
 				if (sband->bitrates[j].bitrate == rate) {
 					suport_rates |= BIT(j);
-					
+
 					if (rate < min_rate) {
 						min_rate = rate;
 						min_rate_index = j;
@@ -755,7 +755,7 @@ ieee80211_tx_h_rate_ctrl(struct ieee80211_tx_data *tx)
 				}
 			}
 		}
-		
+
 		atbm_printk_mgmt("%s:suport_rates(%x),rate_index(%d)\n",__func__,suport_rates,info->control.rates[0].idx);
 		if(suport_rates == 0){
 			ieee80211_atbm_put_bss(tx->sdata->local->hw.wiphy,cbss);
@@ -1096,7 +1096,7 @@ ieee80211_tx_h_encrypt(struct ieee80211_tx_data *tx)
 {
 	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(tx->skb);
 	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)tx->skb->data;
-	
+
 	if(ieee80211_is_mgmt(hdr->frame_control) && tx->key){
 		atbm_printk_err("11w enc\n");
 	}
@@ -1131,7 +1131,7 @@ static ieee80211_tx_result debug_noinline
 ieee80211_tx_h_encrypt(struct ieee80211_tx_data *tx)
 {
 	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(tx->skb);
-	
+
 	if (!tx->key)
 		return TX_CONTINUE;
 
@@ -1285,7 +1285,7 @@ ieee80211_tx_prepare(struct ieee80211_sub_if_data *sdata,
 		struct tid_ampdu_tx *tid_tx;
 		u8 *qc;
 		int tid;
-		
+
 		qc = ieee80211_get_qos_ctl(hdr);
 		tid = *qc & IEEE80211_QOS_CTL_TID_MASK;
 
@@ -1327,9 +1327,9 @@ ieee80211_tx_prepare(struct ieee80211_sub_if_data *sdata,
 		tx->ethertype = (pos[0] << 8) | pos[1];
 	}
 #endif
-	
+
 	if(sdata->vif.type == NL80211_IFTYPE_STATION) {
-		
+
 		struct atbm_ieee802_1x_hdr *hdr_1x;
 		struct atbm_wpa_eapol_key *key;
 		u16 sta_key_info;
@@ -1374,17 +1374,17 @@ ieee80211_tx_prepare(struct ieee80211_sub_if_data *sdata,
 			}
 			return TX_CONTINUE;
 		}
-		
-		hdr_1x = (struct atbm_ieee802_1x_hdr *)skb_network_header(skb);		
+
+		hdr_1x = (struct atbm_ieee802_1x_hdr *)skb_network_header(skb);
 		key = (struct atbm_wpa_eapol_key *) (hdr_1x + 1);
 		sta_key_info = (key->key_info[0]<<8) | key->key_info[1];
 		sta_mic = (u8*)(key+1);
 		key_data_len = ((*(sta_mic+tx->sta->mic_len))<<8)|(*(sta_mic+tx->sta->mic_len+1));
-		
+
 		if(key_data_len>skb->len-(skb_network_header(skb)-skb->data)-sizeof(struct atbm_wpa_eapol_key)){
-		   return TX_CONTINUE;	
+		   return TX_CONTINUE;
 		}
-		
+
 		if(sta_key_info&(BIT(11)|BIT(13))) {
 			atbm_printk_mgmt("%s:SMK\n",sdata->name);
 		}if(!(sta_key_info&BIT(3))) {
@@ -1484,7 +1484,7 @@ static bool __ieee80211_tx(struct ieee80211_local *local, struct sk_buff **skbp,
 		case NL80211_IFTYPE_MONITOR:
 			if(local->monitor_sdata !=  sdata)
 				info->control.vif = NULL;
-			else 
+			else
 				atbm_printk_debug("%s:monitor[%s] send\n",__func__,sdata->name);
 			break;
 		case NL80211_IFTYPE_AP_VLAN:
@@ -1553,7 +1553,7 @@ static int invoke_tx_handlers(struct ieee80211_tx_data *tx)
 #endif
 	/* handlers after fragment must be aware of tx info fragmentation! */
 	CALL_TXH(ieee80211_tx_h_stats);
-	
+
 	CALL_TXH(ieee80211_tx_h_encrypt);
 #ifndef CONFIG_RATE_HW_CONTROL
 	if (!(tx->local->hw.flags & IEEE80211_HW_HAS_RATE_CONTROL))
@@ -1663,7 +1663,7 @@ static void ieee80211_xmit_down_bootp_rate(struct ieee80211_sub_if_data *sdata, 
 	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
 	struct iphdr *iph; //= ip_hdr(skb);
 	struct udphdr *udph;
-	
+
 	iph = ip_hdr(skb);
 	if(iph->protocol != IPPROTO_UDP)
 		return;
@@ -1676,7 +1676,7 @@ static void ieee80211_xmit_down_bootp_rate(struct ieee80211_sub_if_data *sdata, 
 
 	if(sdata->vif.p2p)
 		info->flags |= IEEE80211_TX_CTL_NO_CCK_RATE;
-	
+
 }
 static void ieee80211_xmit_down_eap_rate(struct ieee80211_sub_if_data *sdata, struct sk_buff *skb)
 {
@@ -1691,11 +1691,11 @@ static void ieee80211_xmit_down_eap_rate(struct ieee80211_sub_if_data *sdata, st
 static void ieee80211_xmit_down_ipv6_rate(struct ieee80211_sub_if_data *sdata, struct sk_buff *skb)
 {
 	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
-	
+
 	info->flags |= IEEE80211_TX_CTL_USE_MINRATE;
 	if(sdata->vif.p2p)
 		info->flags |= IEEE80211_TX_CTL_NO_CCK_RATE;
-	
+
 }
 #endif
 static void ieee80211_xmit_down_arp_rate(struct ieee80211_sub_if_data *sdata, struct sk_buff *skb)
@@ -1712,17 +1712,17 @@ static void ieee80211_xmit_trydown_special_pkg_rate(struct ieee80211_sub_if_data
 	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *) skb->data;
 	u16 ether_type = 0;
 	u8 ether_type_index = 0;
-	
+
 	if(!ieee80211_is_data(hdr->frame_control))
 		return;
 	if(ieee80211_is_nullfunc(hdr->frame_control))
 		return;
 	if(ieee80211_is_qos_nullfunc(hdr->frame_control))
 		return;
-	
+
 	ether_type_index = ieee80211_hdrlen(hdr->frame_control) + ATBM_SNAP_SIZE;
 	ether_type = (skb->data[ether_type_index]<<8) | skb->data[ether_type_index+1];
-	
+
 	if(ether_type == ETH_P_ARP)
 		ieee80211_xmit_down_arp_rate(sdata,skb);
 	else if(ether_type == ETH_P_IP)
@@ -1733,7 +1733,7 @@ static void ieee80211_xmit_trydown_special_pkg_rate(struct ieee80211_sub_if_data
 	else if(ether_type == ETH_P_IPV6)
 		ieee80211_xmit_down_ipv6_rate(sdata,skb);
 #endif
-	
+
 }
 #endif
 void ieee80211_xmit(struct ieee80211_sub_if_data *sdata, struct sk_buff *skb)
@@ -1878,7 +1878,7 @@ static bool ieee80211_ap_can_xmit(struct net_device *dev)
 	struct ieee80211_channel_state *chan_state = ieee80211_get_channel_state(local, sdata);
 	struct ieee80211_channel *chan = chan_state->conf.channel;
 	bool can_xmit = true;
-	
+
 #ifndef CONFIG_ATBM_5G_PRETEND_2G
 	if ((chan->flags & (
 		#if (LINUX_VERSION_CODE < KERNEL_VERSION(3,11,0))
@@ -1892,7 +1892,7 @@ static bool ieee80211_ap_can_xmit(struct net_device *dev)
 	     #endif
 	     )))
 	    can_xmit = false;
-		
+
 #else
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 9, 0))
 	struct cfg80211_chan_def chandef;
@@ -2040,7 +2040,7 @@ netdev_tx_t ieee80211_monitor_start_xmit(struct sk_buff *skb,
 			break;
 		}
 	}
-	if((monitor_relate == true) || 
+	if((monitor_relate == true) ||
 	   (sdata && !(sdata->u.mntr_flags & MONITOR_FLAG_COOK_FRAMES))){
 		ieee80211_xmit(sdata, skb);
 	}else {
@@ -2105,7 +2105,7 @@ static netdev_tx_t _ieee80211_subif_start_xmit(struct sk_buff *skb,
 		ret = NETDEV_TX_OK;
 		goto fail;
 	}
-	
+
 #ifdef CONFIG_MAC80211_BRIDGE
 	{
 		struct ieee80211_sub_if_data *tmp_sta = ieee80211_brigde_sdata_check(local,&skb,sdata);
@@ -2264,7 +2264,7 @@ static netdev_tx_t _ieee80211_subif_start_xmit(struct sk_buff *skb,
 			memcpy(hdr.addr2, skb->data + ETH_ALEN, ETH_ALEN);
 			memcpy(hdr.addr3, sdata->u.mgd.bssid, ETH_ALEN);
 			hdrlen = 24;
-		}  else 
+		}  else
 #endif
 #ifdef CONFIG_ATBM_4ADDR
 		if (sdata->u.mgd.use_4addr &&
@@ -2280,7 +2280,7 @@ static netdev_tx_t _ieee80211_subif_start_xmit(struct sk_buff *skb,
 		} else
 #endif
 		{
-				
+
 #ifdef CONFIG_MAC80211_BRIDGE
 			if (ieee80211_brigde_change_txhdr(sdata,&skb) == -1)
 			{
@@ -2295,7 +2295,7 @@ static netdev_tx_t _ieee80211_subif_start_xmit(struct sk_buff *skb,
 			memcpy(hdr.addr3, skb->data, ETH_ALEN);
 			hdrlen = 24;
 
-			
+
 		}
 		break;
 #ifdef CONFIG_ATBM_SUPPORT_IBSS
@@ -2465,7 +2465,7 @@ static netdev_tx_t _ieee80211_subif_start_xmit(struct sk_buff *skb,
 #if (LINUX_VERSION_CODE < KERNEL_VERSION(4, 7, 0))
 	dev->trans_start = jiffies;
 #endif
-	
+
 
 	ieee80211_xmit(sdata, skb);
 
@@ -2474,7 +2474,7 @@ static netdev_tx_t _ieee80211_subif_start_xmit(struct sk_buff *skb,
  fail:
 	if (ret == NETDEV_TX_OK)
 		atbm_dev_kfree_skb(skb);
-	
+
 	return ret;
 }
 /* config hooks */
@@ -2490,11 +2490,11 @@ static enum work_action __must_check
 ieee80211_wk_dhcp_work(struct ieee80211_work *wk)
 {
 	struct sk_buff *skb;
-	
+
 	wk->dhcp.tries ++;
-	
+
 	if(wk->dhcp.tries >= wk->dhcp.retry_max){
-		
+
 		return WORK_ACT_TIMEOUT;
 	}
 
@@ -2503,9 +2503,9 @@ ieee80211_wk_dhcp_work(struct ieee80211_work *wk)
 			return WORK_ACT_TIMEOUT;
 		}
 	}
-	
+
 	skb = atbm_skb_copy(wk->dhcp.frame, GFP_KERNEL);
-	if(skb){		
+	if(skb){
 		wk->timeout = jiffies + IEEE80211_DHCP_TIMEOUT;
 		ieee80211_subif_internal8023_start_xmit(wk->sdata,skb);
 	}else {
@@ -2526,7 +2526,7 @@ static int ieee80211_wk_start_dhcp_work(struct ieee80211_sub_if_data *sdata,stru
 	wk = atbm_kzalloc(sizeof(struct ieee80211_work), GFP_ATOMIC);
 
 	if(wk){
-		
+
 		wk->type = IEEE80211_WORK_DHCP;
 		wk->sdata     = sdata;
 		wk->done      = ieee80211_dhcp_work_done;
@@ -2538,13 +2538,13 @@ static int ieee80211_wk_start_dhcp_work(struct ieee80211_sub_if_data *sdata,stru
 		memcpy(wk->filter_bssid,sdata->vif.addr,6);
 		memcpy(wk->filter_sa,sdata->vif.addr,6);
 		/*
-		*first clear current pending IEEE80211_WORK_DHCP,then add current 
+		*first clear current pending IEEE80211_WORK_DHCP,then add current
 		*/
 	//	ieee80211_work_purge(sdata,sdata->vif.addr,IEEE80211_WORK_DHCP,true);
-		
+
 		ieee80211_add_work(wk);
 		return 1;
-	} 
+	}
 	return 0;
 }
 
@@ -2554,24 +2554,24 @@ static int ieee80211_subif_dhcp_cache(struct ieee80211_sub_if_data* sdata,struct
 											   (((src_port) == 68)&&((des_port) == 67)))
 	struct iphdr* iph;
 	struct udphdr* udph;
-	
+
 	if(ieee80211_dhcp_running(sdata) == false){
 		return 0;
 	}
-	
+
 	if (dhcp_skb->protocol != htons(ETH_P_IP)) {
 		return 0;
 	}
 
 	iph = ip_hdr(dhcp_skb);
 	if (iph->protocol != IPPROTO_UDP)
-		return 0; 
+		return 0;
 
 	udph = (struct udphdr*)((u8*)iph + (iph->ihl) * 4);
 	if (!IS_BOOTP_PORT(ntohs(udph->source), ntohs(udph->dest)))
 		return 0;
-	
-	
+
+
 	return ieee80211_wk_start_dhcp_work(sdata,dhcp_skb);
 	#undef IS_BOOTP_PORT
 }
@@ -2805,7 +2805,7 @@ struct sk_buff *ieee80211_beacon_get_tim(struct ieee80211_hw *hw,
 
 	if (sdata->vif.type == NL80211_IFTYPE_AP) {
 		struct beacon_extra *extra;
-		
+
 		ap = &sdata->u.ap;
 		extra = rcu_dereference(ap->beacon_extra);
 		beacon = rcu_dereference(ap->beacon);
@@ -2859,7 +2859,7 @@ struct sk_buff *ieee80211_beacon_get_tim(struct ieee80211_hw *hw,
 			}
 		} else
 			goto out;
-	} 
+	}
 #ifdef CONFIG_ATBM_SUPPORT_IBSS
 	else if (sdata->vif.type == NL80211_IFTYPE_ADHOC) {
 		struct ieee80211_if_ibss *ifibss = &sdata->u.ibss;
@@ -2876,7 +2876,7 @@ struct sk_buff *ieee80211_beacon_get_tim(struct ieee80211_hw *hw,
 		hdr = (struct ieee80211_hdr *) skb->data;
 		hdr->frame_control = cpu_to_le16(IEEE80211_FTYPE_MGMT |
 						 IEEE80211_STYPE_BEACON);
-	} 
+	}
 #endif
 #ifdef	CONFIG_MAC80211_ATBM_MESH
 	else if (ieee80211_vif_is_mesh(&sdata->vif)) {
@@ -3033,7 +3033,7 @@ struct sk_buff *ieee80211_proberesp_get(struct ieee80211_hw *hw,
 		goto out;
 	}
 	else {
-		
+
 		WARN_ON(1);
 		goto out;
 	}
@@ -3197,9 +3197,9 @@ struct sk_buff *ieee80211_probereq_get(struct ieee80211_hw *hw,
 	struct probe_request_extra *extra = NULL;
 	size_t extra_len = 0;
 	u8 bssid_scan[6]={0xff,0xff,0xff,0xff,0xff,0xff};
-	
+
 	rcu_read_lock();
-	
+
 	sdata = vif_to_sdata(vif);
 	local = sdata->local;
 	ie_ssid_len = 2 + ssid_len;
@@ -3209,10 +3209,10 @@ struct sk_buff *ieee80211_probereq_get(struct ieee80211_hw *hw,
 	if(ieee80211_sdata_running(sdata) && (vif->type == NL80211_IFTYPE_STATION)){
 		extra = rcu_dereference(sdata->u.mgd.probe_request_extra);
 	}
-	
+
 	if(extra)
 		extra_len = extra->probe_request_extra_len;
-	
+
 	skb = atbm_dev_alloc_skb(local->hw.extra_tx_headroom + sizeof(*hdr) +
 			    ie_ssid_len + ie_len + extra_len);
 	if (!skb){
@@ -3320,7 +3320,7 @@ struct sk_buff *ieee80211_probereq_get_etf_v2(struct ieee80211_hw *hw,
 	struct ieee80211_hdr_3addr *hdr;
 	struct sk_buff *skb;
 	size_t ie_ssid_len;
-	int data_len;	
+	int data_len;
 	struct ATBM_TEST_IE  *pAtbm_Ie;
 			u8 out[3]=ATBM_OUI;
 
@@ -3335,10 +3335,10 @@ struct sk_buff *ieee80211_probereq_get_etf_v2(struct ieee80211_hw *hw,
 	skb = atbm_dev_alloc_skb(2*(local->hw.extra_tx_headroom + sizeof(*hdr) +
 			    ie_ssid_len + data_len));
 
-	
+
 	if (!skb)
 		return NULL;
-	
+
 	atbm_skb_reserve(skb, local->hw.extra_tx_headroom);
 
 	hdr = (struct ieee80211_hdr_3addr *) atbm_skb_put(skb, sizeof(*hdr));
@@ -3357,34 +3357,34 @@ struct sk_buff *ieee80211_probereq_get_etf_v2(struct ieee80211_hw *hw,
 
 	*pos++ = ATBM_WLAN_EID_SUPP_RATES;
 	*pos++ = 7;//len
-	*pos++ = 2;	
-	*pos++ = 4;	
-	*pos++ = 11;	
-	*pos++ = 22;	
-	*pos++ = 12;	
-	*pos++ = 24;	
+	*pos++ = 2;
+	*pos++ = 4;
+	*pos++ = 11;
+	*pos++ = 22;
+	*pos++ = 12;
+	*pos++ = 24;
 	*pos++ = 48;
 
 	*pos++ = ATBM_WLAN_EID_EXT_SUPP_RATES;
 	*pos++ = 5;//len
-	*pos++ = 18;	
-	*pos++ = 36;	
-	*pos++ = 72;	
-	*pos++ = 96;	
-	*pos++ = 108;	
-	
+	*pos++ = 18;
+	*pos++ = 36;
+	*pos++ = 72;
+	*pos++ = 96;
+	*pos++ = 108;
+
 
 	pos = atbm_skb_put(skb, 7+5+4);
 
 
 	while(1)
-	{		
+	{
 
 		pos = atbm_skb_put(skb, sizeof(struct ATBM_TEST_IE));
 		//*pos++ = 221;
 		//*pos++ = 6;
 		pAtbm_Ie=(struct ATBM_TEST_IE  *)pos;
-			
+
 		pAtbm_Ie->ie_id = D11_WIFI_ELT_ID;
 		pAtbm_Ie->len = sizeof(struct ATBM_TEST_IE)-2;
 		memcpy(pAtbm_Ie->oui, out,3);
@@ -3398,12 +3398,12 @@ struct sk_buff *ieee80211_probereq_get_etf_v2(struct ieee80211_hw *hw,
 		pos +=sizeof(struct ATBM_TEST_IE);
 
 
-		
+
 		data_len -=sizeof(struct ATBM_TEST_IE);
 		if(data_len<=0)
 			break;
 	}
-	
+
 
 	//frame_hexdump("etf probe req", hdr,skb->len);
 	return skb;
@@ -3419,7 +3419,7 @@ struct sk_buff *ieee80211_probereq_get_etf_for_send_result(struct ieee80211_hw *
 	struct ieee80211_hdr_3addr *hdr;
 	struct sk_buff *skb;
 	size_t ie_ssid_len;
-	int data_len;	
+	int data_len;
 	struct ATBM_TEST_IE  *pAtbm_Ie;
 			u8 out[3]=ATBM_OUI;
 
@@ -3434,10 +3434,10 @@ struct sk_buff *ieee80211_probereq_get_etf_for_send_result(struct ieee80211_hw *
 	skb = atbm_dev_alloc_skb(local->hw.extra_tx_headroom + sizeof(*hdr) +
 			    ie_ssid_len + data_len);
 
-	
+
 	if (!skb)
 		return NULL;
-	
+
 	atbm_skb_reserve(skb, local->hw.extra_tx_headroom);
 
 	hdr = (struct ieee80211_hdr_3addr *) atbm_skb_put(skb, sizeof(*hdr));
@@ -3456,34 +3456,34 @@ struct sk_buff *ieee80211_probereq_get_etf_for_send_result(struct ieee80211_hw *
 
 	*pos++ = ATBM_WLAN_EID_SUPP_RATES;
 	*pos++ = 7;//len
-	*pos++ = 2;	
-	*pos++ = 4;	
-	*pos++ = 11;	
-	*pos++ = 22;	
-	*pos++ = 12;	
-	*pos++ = 24;	
+	*pos++ = 2;
+	*pos++ = 4;
+	*pos++ = 11;
+	*pos++ = 22;
+	*pos++ = 12;
+	*pos++ = 24;
 	*pos++ = 48;
 
 	*pos++ = ATBM_WLAN_EID_EXT_SUPP_RATES;
 	*pos++ = 5;//len
-	*pos++ = 18;	
-	*pos++ = 36;	
-	*pos++ = 72;	
-	*pos++ = 96;	
-	*pos++ = 108;	
-	
+	*pos++ = 18;
+	*pos++ = 36;
+	*pos++ = 72;
+	*pos++ = 96;
+	*pos++ = 108;
+
 
 	pos = atbm_skb_put(skb, 7+5+4);
 
 
 	while(1)
-	{		
+	{
 
 		pos = atbm_skb_put(skb, sizeof(struct ATBM_TEST_IE));
 		//*pos++ = 221;
 		//*pos++ = 6;
 		pAtbm_Ie=(struct ATBM_TEST_IE  *)pos;
-			
+
 		pAtbm_Ie->ie_id = D11_WIFI_ELT_ID;
 		pAtbm_Ie->len = sizeof(struct ATBM_TEST_IE)-2;
 		memcpy(pAtbm_Ie->oui, out,3);
@@ -3499,11 +3499,11 @@ struct sk_buff *ieee80211_probereq_get_etf_for_send_result(struct ieee80211_hw *
 		{
 			pAtbm_Ie->resverd = TXRX_TEST_FAIL;
 		}
-		
+
 		pos +=sizeof(struct ATBM_TEST_IE);
 
 
-		
+
 		data_len -=sizeof(struct ATBM_TEST_IE);
 		if(data_len<=0)
 			break;
@@ -3631,7 +3631,7 @@ bool ieee80211_tx_multicast_deauthen(struct ieee80211_sub_if_data *sdata)
 	struct atbm_ieee80211_mgmt *mgmt;
 	struct ieee80211_local *local = sdata->local;
 	u8 multicast_addr[ETH_ALEN] = {0xff,0xff,0xff,0xff,0xff,0xff};
-	
+
 	if(sdata->vif.type != NL80211_IFTYPE_AP){
 		return false;
 	}
@@ -3665,7 +3665,7 @@ bool ieee80211_tx_sta_deauthen(struct sta_info *sta)
 	struct atbm_ieee80211_mgmt *mgmt;
 	struct ieee80211_sub_if_data *sdata = sta->sdata;
 	struct ieee80211_local *local = sdata->local;
-	
+
 	if(sdata->vif.type != NL80211_IFTYPE_AP){
 		return false;
 	}

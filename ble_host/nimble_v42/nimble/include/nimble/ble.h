@@ -114,7 +114,7 @@ struct ble_mbuf_hdr
     uint32_t rem_usecs;/*rx start time(set in ble_phy_rx_start_isr), us*/
 	/*beg_cputime+rem_usecs=real time*/
 };
-	
+
 #define BLE_MBUF_HDR_IGNORED(hdr) \
 		(!!((hdr)->rxinfo.flags & BLE_MBUF_HDR_F_IGNORED))
 

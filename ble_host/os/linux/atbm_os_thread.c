@@ -11,7 +11,7 @@
 
 #define WIFI_GENERAL_STACK_SIZE (1024 * 256)
 
-char *atbm_bh_name[MAX_WIFI_TASK] = 
+char *atbm_bh_name[MAX_WIFI_TASK] =
 {
 	"work",
 	"bhtask",
@@ -61,7 +61,7 @@ int atbm_changeThreadPriority(int prio)
 				SCHED_FIFO, &param);
 #endif
 #endif
-	
+
 	return 0;
 }
 
@@ -72,7 +72,7 @@ int atbm_IncThreadPriority(int prio)
 	int prio_old = sys_sched_getscheduler(current);
 
 	param.sched_priority = prio_old + prio;
-	
+
 	sched_setscheduler(current, SCHED_FIFO, &param);
 #endif
 	return 0;

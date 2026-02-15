@@ -5,7 +5,7 @@
 #ifndef H_MYNEWT_SYSCFG_
 #define H_MYNEWT_SYSCFG_
 
-#ifdef CFG_B2B_SIMU 
+#ifdef CFG_B2B_SIMU
 #define	BLE_SIM_MODE_SET				(1)
 #define	BLE_SIM_CMD_MODE				(1)
 #define MYNEWT_VAL_BLE_ROLE_BROADCASTER (0)

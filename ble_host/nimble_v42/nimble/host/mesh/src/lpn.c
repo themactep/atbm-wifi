@@ -196,7 +196,7 @@ static int send_friend_clear(void)
 
 static void clear_friendship(bool force, bool disable)
 {
-    
+
     struct bt_mesh_cfg_srv *cfg = bt_mesh_cfg_get();
 	struct bt_mesh_lpn *lpn = &bt_mesh.lpn;
 
@@ -948,7 +948,7 @@ int bt_mesh_lpn_friend_update(struct bt_mesh_net_rx *rx,
 
 	if (!lpn->established) {
         struct bt_mesh_cfg_srv *cfg = bt_mesh_cfg_get();
-		
+
 		/* This is normally checked on the transport layer, however
 		 * in this state we're also still accepting master
 		 * credentials so we need to ensure the right ones (Friend
@@ -1059,7 +1059,7 @@ int bt_mesh_lpn_init(void)
 void bt_mesh_lpn_deinit(void)
 {
 	struct bt_mesh_lpn *lpn = &bt_mesh.lpn;
-	
+
 	k_delayed_work_free(&lpn->timer);
 }
 

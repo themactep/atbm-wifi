@@ -1252,7 +1252,7 @@ extern int nimble_ble_enable(void);
  *
  * @return int NOTE: this function should never return!
  */
- 
+
 hal_bh_t test_bh;
 int bletest(void)
 {
@@ -1305,21 +1305,21 @@ int bletest(void)
 
     /* Initialize eventq for bletest task */
     ble_npl_eventq_init(&g_bletest_evq);
-    
+
 
 	test_bh.th.fn 		= bletest_task_handler;
 	test_bh.th.name 		= "bletest";
 	test_bh.th.stack_size = CONFIG_MAIN_STACK_SIZE;
-	test_bh.th.arg 		= &test_bh; 
-	test_bh.th.prio 		= CONFIG_MAIN_TASK_PRIORITY;// CONFIG_MAIN_TASK_PRIORITY;  
+	test_bh.th.arg 		= &test_bh;
+	test_bh.th.prio 		= CONFIG_MAIN_TASK_PRIORITY;// CONFIG_MAIN_TASK_PRIORITY;
 	test_bh.th.task		= NULL;
-	test_bh.th.ptos		= NULL;	
+	test_bh.th.ptos		= NULL;
 
 	if(hal_create_bh(&test_bh) != HAL_SUCCESS){
 		ble_printf(BLE_OS,"app_bh fail\n");
 		return;
-    } 
-	
+    }
+
 
     return 0;
 }

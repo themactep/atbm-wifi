@@ -444,7 +444,7 @@ const u8 ROM_ro_txdigital_gain_magic_table[] = {
 //0xFE,
 };
 #define MAX_POWER_INDEX_ENTRIES	11
-const u8 u16PpaGainValTbl_20M_40M[MAX_POWER_INDEX_ENTRIES] ={	
+const u8 u16PpaGainValTbl_20M_40M[MAX_POWER_INDEX_ENTRIES] ={
 	0x3d,//1M/2M/
 	0x3d,//5.5M/11M/
 	0x1d, //6M/MCS0 /
@@ -455,11 +455,11 @@ const u8 u16PpaGainValTbl_20M_40M[MAX_POWER_INDEX_ENTRIES] ={
 	0x1d, //36M/MCS4/
 	0x1d, //48M/MCS5/
 	0x1d, //54M/MCS6/
-	0x1d,  //MCS7/	
+	0x1d,  //MCS7/
 };
 #define AresB_delta_gain_20M 0
 
-const u8 S8DigGainInitTbl_20M[MAX_POWER_INDEX_ENTRIES] ={	
+const u8 S8DigGainInitTbl_20M[MAX_POWER_INDEX_ENTRIES] ={
 #if (RF_SUBTYPE_DEFINE == Ares_AY)
     60, /*1M/2M*/
 	60, /*5.5M/11M*/
@@ -475,7 +475,7 @@ const u8 S8DigGainInitTbl_20M[MAX_POWER_INDEX_ENTRIES] ={
 #else
 	95 + AresB_delta_gain_20M, //1M/2M  17dBm /
 	95 + AresB_delta_gain_20M, //5.5M/11M, 17dBm/
-	85 + AresB_delta_gain_20M, //6M/MCS0  15dbm / 
+	85 + AresB_delta_gain_20M, //6M/MCS0  15dbm /
 	85 + AresB_delta_gain_20M, //9M//15dbm
 	85 + AresB_delta_gain_20M, //12M/MCS1/
 	85 + AresB_delta_gain_20M, //18M/MCS2/
@@ -490,7 +490,7 @@ const u8 S8DigGainInitTbl_20M[MAX_POWER_INDEX_ENTRIES] ={
 
 #define AresB_delta_gain_40M 0
 
-const u8 S8DigGainInitTbl_40M[MAX_POWER_INDEX_ENTRIES] ={	
+const u8 S8DigGainInitTbl_40M[MAX_POWER_INDEX_ENTRIES] ={
 	105 + AresB_delta_gain_40M, //1M/2M/
 	105 + AresB_delta_gain_40M, //5.5M/11M/
 	92 + AresB_delta_gain_40M, //6M/MCS0 /14dbm

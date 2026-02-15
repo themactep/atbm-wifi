@@ -34,7 +34,7 @@ enum {
 	IEEE80211_SPECIAL_RX_PACKAGE_MSG						= 1,
 	IEEE80211_SPECIAL_FRAME_FILTER_REGISTER_MSG				= 2,
 	IEEE80211_SPECIAL_FRAME_FILTER_CLEAE_MSG    			= 3,
-	IEEE80211_SPECIAL_FRAME_FILTER_REQUEST_MSG				= 4,		
+	IEEE80211_SPECIAL_FRAME_FILTER_REQUEST_MSG				= 4,
 	IEEE80211_SPECIAL_MAX_MSG,
 };
 struct ieee80211_special_filter_request{
@@ -54,7 +54,7 @@ static void ieee80211_special_filter_rx_package_handle(struct ieee80211_sub_if_d
 	char ssid[32]={0};
 	const u8 *ie = NULL;
 	if(ieee80211_is_beacon(mgmt->frame_control)){
-		
+
 		//ie = atbm_ieee80211_find_ie(ATBM_WLAN_EID_SSID,mgmt->u.beacon.variable,
 		//		                   skb->len-offsetof(struct atbm_ieee80211_mgmt, u.beacon.variable));
 		baselen = offsetof(struct atbm_ieee80211_mgmt, u.beacon.variable);
@@ -74,8 +74,8 @@ static void ieee80211_special_filter_rx_package_handle(struct ieee80211_sub_if_d
 
 		ie = atbm_ieee80211_find_ie(ATBM_WLAN_EID_PRIVATE,mgmt->u.beacon.variable,
 				                   skb->len-offsetof(struct atbm_ieee80211_mgmt, u.beacon.variable));
-		
-		
+
+
 		if(ie){
 			char special_data[255]={0};
 			memcpy(special_data,ie+2,ie[1]);
@@ -83,9 +83,9 @@ static void ieee80211_special_filter_rx_package_handle(struct ieee80211_sub_if_d
 		}else{
 			atbm_printk_debug("[beacon] from [%pM] channel[%d] ssid[%s] \n",mgmt->bssid,freq,ssid);
 		}
-		
+
 	}else if(ieee80211_is_probe_req(mgmt->frame_control)){
-		
+
 		baselen = offsetof(struct atbm_ieee80211_mgmt, u.probe_req.variable);
 		if (baselen > skb->len){
 			atbm_printk_debug("[probereq] error ! \n");
@@ -97,14 +97,14 @@ static void ieee80211_special_filter_rx_package_handle(struct ieee80211_sub_if_d
 						      rx_status->band);
 		else
 			freq = rx_status->freq;
-		
+
 		freq = (freq-2407)/5;
 
-		
+
 		ie = atbm_ieee80211_find_ie(ATBM_WLAN_EID_PRIVATE,mgmt->u.probe_req.variable,
 				                   skb->len-offsetof(struct atbm_ieee80211_mgmt, u.probe_req.variable));
-		
-		
+
+
 		if(ie){
 			char special_data[255]={0};
 			memcpy(special_data,ie+2,ie[1]);
@@ -112,7 +112,7 @@ static void ieee80211_special_filter_rx_package_handle(struct ieee80211_sub_if_d
 
 		}else
 			atbm_printk_debug("[probereq] from [%pM] channel[%d] \n",mgmt->sa,freq);
-		
+
 	}else {
 		atbm_printk_debug("[others][%x] from [%pM]\n",mgmt->frame_control,mgmt->sa);
 	}
@@ -124,15 +124,15 @@ static void ieee80211_special_filter_register_handle(struct ieee80211_sub_if_dat
 	struct ieee80211_special_filter_list *filter_list = NULL;
 	struct ieee80211_special_filter_list *filter_temp = NULL;
 	struct ieee80211_special_filter *filter_table = NULL;
-	
+
 	int n_filters = 0;
-	
+
 	filter_list = atbm_kzalloc(sizeof(struct ieee80211_special_filter_list), GFP_KERNEL);
 
 	if(filter_list == NULL){
 		goto exit;
 	}
-	
+
 	memcpy(&filter_list->filter,skb->data,sizeof(struct ieee80211_special_filter));
 	list_add_tail(&filter_list->list,&sdata->filter_list);
 
@@ -140,7 +140,7 @@ static void ieee80211_special_filter_register_handle(struct ieee80211_sub_if_dat
 
 	if(filter_table == NULL)
 		goto exit;
-	
+
 	list_for_each_entry(filter_temp, &sdata->filter_list, list){
 		if(n_filters >= 16)
 			break;
@@ -152,7 +152,7 @@ static void ieee80211_special_filter_register_handle(struct ieee80211_sub_if_dat
 
 	if(n_filters && sdata->local->ops->set_frame_filter)
 		sdata->local->ops->set_frame_filter(&sdata->local->hw,&sdata->vif,n_filters,filter_table,true);
-	
+
 exit:
 	if(filter_table)
 		atbm_kfree(filter_table);
@@ -162,13 +162,13 @@ exit:
 static void ieee80211_special_filter_clear_handle(struct ieee80211_sub_if_data *sdata,struct sk_buff *skb)
 {
 	struct ieee80211_special_filter_list *filter_temp = NULL;
-	
+
 	while (!list_empty(&sdata->filter_list)) {
 		filter_temp =list_first_entry(&sdata->filter_list, struct ieee80211_special_filter_list,list);
 		atbm_printk_debug("%s:action(%d),oui[%d:%d:%d]\n",__func__,filter_temp->filter.filter_action,filter_temp->filter.oui[0],
 		filter_temp->filter.oui[1],filter_temp->filter.oui[2]);
 		list_del(&filter_temp->list);
-		atbm_kfree(filter_temp);	
+		atbm_kfree(filter_temp);
 	}
 
 	if(sdata->local->ops->set_frame_filter)
@@ -184,11 +184,11 @@ static void ieee80211_special_filter_request_handle(struct ieee80211_sub_if_data
 	struct ieee80211_special_filter_table *tables = request->request.tables;
 	struct ieee80211_special_filter_list *filter_temp = NULL;
 	int n_filters = 0;
-	
+
 	if(tables == NULL){
 		return;
 	}
-	
+
 	list_for_each_entry(filter_temp, &sdata->filter_list, list){
 		if(n_filters >= 16)
 			break;
@@ -211,9 +211,9 @@ static void ieee80211_special_filter_work(struct atbm_work_struct *work)
 
 	if (!ieee80211_sdata_running(sdata))
 		return;
-	
+
 	__atbm_skb_queue_head_init(&local_list);
-	
+
 	spin_lock_irqsave(&sdata->special_filter_skb_queue.lock,flags);
 	sdata->special_running = true;
 restart:
@@ -221,7 +221,7 @@ restart:
 	spin_unlock_irqrestore(&sdata->special_filter_skb_queue.lock,flags);
 
 	while ((skb = __atbm_skb_dequeue(&local_list)) != NULL){
-		
+
 		switch (skb->pkt_type) {
 		case IEEE80211_SPECIAL_RX_PACKAGE_MSG:
 			skb->pkt_type = 0;
@@ -246,7 +246,7 @@ restart:
 			break;
 		}
 	}
-	
+
 	spin_lock_irqsave(&sdata->special_filter_skb_queue.lock,flags);
 	if(!atbm_skb_queue_empty(&sdata->special_filter_skb_queue))
 		goto restart;
@@ -257,9 +257,9 @@ restart:
 
 static void ieee80211_special_filter_queue_request(struct ieee80211_sub_if_data *sdata,struct sk_buff *skb)
 {
-	unsigned long flags; 
+	unsigned long flags;
 	bool work_runing = false;
-	
+
 	spin_lock_irqsave(&sdata->special_filter_skb_queue.lock,flags);
 	__atbm_skb_queue_tail(&sdata->special_filter_skb_queue, skb);
 	work_runing = sdata->special_running;
@@ -287,7 +287,7 @@ bool ieee80211_special_filter_register(struct ieee80211_sub_if_data *sdata,
 					struct ieee80211_special_filter *filter)
 {
 	struct sk_buff *skb;
-	
+
 	if (!ieee80211_sdata_running(sdata))
 		return false;
 
@@ -307,7 +307,7 @@ bool ieee80211_special_filter_register(struct ieee80211_sub_if_data *sdata,
 bool ieee80211_special_filter_clear(struct ieee80211_sub_if_data *sdata)
 {
 	struct sk_buff *skb;
-	
+
 	if (!ieee80211_sdata_running(sdata))
 		return false;
 
@@ -315,9 +315,9 @@ bool ieee80211_special_filter_clear(struct ieee80211_sub_if_data *sdata)
 
 	if(skb == NULL)
 		return false;
-	
+
 	skb->pkt_type = IEEE80211_SPECIAL_FRAME_FILTER_CLEAE_MSG;
-	
+
 	ieee80211_special_filter_queue_request(sdata,skb);
 
 	return true;
@@ -334,15 +334,15 @@ bool ieee80211_special_filter_request(struct ieee80211_sub_if_data *sdata,
 
 	if(skb == NULL)
 		return false;
-	
+
 	request = (union ieee80211_special_filter_cb *)skb->cb;
 	skb->pkt_type = IEEE80211_SPECIAL_FRAME_FILTER_REQUEST_MSG;
 	request->request.tables = tables;
-	
+
 	ieee80211_special_filter_queue_request(sdata,skb);
-	
+
 	atbm_flush_workqueue(sdata->local->workqueue);
-	
+
 	return true;
 }
 struct sk_buff *ieee80211_special_queue_package(struct ieee80211_vif *vif,struct sk_buff *skb)
@@ -371,7 +371,7 @@ void ieee80211_special_check_package(struct ieee80211_local *local,struct sk_buf
 	if(!(is_beacon || is_probereq)){
 		return;
 	}
-	
+
 	list_for_each_entry_rcu(sdata, &local->interfaces, list){
 		struct ieee80211_special_filter_list *filter_temp = NULL;
 
@@ -380,13 +380,13 @@ void ieee80211_special_check_package(struct ieee80211_local *local,struct sk_buf
 
 		if(list_empty(&sdata->filter_list))
 			continue;
-		
+
 		keep = 0;
-		
+
 		list_for_each_entry(filter_temp, &sdata->filter_list, list){
 			if(filter_temp->filter.flags & SPECIAL_F_FLAGS_FRAME_TYPE){
-				if( (is_beacon && filter_temp->filter.filter_action == 0x80) || 
-					(is_probereq && filter_temp->filter.filter_action == 0x40)|| 
+				if( (is_beacon && filter_temp->filter.filter_action == 0x80) ||
+					(is_probereq && filter_temp->filter.filter_action == 0x40)||
 					(is_proberesp && filter_temp->filter.filter_action == 0x50) ||
 					(is_action)){
 					keep = 1;
@@ -413,7 +413,7 @@ next:
 
 				if(target == NULL)
 					continue;
-				
+
 				if(filter_temp->filter.flags & SPECIAL_F_FLAGS_FRAME_OUI){
 					if((target[2] == filter_temp->filter.oui[0])&&
 					   (target[3] == filter_temp->filter.oui[1])&&

@@ -78,7 +78,7 @@ static inline atomic_val_t atomic_add(atomic_t *target, atomic_val_t value)
  */
 
 static inline atomic_val_t atomic_sub(atomic_t *target, atomic_val_t value)
-{	
+{
 //    return __atomic_fetch_sub(target, value, __ATOMIC_SEQ_CST);
 	return 0;
 }

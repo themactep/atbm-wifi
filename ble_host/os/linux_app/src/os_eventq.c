@@ -30,11 +30,11 @@
 
 
 struct ble_eventq_s {
-    uint8_t              b_init;	
+    uint8_t              b_init;
 	pthread_mutex_t 	 m_mutex;
 	pthread_mutexattr_t  m_mutex_attr;
 	pthread_cond_t		 m_condv;
-    
+
     STAILQ_HEAD(ble_queue_list, ble_npl_event) mq_head;
 };
 
@@ -44,7 +44,7 @@ static os_membuf_t ble_eventq_pool_buf[
     OS_MEMPOOL_SIZE(BLE_EVT_Q_COUNT, sizeof (struct ble_eventq_s))
 ];
 
-#define wqueue_t struct ble_eventq_s 
+#define wqueue_t struct ble_eventq_s
 
 struct ble_eventq_s  m_queue[BLE_EVT_Q_COUNT];
 
@@ -140,8 +140,8 @@ struct ble_npl_event * wqueue_get(wqueue_t * q,uint32_t tmo) {
         }
     }
 
-    struct ble_npl_event * item = mqueue_get(q);	
-	
+    struct ble_npl_event * item = mqueue_get(q);
+
 
     pthread_mutex_unlock(&q->m_mutex);
     return item;
@@ -174,7 +174,7 @@ ble_npl_eventq_init(struct ble_npl_eventq *evq)
         b_pool_init = 1;
         ble_npl_eventq_main();
     }
-    
+
     evq->q = os_memblock_get(&ble_eventq_pool);
 	if(evq->q){
 		wqueue_init((wqueue_t *)evq->q);
@@ -263,7 +263,7 @@ ble_npl_event_init(struct ble_npl_event *ev, ble_npl_event_fn *fn,
     ev->ev_cb = fn;
     ev->ev_arg = arg;
     //ev->next = NULL;
-	
+
     STAILQ_NEXT(ev, next) = NULL;
 }
 

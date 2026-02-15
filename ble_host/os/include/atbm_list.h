@@ -1,9 +1,9 @@
 /**************************************************************************************************************
- * altobeam RTOS wifi hmac source code 
+ * altobeam RTOS wifi hmac source code
  *
  * Copyright (c) 2018, altobeam.inc   All rights reserved.
  *
- *  The source code contains proprietary information of AltoBeam, and shall not be distributed, 
+ *  The source code contains proprietary information of AltoBeam, and shall not be distributed,
  *  copied, reproduced, or disclosed in whole or in part without prior written permission of AltoBeam.
 *****************************************************************************************************************/
 #ifndef __LIST_H__
@@ -342,7 +342,7 @@ static __INLINE int atbm_list_swap(struct atbm_list_head *a, struct atbm_list_he
 		n = atbm_list_entry(pos->member.prev, typeof(*pos), member);	\
 	     &pos->member != (head); 					\
 	     pos = n, n = atbm_list_entry(n->member.prev, typeof(*n), member))
-	     
+
 
 
 #define atbm_list_first_entry(ptr,type,member) \

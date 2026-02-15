@@ -54,7 +54,7 @@ ble_npl_eventq_release(struct ble_npl_eventq *evq)
 static inline struct ble_npl_event *
 ble_npl_eventq_get(struct ble_npl_eventq *evq, ble_npl_time_t tmo)
 {
-    return npl_atbmos_eventq_get(evq, tmo);	
+    return npl_atbmos_eventq_get(evq, tmo);
 }
 
 static inline void

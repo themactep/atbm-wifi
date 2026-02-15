@@ -36,7 +36,7 @@ struct HCI_CMD_SHARE_PARAM{
 struct HCI_ACL_SHARE_PARAM{
 	volatile u32 host_cnt;
 	volatile u32 ll_cnt;
-	volatile u8 hci_acl[HCI_ACL_SHARE_NUM][HCI_ACL_SHARE_SIZE];	
+	volatile u8 hci_acl[HCI_ACL_SHARE_NUM][HCI_ACL_SHARE_SIZE];
 };
 
 struct BLE_TIME_SYNC_PARAM{
@@ -118,14 +118,14 @@ void ble_hci_evt_check(void)
 	if((int)(ble_hci_cmd_l2h_share->ll_cnt - ble_hci_cmd_l2h_share->host_cnt) < 0){
 		printf("ble_hci_cmd_share cnt err\n");
 		assert(0);
-	}	
+	}
 
 	if((int)(ble_hci_cmd_l2h_share->ll_cnt - ble_hci_cmd_l2h_share->host_cnt) > HCI_CMD_SHARE_NUM){
 		printf("ble_hci_cmd_share cnt err\n");
-		assert(0);		
+		assert(0);
 	}
 
-//	printf("cmd l2h ll_cnt:%d, host_cnt:%d\n", 
+//	printf("cmd l2h ll_cnt:%d, host_cnt:%d\n",
 //			ble_hci_cmd_l2h_share->ll_cnt, ble_hci_cmd_l2h_share->host_cnt);
 	if(ble_hci_cmd_l2h_share->ll_cnt == ble_hci_cmd_l2h_share->host_cnt){
 		return;
@@ -137,13 +137,13 @@ void ble_hci_evt_check(void)
 		if(len > HCI_CMD_SHARE_SIZE){
 			assert(0);
 		}
-		
+
 		evtbuf = ble_hci_trans_buf_alloc(BLE_HCI_TRANS_BUF_EVT_LO);
 		if(evtbuf == NULL){
 			//printf("evtbuf alloc err(%d)\n",__LINE__);
 			break;
 		}
-#if 0		
+#if 0
 		printf("host evt rx:");
 		for(i=0; i<len; i++){
 			printf("%02X ", data[i]);
@@ -166,14 +166,14 @@ void ble_hci_ack_check(void)
 	if((int)(ble_hci_ack_l2h_share->ll_cnt - ble_hci_ack_l2h_share->host_cnt) < 0){
 		printf("ble_hci_ack_l2h_share cnt err\n");
 		assert(0);
-	}	
+	}
 
 	if((int)(ble_hci_ack_l2h_share->ll_cnt - ble_hci_ack_l2h_share->host_cnt) > HCI_CMD_SHARE_NUM){
 		printf("ble_hci_ack_l2h_share cnt err\n");
-		assert(0);		
+		assert(0);
 	}
 
-//	printf("cmd l2h ll_cnt:%d, host_cnt:%d\n", 
+//	printf("cmd l2h ll_cnt:%d, host_cnt:%d\n",
 //			ble_hci_cmd_l2h_share->ll_cnt, ble_hci_cmd_l2h_share->host_cnt);
 	if(ble_hci_ack_l2h_share->ll_cnt == ble_hci_ack_l2h_share->host_cnt){
 		return;
@@ -185,13 +185,13 @@ void ble_hci_ack_check(void)
 		if(len > HCI_CMD_SHARE_SIZE){
 			assert(0);
 		}
-		
+
 		evtbuf = ble_hci_trans_buf_alloc(BLE_HCI_TRANS_BUF_EVT_HI);
 		if(evtbuf == NULL){
 			//printf("evtbuf alloc err(%d)\n",__LINE__);
 			break;
 		}
-#if 0		
+#if 0
 		printf("host evt rx:");
 		for(i=0; i<len; i++){
 			printf("%02X ", data[i]);
@@ -203,7 +203,7 @@ void ble_hci_ack_check(void)
 		ble_hci_ram_rx_cmd_hs_cb(evtbuf, ble_hci_ram_rx_cmd_hs_arg);
 		ble_hci_ack_l2h_share->host_cnt ++;
 	}
-	
+
 }
 
 
@@ -218,19 +218,19 @@ void ble_hci_acl_check(void)
 		printf("ble_hci_cmd_share cnt err\n");
 		assert(0);
 	}
-	
+
 	if((int)(ble_hci_acl_l2h_share->ll_cnt - ble_hci_acl_l2h_share->host_cnt) > HCI_ACL_SHARE_NUM){
 		printf("ble_hci_cmd_share cnt err\n");
-		assert(0);		
+		assert(0);
 	}
-	
-	//printf("acl l2h ll_cnt:%d, host_cnt:%d\n", 
+
+	//printf("acl l2h ll_cnt:%d, host_cnt:%d\n",
 	//		ble_hci_acl_l2h_share->ll_cnt, ble_hci_acl_l2h_share->host_cnt);
 
 	if(ble_hci_acl_l2h_share->ll_cnt == ble_hci_acl_l2h_share->host_cnt){
 		return;
-	}	
-	
+	}
+
 	while((int)(ble_hci_acl_l2h_share->ll_cnt - ble_hci_acl_l2h_share->host_cnt) > 0){
 		m = ble_hci_trans_acl_buf_alloc();
 		if(m){
@@ -252,7 +252,7 @@ void ble_hci_acl_check(void)
 				os_mbuf_free_chain(m);
 				assert(0);
 			}else{
-				memcpy(m->om_data, data, pktlen + BLE_HCI_DATA_HDR_SZ);	
+				memcpy(m->om_data, data, pktlen + BLE_HCI_DATA_HDR_SZ);
 				m->om_len = pktlen + BLE_HCI_DATA_HDR_SZ;
 				OS_MBUF_PKTLEN(m) = pktlen + BLE_HCI_DATA_HDR_SZ;
 #if 0
@@ -269,8 +269,8 @@ void ble_hci_acl_check(void)
 				assert(ble_hci_ram_rx_acl_hs_cb != NULL);
 				ble_hci_ram_rx_acl_hs_cb(m, ble_hci_ram_rx_acl_hs_arg);
 			}
-			
-			ble_hci_acl_l2h_share->host_cnt ++;			
+
+			ble_hci_acl_l2h_share->host_cnt ++;
 		}else{
 			printf("ble acl buff has no mem\n");
 			break;
@@ -282,7 +282,7 @@ void ble_hci_acl_check(void)
 void ble_host_hci_handle_isr(void)
 {
 	uint32_t val;
-	
+
 	val = HW_READ_REG(0x161000c4);
 	if(val & BIT(15)){
 		ble_hci_ack_check();
@@ -290,7 +290,7 @@ void ble_host_hci_handle_isr(void)
 		ble_hci_acl_check();
 		val = HW_READ_REG(0x161000c8);
 		val |= BIT(15);
-		HW_WRITE_REG(0x161000c8, val);	
+		HW_WRITE_REG(0x161000c8, val);
 	}
 }
 
@@ -323,7 +323,7 @@ int ble_hci_trans_hs_cmd_tx(uint8_t *cmd)
 	u8 *data;
 	int len;
 	u8 cnt = 0;
-	
+
 	if((int)(ble_hci_cmd_h2l_share->host_cnt - ble_hci_cmd_h2l_share->ll_cnt) < 0){
 		printf("ble_hci_cmd_share cnt err\n");
 		assert(0);
@@ -331,7 +331,7 @@ int ble_hci_trans_hs_cmd_tx(uint8_t *cmd)
 
 	if((int)(ble_hci_cmd_h2l_share->host_cnt - ble_hci_cmd_h2l_share->ll_cnt) > HCI_CMD_SHARE_NUM){
 		printf("ble_hci_cmd_share cnt err\n");
-		assert(0);		
+		assert(0);
 	}
 
 	while((int)(ble_hci_cmd_h2l_share->host_cnt - ble_hci_cmd_h2l_share->ll_cnt) == HCI_CMD_SHARE_NUM){
@@ -340,7 +340,7 @@ int ble_hci_trans_hs_cmd_tx(uint8_t *cmd)
 		if(cnt ++ > 5){
 			ble_hci_trans_buf_free(cmd);
 			printf("ble_hci_cmd_share no free mem\n");
-			return -1;			
+			return -1;
 		}
 	}
 
@@ -352,7 +352,7 @@ int ble_hci_trans_hs_cmd_tx(uint8_t *cmd)
 	OS_ENTER_CRITICAL(sr);
 	memset(data, 0, HCI_CMD_SHARE_SIZE);
 	memcpy(data, cmd, len);
-	
+
 #if 0
 	printf("host cmd send:");
 	for(i=0; i<len; i++){
@@ -360,7 +360,7 @@ int ble_hci_trans_hs_cmd_tx(uint8_t *cmd)
 	}
 	printf("\n");
 #endif
-	
+
 	ble_hci_trans_buf_free(cmd);
 	ble_hci_cmd_h2l_share->host_cnt ++;
 	wifi_notify_ble_int();
@@ -382,15 +382,15 @@ int ble_hci_trans_hs_acl_tx(struct os_mbuf *om)
 	u8 cnt = 0;
 	uint16_t handle;
     uint16_t length;
-	
+
 	if((int)(ble_hci_acl_h2l_share->host_cnt - ble_hci_acl_h2l_share->ll_cnt) < 0){
 		printf("ble_hci_cmd_share cnt err\n");
 		assert(0);
 	}
-	
+
 	if((int)(ble_hci_acl_h2l_share->host_cnt - ble_hci_acl_h2l_share->ll_cnt) > HCI_ACL_SHARE_NUM){
 		printf("ble_hci_cmd_share cnt err\n");
-		assert(0);		
+		assert(0);
 	}
 
 	while((int)(ble_hci_acl_h2l_share->host_cnt - ble_hci_acl_h2l_share->ll_cnt) == HCI_ACL_SHARE_NUM){
@@ -399,7 +399,7 @@ int ble_hci_trans_hs_acl_tx(struct os_mbuf *om)
 		if(cnt ++ > 5){
 			os_mbuf_free_chain(om);
 			printf("ble_hci_acl_share no free mem\n");
-			return -1;			
+			return -1;
 		}
 	}
 
@@ -426,7 +426,7 @@ int ble_hci_trans_hs_acl_tx(struct os_mbuf *om)
 		om = om_next;
 	}
 
-#if 0	
+#if 0
 	printf("acl h2l rem_tx_len:%d\n", rem_tx_len);
 	data = &ble_hci_acl_h2l_share->hci_acl[ble_hci_acl_h2l_share->host_cnt%HCI_ACL_SHARE_NUM][0];
 	printf("data:");
@@ -496,7 +496,7 @@ struct os_mbuf *ble_hci_trans_acl_buf_alloc(void)
 
     usrhdr_len = sizeof(struct ble_mbuf_hdr);
     m = os_mbuf_get_pkthdr(&ble_hci_acl_mbuf_pool, usrhdr_len);
-	
+
     return m;
 }
 
@@ -527,7 +527,7 @@ void ble_hci_trans_buf_free(uint8_t *buf)
 
 int ble_hci_trans_reset(void)
 {
-	
+
 }
 
 
@@ -564,7 +564,7 @@ void ble_hci_ram_init(void)
                          ble_hci_ram_cmd_buf,
                          "ble_hci_ram_cmd_pool");
     SYSINIT_PANIC_ASSERT(rc == 0);
-	
+
 
     rc = os_mempool_init(&ble_hci_ram_evt_hi_pool,
                          MYNEWT_VAL(BLE_HCI_EVT_HI_BUF_COUNT),

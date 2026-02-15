@@ -339,7 +339,7 @@ static void rate_idx_match_mask(struct ieee80211_tx_rate *rate,
 
 /*g_atbm_rate_Ctl[0]  multicast rate control
 **g_atbm_rate_Ctl[1]  unicast rate control */
-struct tagAtbmRateControl g_atbm_rate_Ctl; 
+struct tagAtbmRateControl g_atbm_rate_Ctl;
 
 #define RATEFIXED 1
 #define RATEUNFIXED 0

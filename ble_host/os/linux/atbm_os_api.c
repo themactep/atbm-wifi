@@ -1,9 +1,9 @@
 /**************************************************************************************************************
- * altobeam LINUX wifi hmac source code 
+ * altobeam LINUX wifi hmac source code
  *
  * Copyright (c) 2018, altobeam.inc   All rights reserved.
  *
- *  The source code contains proprietary information of AltoBeam, and shall not be distributed, 
+ *  The source code contains proprietary information of AltoBeam, and shall not be distributed,
  *  copied, reproduced, or disclosed in whole or in part without prior written permission of AltoBeam.
 *****************************************************************************************************************/
 #include "atbm_hal.h"
@@ -81,7 +81,7 @@ extern atbm_void* atbm_wifi_vif_get(int id);
 
 static int atbm_platform_power_ctrl(const struct atbm_platform_data *pdata,bool enabled)
 {
-	int ret = 0; 
+	int ret = 0;
 
 	#if (ATBM_WIFI_PLATFORM == PLATFORM_XUNWEI) ||(ATBM_WIFI_PLATFORM == PLATFORM_FRIENDLY)
 	{
@@ -115,10 +115,10 @@ static int atbm_platform_power_ctrl(const struct atbm_platform_data *pdata,bool 
 
 	#if (ATBM_WIFI_PLATFORM == PLATFORM_FRIENDLY)
 	{
-		
+
 	}
 	#endif
-#if (ATBM_WIFI_PLATFORM == PLATFORM_SUN6I_64)	
+#if (ATBM_WIFI_PLATFORM == PLATFORM_SUN6I_64)
 	//int wlan_bus_index = sunxi_wlan_get_bus_index();
 	mdelay(100);
 	sunxi_wlan_set_power(enabled);
@@ -212,10 +212,10 @@ static int atbm_platform_insert_crtl(const struct atbm_platform_data *pdata,bool
 			return wlan_bus_index;
 		if (enabled){
 			sunxi_mmc_rescan_card(wlan_bus_index);
-		}else{		
-	
+		}else{
+
 		}
-	
+
 		//oob_irq = sunxi_wlan_get_oob_irq();
 	}
 	#endif
@@ -233,7 +233,7 @@ int atbm_power_ctrl(const struct atbm_platform_data *pdata,bool enabled)
 
 }
 int atbm_insert_crtl(const struct atbm_platform_data *pdata,bool enabled)
-{	
+{
 	return atbm_platform_insert_crtl(pdata,enabled);
 }
 
@@ -339,7 +339,7 @@ static int atbm_ioctl_notify_add(uint8_t type, uint8_t driver_mode, uint8_t *eve
 	list_add_tail(&event->link, &s_status_head);
 	s_cur_status_list_cnt++;
 	spin_unlock_bh(&s_status_queue_lock);
-	
+
 	if (1){
 		return 1;//need async notify usr layer
 	}
@@ -358,7 +358,7 @@ void atbm_ioctl_ble_smt_event_async(uint8_t *event_buffer, uint16_t event_len)
 
 struct at_cmd_direct{
 	uint32_t len;
-	uint8_t cmd[1500];	
+	uint8_t cmd[1500];
 };
 
 struct at_cmd_direct cmd_req;
@@ -392,7 +392,7 @@ static long atbm_unlocked_ioctl(struct file *filp, unsigned int cmd, unsigned lo
 				ble_smart_cfg_startup();
 			}
 			break;
-			
+
 		default:
 			wifi_printk(WIFI_DBG_ERROR,"cmd %d invalid.\n", cmd);
 			ret = -1;
@@ -483,7 +483,7 @@ static ssize_t atbm_ioctl_read(struct file *filp, char __user *buff, size_t len,
 		ret = -1;
 	}
 	spin_unlock_bh(&s_status_queue_lock);
-	
+
 	if (ret)
 	{
 		return -1;
@@ -612,7 +612,7 @@ int atbm_usb_register_init()
 
 	ret = atbm_usb_register(&atmbwifi_driver);
 	if (ret){
-		wifi_printk(WIFI_DBG_ERROR,"atbmwifi usb driver register error\n");	
+		wifi_printk(WIFI_DBG_ERROR,"atbmwifi usb driver register error\n");
 		goto err_reg;
 	}
 
@@ -681,7 +681,7 @@ static int atbm_detect_card(const struct atbm_platform_data *pdata)
 	struct device *dev;
 	static struct platform_device *sdio_platform_dev = NULL;
 	int status = 0;
-	
+
 	sdio_platform_dev = platform_device_alloc("atbmsdiowifi",0);
 	if(sdio_platform_dev == NULL){
 		status = -ENOMEM;
@@ -692,9 +692,9 @@ static int atbm_detect_card(const struct atbm_platform_data *pdata)
 		status = -ENOMEM;
 		goto platform_dev_err;
 	}
-	
+
 	mmc = mmc_alloc_host(0, &sdio_platform_dev->dev);
-	
+
 	if (!mmc){
 		status = -ENOMEM;
 		goto exit;
@@ -803,7 +803,7 @@ int atbm_sdio_register_init()
 
 	ret = atbm_sdio_register(&atmbwifi_driver);
 	if (ret){
-		wifi_printk(WIFI_DBG_ERROR,"atbmwifi sdio driver register error\n");	
+		wifi_printk(WIFI_DBG_ERROR,"atbmwifi sdio driver register error\n");
 		goto err_reg;
 	}
 
@@ -815,7 +815,7 @@ int atbm_sdio_register_init()
 #endif
 
 	return 0;
-	
+
 #if ((ATBM_WIFI_PLATFORM != 10) && (ATBM_WIFI_PLATFORM != PLATFORM_AMLOGIC_S805)\
 		&& (ATBM_WIFI_PLATFORM != PLATFORM_AMLOGIC_905))
 err_on:

@@ -2322,7 +2322,7 @@ ble_gap_adv_active(void)
 }
 
 #if MYNEWT_VAL(BLE_EXT_ADV)
-SRAM_CODE static int 
+SRAM_CODE static int
 ble_gap_ext_auxiliary_pkt_set(uint8_t instance,const struct ble_gap_ext_adv_params *params)
 {
 	int rc;

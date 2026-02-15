@@ -118,7 +118,7 @@ extern uint16_t parse_arg_uint16(char *name, int *out_status);
 extern int parse_arg_mac(char *name, uint8_t *dst);
 extern int parse_arg_byte_stream(char *name, int max_len, uint8_t *dst, int *out_len);
 extern uint8_t parse_arg_uint8_dflt(char *name, uint8_t dflt, int *out_status);
-extern int parse_arg_kv_dflt(char *name, const struct kv_pair *kvs, 
+extern int parse_arg_kv_dflt(char *name, const struct kv_pair *kvs,
 							int def_val, int *out_status);
 
 
@@ -510,7 +510,7 @@ static const uint8_t oob_pub_key_test[64] = {
     /* X */
 	0xF4, 0x65, 0xE4, 0x3F, 0xF2, 0x3D, 0x3F, 0x1B, 0x9D, 0xC7, 0xDF, 0xC0,
 	0x4D, 0xA8, 0x75, 0x81, 0x84, 0xDB, 0xC9, 0x66, 0x20, 0x47, 0x96, 0xEC,
-	0xCF, 0x0D, 0x6C, 0xF5, 0xE1, 0x65, 0x00, 0xCC, 
+	0xCF, 0x0D, 0x6C, 0xF5, 0xE1, 0x65, 0x00, 0xCC,
     /* Y */
 	0x02, 0x01, 0xD0, 0x48, 0xBC, 0xBB, 0xD8, 0x99, 0xEE, 0xEF, 0xC4, 0x24,
 	0x16, 0x4E, 0x33, 0xC2, 0x01, 0xC2, 0xB0, 0x10, 0xCA, 0x6B, 0x4D, 0x43,
@@ -550,7 +550,7 @@ static void oob_pub_key_cb(void)
 	sys_memcpy_swap(oob_pri_key_swap, oob_pri_key_test, 32);
 	sys_memcpy_swap(&oob_pub_key_swap[0], &oob_pub_key_test[0], 32);
 	sys_memcpy_swap(&oob_pub_key_swap[32], &oob_pub_key_test[32], 32);
-	
+
 	bt_mesh_set_oob_pub_key(&oob_pub_key_swap[0], &oob_pub_key_swap[32], oob_pri_key_swap);
 }
 
@@ -605,11 +605,11 @@ static void provisioner_complete(int node_idx, const u8_t device_uuid[16],
 	net.net_idx = netkey_idx,
 	net.local = addr;
 	net.dst = unicast_addr;
-    
+
 	printk("provisioner_complete\r\n");
 	printk("node_idx: %d\r\n", node_idx);
 	printk("device_uuid: %02x, %02x, %02x, %02x, %02x, %02x\r\n",
-				device_uuid[0], device_uuid[1], device_uuid[2], 
+				device_uuid[0], device_uuid[1], device_uuid[2],
 				device_uuid[3], device_uuid[4], device_uuid[5]);
 	printk("unicast_addr: %u\r\n", unicast_addr);
 	printk("element_num: %u\r\n", element_num);
@@ -628,7 +628,7 @@ static int provisioner_input_num(bt_mesh_output_action_t act, u8_t size, u8_t li
 
 	prov_input_act = act;
 	prov_input_size = size;
-	
+
 	return 0;
 }
 
@@ -639,7 +639,7 @@ static int provisioner_output_num(bt_mesh_input_action_t act, void *data, u8_t s
 	}else{
 		printk("Enter a number (%lu) size (%u)\n", *(u32_t *)data, size);
 	}
-	
+
 	return 0;
 }
 
@@ -681,7 +681,7 @@ static struct bt_mesh_provisioner provisioner = {
 static int cmd_provisioner(int argc, char *argv[])
 {
 	int gatt = 0;
-	
+
 	if (argc < 3) {
 		return -EINVAL;
 	}
@@ -707,7 +707,7 @@ static int cmd_provisioner(int argc, char *argv[])
 			bt_mesh_provisioner_disable(BT_MESH_PROV_ADV);
 		}
 	}
-	
+
 	return 0;
 }
 
@@ -824,7 +824,7 @@ static int cmd_provisioner_pub_key_oob(int argc, char *argv[])
 	} else{
 		provisioner.prov_pub_key_oob = 0;
 	}
-	
+
 	return 0;
 }
 
@@ -885,14 +885,14 @@ static const struct kv_pair cmd_input_action[] = {
 static int cmd_auth_oob_set(int argc, char *argv[])
 {
 	int rc;
-	
+
     rc = parse_arg_all(argc - 1, argv + 1);
     if (rc != 0) {
         return rc;
     }
 
     prov.output_size = parse_arg_uint8_dflt("output_size",
-                                         MYNEWT_VAL(BLE_MESH_OOB_OUTPUT_SIZE), &rc);	
+                                         MYNEWT_VAL(BLE_MESH_OOB_OUTPUT_SIZE), &rc);
 
 	prov.output_actions = parse_arg_kv_dflt("output_act", cmd_output_action,
                                          MYNEWT_VAL(BLE_MESH_OOB_OUTPUT_ACTIONS), &rc);
@@ -933,7 +933,7 @@ static int cmd_pub_key_oob(int argc, char *argv[])
 	} else{
 		prov.oob_pub_key = 0;
 	}
-	
+
 	return 0;
 }
 
@@ -971,7 +971,7 @@ struct shell_cmd_help cmd_uuid_help = {
 static int cmd_reset(int argc, char *argv[])
 {
     uint16_t addr;
-	
+
 	if(argc == 2){
 		addr = strtoul(argv[1], NULL, 0);
 	}
@@ -1178,12 +1178,12 @@ static int cmd_proxy_client_connect(int argc, char *argv[]){
         printf("invalid 'type' parameter\n");
         return rc;
     }
-	
+
 	if((rc = bt_mesh_proxy_client_connect(addr,type,net.net_idx)) !=0)
     {
         printf("bt_mesh_proxy_client_connect err:%d\n",rc);
     }
-	
+
 
 }
 
@@ -1203,7 +1203,7 @@ void cmd_proxy_client_cfg_send(int argc, char *argv[]){
     if (rc != 0) {
         return rc;
     }
-	
+
 	handle = parse_arg_uint8("handle", &rc);
     if (rc != 0) {
         iot_printf("err 'handle'\n");
@@ -1215,7 +1215,7 @@ void cmd_proxy_client_cfg_send(int argc, char *argv[]){
         iot_printf("err 'opcode'\n");
         return rc;
     }
-    
+
 
     type =  parse_arg_uint8("type", &rc);
 	if (rc != 0) {
@@ -1245,7 +1245,7 @@ void cmd_proxy_client_cfg_send(int argc, char *argv[]){
 		pdu.remove.addr[0] = net.dst;
 		pdu.set.filter_type = type;
 	}
-   
+
 
     bt_mesh_proxy_client_cfg_send(handle,net.net_idx,&pdu);
 
@@ -1310,7 +1310,7 @@ struct shell_cmd_help cmd_appidx_help = {
 };
 
 static int cmd_net_send(int argc, char *argv[])
-{	
+{
 	struct os_mbuf *msg = NET_BUF_SIMPLE(32);
 	struct bt_mesh_msg_ctx ctx = {
 		.send_ttl = BT_MESH_TTL_DEFAULT,
@@ -1350,22 +1350,22 @@ static int cmd_net_send(int argc, char *argv[])
 	if(err != 0){
 		ctx.send_ttl = BT_MESH_TTL_DEFAULT;
 	}
-	
+
 	tx.src = parse_arg_uint16("src", &err);
 	if(err != 0){
 		tx.src = net.local;
-	}	
+	}
 
 	ctx.addr = parse_arg_uint16("dst", &err);
 	if(err != 0){
 		ctx.addr = net.dst;
 	}
-	
+
 	appkey = parse_arg_uint8("appkey", &err);
 	if(err != 0){
 		appkey = 1;
 	}
-	
+
     err = parse_arg_byte_stream("data", 16, send_data, &len);
 	if(err != 0){
 		iot_printf("invalid 'data' parameter\n");
@@ -1375,7 +1375,7 @@ static int cmd_net_send(int argc, char *argv[])
 	if(appkey == 0){
 		ctx.app_idx = BT_MESH_KEY_DEV;
 	}
-	
+
 	net_buf_simple_init(msg, 0);
 	memcpy(msg->om_data, send_data, len);
 	net_buf_simple_add(msg, len);
@@ -1392,11 +1392,11 @@ done:
 
 static const struct shell_param cmd_net_send_params[] = {
     {"ttl", "usage: =[0-UINT8_MAX], default: 255"},
-	{"src", "usage: =[UINT16]"},	
+	{"src", "usage: =[UINT16]"},
 	{"dst", "usage: =[UINT16]"},
 	{"appkey", "usage: =[0-1], =0 appkey use BT_MESH_KEY_DEV"},
 	{"data", "usage: =[XX:XX...]"},
-	{NULL, NULL}	
+	{NULL, NULL}
 };
 
 struct shell_cmd_help cmd_net_send_help = {
@@ -1822,7 +1822,7 @@ static int cmd_net_key_update(int argc, char *argv[])
 	u16_t key_net_idx;
 	u8_t status;
 	int err;
-	
+
 	if (argc < 2) {
 		return -EINVAL;
 	}
@@ -1905,7 +1905,7 @@ static int cmd_net_key_del(int argc, char *argv[])
 		printk("NetKey Delete, NetKeyIndex 0x%04x \n", key_net_idx);
 	}
 
-	return 0;	
+	return 0;
 }
 
 struct shell_cmd_help cmd_net_key_del_help = {
@@ -2101,7 +2101,7 @@ struct shell_cmd_help cmd_local_net_key_add_help = {
 };
 
 static int cmd_provisioner_beacon(int argc, char *argv[])
-{ 
+{
     int err;
 	bool kr_flag;
 	u8_t key_val[16];
@@ -2216,14 +2216,14 @@ static int cmd_app_key_get(int argc, char *argv[])
 		return -EINVAL;
 	}
 
-	key_net_idx = strtoul(argv[1], NULL, 0);	
+	key_net_idx = strtoul(argv[1], NULL, 0);
 
 	err = bt_mesh_cfg_app_key_get(net.net_idx, net.dst, key_net_idx, &data, &len, &status);
 	if (err) {
 		printk("Unable to send AppKey get (err %d)\n", err);
 		return 0;
 	}
-	
+
 	if (status) {
 		printk("AppKey get failed with status 0x%02x\n", status);
 	} else {
@@ -2247,7 +2247,7 @@ static int cmd_app_key_get(int argc, char *argv[])
 				break;
 			}
 		}
-		printk("\n");		
+		printk("\n");
 	}else{
 		printk("NetKey get none\n");
 	}
@@ -2268,7 +2268,7 @@ static int cmd_app_key_del(int argc, char *argv[])
 	u16_t key_net_idx, key_app_idx;
 	u8_t status;
 	int err;
-	
+
 	if (argc < 3) {
 		return -EINVAL;
 	}
@@ -2287,11 +2287,11 @@ static int cmd_app_key_del(int argc, char *argv[])
 	if (status) {
 		printk("AppKey Delete failed with status 0x%02x\n", status);
 	} else {
-		printk("AppKey Delete, NetKeyIndex 0x%04x, AppKeyIndex 0x%04x\n", 
+		printk("AppKey Delete, NetKeyIndex 0x%04x, AppKeyIndex 0x%04x\n",
 				key_net_idx, key_app_idx);
 	}
 
-	return 0;		
+	return 0;
 }
 
 struct shell_cmd_help cmd_app_key_del_help = {
@@ -2638,7 +2638,7 @@ static int cmd_node_id_get(int argc,
 	int err;
 	err = bt_mesh_cfg_node_identity_get(net.net_idx, net.dst,
 					      &status);
-	if (status.status == 0) 
+	if (status.status == 0)
 	{
 		printf("cmd_node_id_get identity 0x%02x,nix:%x\n", status.identity,status.net_idx);
 	    return 0;
@@ -2662,10 +2662,10 @@ static int cmd_node_id_set(int argc,
     struct bt_mesh_cfg_node_id_status status;
     identity = strtoul(argv[1], NULL, 0);
 
-	
+
 	err = bt_mesh_cfg_node_identity_set(net.net_idx, net.dst,
 					     identity, &status);
-	if (status.status == 0) 
+	if (status.status == 0)
 	{
 		printf("cmd_node_id_set identity: 0x%02x\n", status.identity);
 	    return 0;
@@ -2693,7 +2693,7 @@ static int cmd_lpn_timeout_get(int argc,
 	err = lpn_client_timeout_get(net.net_idx, net.dst,
 					     lpn, &status);
 
-	if (status.timeout != 0) 
+	if (status.timeout != 0)
 	{
 		printf("cmd_lpn_timeout_get addr: 0x%02x,timeout:%x\n", status.lpn_addr,status.timeout);
 	    return 0;
@@ -2838,7 +2838,7 @@ static int cmd_mod_sub_overwrite_va(int argc, char *argv[])
 	if (argc < 3) {
 		return -EINVAL;
 	}
-	
+
 	memset(label, 0, sizeof(label));
     elem_addr = strtoul(argv[1], NULL, 0);
     sub_addr =  strtoul(argv[2], NULL, 0);
@@ -3045,7 +3045,7 @@ static int mod_pub_va_set(u16_t addr, u16_t mod_id, u16_t cid, char *argv[])
 	if (cid == CID_NVAL) {
 		err = bt_mesh_cfg_mod_pub_va_set(net.net_idx, net.dst, addr,
 					      mod_id, &pub, &status);
-	} 
+	}
 
 	if (err) {
 		printk("Model Publication va Set failed (err %d)\n", err);
@@ -3144,7 +3144,7 @@ static int cmd_mod_pub_va(int argc, char *argv[])
 		}
 
 		return mod_pub_va_set(addr, mod_id, cid, argv);
-	} 
+	}
 	return 0;
 }
 
@@ -4056,7 +4056,7 @@ static const struct shell_cmd mesh_commands[] = {
 #endif
 #if MYNEWT_VAL(BLE_MESH_GATT_PROXY_CLIENT)
 	{ "proxy-connect", cmd_proxy_client_connect, &cmd_proxy_client_connect_help },
-	{ "proxy-client-cfg-send", cmd_proxy_client_cfg_send, NULL },	
+	{ "proxy-client-cfg-send", cmd_proxy_client_cfg_send, NULL },
 #endif
 
 #if MYNEWT_VAL(BLE_MESH_HEALTH_CLI)
@@ -4131,14 +4131,14 @@ static void cli_btmesh(char *pLine)
 	char * str;
 	int cmdid=0;
 	const struct shell_cmd *cmd;
-	
+
 	while(1){
 		//pLine = CmdLine_SkipSpace(pLine);
 	    str = cli_get_token(&pLine);
 	    if (str[0] == 0)
 	    {
 	        break;
-	    }		
+	    }
 		argv[argc]=str;
 		argc++;
 		if(argc>=MAX_ARGV_CNT){
@@ -4177,7 +4177,7 @@ static void cli_btmesh(char *pLine)
 			            {
 			                iot_printf("Parameters:\n");
 			                print_command_params(cmdid);
-			            }					
+			            }
 					}
 				}else{
 					for(cmdid=0;cmdid<sizeof(mesh_commands)/sizeof(mesh_commands[0]);cmdid++){

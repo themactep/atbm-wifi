@@ -1,10 +1,10 @@
 
 /**************************************************************************************************************
- * altobeam LINUX wifi hmac source code 
+ * altobeam LINUX wifi hmac source code
  *
  * Copyright (c) 2018, altobeam.inc   All rights reserved.
  *
- *  The source code contains proprietary information of AltoBeam, and shall not be distributed, 
+ *  The source code contains proprietary information of AltoBeam, and shall not be distributed,
  *  copied, reproduced, or disclosed in whole or in part without prior written permission of AltoBeam.
 *****************************************************************************************************************/
 #include "atbm_hal.h"
@@ -48,7 +48,7 @@ atbm_int8 atbm_os_MsgQ_Create(atbm_os_msgq *pmsgQ, atbm_uint32 *pstack, atbm_uin
 		ret = WIFI_ERROR;
 		goto error;
 	}
-	
+
 	sema_init(&pmsgQ->wait_sem, 0);
 	atbm_spin_lock_init(&pmsgQ->spinlock);
 	atbm_spin_lock_init(&pmsgQ->spinlock_msg);
@@ -110,7 +110,7 @@ atbm_int8 atbm_os_MsgQ_Recv(atbm_os_msgq *pmsgQ, atbm_void *pbuf, int len, atbm_
 				ret = WIFI_ERROR;
 				goto error;
 			}
-			
+
 			if (pmsgQ->is_exit){
 				wifi_printk(WIFI_DBG_ERROR,"msg delete\n");
 				ret = WIFI_ERROR;
@@ -146,7 +146,7 @@ atbm_int8 atbm_os_MsgQ_Recv(atbm_os_msgq *pmsgQ, atbm_void *pbuf, int len, atbm_
 	if (need_wake){
 		up(&(pmsgQ->wait_sem));
 	}
-	
+
 error:
 	return ret;
 }

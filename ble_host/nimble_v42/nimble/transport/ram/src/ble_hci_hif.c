@@ -45,7 +45,7 @@ static os_membuf_t ble_hci_acl_buf[
 
 
 static struct {
-	STAILQ_HEAD(, ble_hci_hif_pkt) hif_tx_pkt; /* Packet queue to send to UART */	
+	STAILQ_HEAD(, ble_hci_hif_pkt) hif_tx_pkt; /* Packet queue to send to UART */
 }ble_hci_hif_state;
 
 
@@ -108,7 +108,7 @@ int ble_hci_trans_hs_cmd_tx(uint8_t *cmd)
 	struct atbmwifi_common *hw_priv = &g_hw_prv;
 #endif
     pkt = os_memblock_get(&ble_hci_hif_pkt_pool);
-    if (pkt == NULL) {		
+    if (pkt == NULL) {
         ble_hci_trans_buf_free(cmd);
         return BLE_ERR_MEM_CAPACITY;
     }
@@ -215,7 +215,7 @@ struct os_mbuf *ble_hci_trans_acl_buf_alloc(void)
 
     usrhdr_len = sizeof(struct ble_mbuf_hdr);
     m = os_mbuf_get_pkthdr(&ble_hci_acl_mbuf_pool, usrhdr_len);
-	
+
     return m;
 }
 
@@ -281,7 +281,7 @@ void ble_hci_ram_init(void)
                          ble_hci_ram_cmd_buf,
                          "ble_hci_ram_cmd_pool");
     SYSINIT_PANIC_ASSERT(rc == 0);
-	
+
 
     rc = os_mempool_init(&ble_hci_ram_evt_hi_pool,
                          MYNEWT_VAL(BLE_HCI_EVT_HI_BUF_COUNT),
@@ -310,7 +310,7 @@ void ble_hci_ram_init(void)
                          ble_hci_hif_pkt_buf,
                          "ble_hci_hif_pkt_pool");
     SYSINIT_PANIC_ASSERT(rc == 0);
-	
+
     memset(&ble_hci_hif_state, 0, sizeof (ble_hci_hif_state));
     STAILQ_INIT(&ble_hci_hif_state.hif_tx_pkt);
 }
@@ -330,7 +330,7 @@ struct ble_hci_hif_pkt *ble_hci_trans_tx_pkt_get(void)
 
     STAILQ_REMOVE(&ble_hci_hif_state.hif_tx_pkt, pkt, ble_hci_hif_pkt, next);
 
-    OS_EXIT_CRITICAL(sr);	
+    OS_EXIT_CRITICAL(sr);
 
 	return pkt;
 }
@@ -340,7 +340,7 @@ void ble_hci_trans_copy_data(struct ble_hci_hif_pkt *tx_pkt, uint8_t *output, ui
 	uint32_t tx_len=0;
 	uint8_t *data;
 	struct os_mbuf *om, *om_next;
-	
+
 	output[*putLen] = tx_pkt->type;
 	(*putLen) ++;
 	if(tx_pkt->type == BLE_HCI_HIF_CMD){
@@ -365,7 +365,7 @@ void ble_hci_trans_copy_data(struct ble_hci_hif_pkt *tx_pkt, uint8_t *output, ui
 			om_next = SLIST_NEXT(om, om_next);
 			os_mbuf_free(om);
 			om = om_next;
-		}				
+		}
 	}
 	else{
 		assert(0);
@@ -378,7 +378,7 @@ void _ble_hci_trans_copy_data(struct ble_hci_hif_pkt *tx_pkt, uint8_t *output, u
 	uint32_t tx_len=0;
 	uint8_t *data;
 	struct os_mbuf *om, *om_next;
-	
+
 	output[*putLen] = tx_pkt->type;
 	(*putLen) ++;
 	if(tx_pkt->type == BLE_HCI_HIF_CMD){
@@ -400,7 +400,7 @@ void _ble_hci_trans_copy_data(struct ble_hci_hif_pkt *tx_pkt, uint8_t *output, u
 			(*putLen) += om->om_len;
 			om_next = SLIST_NEXT(om, om_next);
 			om = om_next;
-		}				
+		}
 	}
 	else{
 		assert(0);
@@ -418,7 +418,7 @@ void ble_hci_trans_free_hif_pkt(struct ble_hci_hif_pkt *tx_pkt)
 	default:
 		assert(0);
 	}
-	
+
 	os_memblock_put(&ble_hci_hif_pkt_pool, tx_pkt);
 }
 int ble_hci_trans_hs_rx(uint8_t ack, uint8_t *data, uint16_t data_len)
@@ -427,7 +427,7 @@ int ble_hci_trans_hs_rx(uint8_t ack, uint8_t *data, uint16_t data_len)
 	uint8_t *evtbuf = NULL;
 	struct os_mbuf *om = NULL;
 	int ret = -1;
-	
+
 #if 0
 	int i;
 	iot_printf("hs_rx:");
@@ -454,7 +454,7 @@ int ble_hci_trans_hs_rx(uint8_t ack, uint8_t *data, uint16_t data_len)
 			ble_hci_ram_rx_cmd_hs_cb(evtbuf, ble_hci_ram_rx_cmd_hs_arg);
 			ret = 0;
 			break;
-	
+
 		case BLE_HCI_HIF_ACL:
 			len = get_le16(&data[3]) + BLE_HCI_DATA_HDR_SZ;
 			assert(len <= ACL_BLOCK_SIZE);
@@ -462,14 +462,14 @@ int ble_hci_trans_hs_rx(uint8_t ack, uint8_t *data, uint16_t data_len)
 			if(om == NULL){
 				break;
 			}
-			memcpy(om->om_data, &data[1], len);	
+			memcpy(om->om_data, &data[1], len);
 			om->om_len = len;
 			OS_MBUF_PKTLEN(om) = len;
 			assert(ble_hci_ram_rx_acl_hs_cb != NULL);
 			ble_hci_ram_rx_acl_hs_cb(om, ble_hci_ram_rx_acl_hs_arg);
 			ret = 0;
 			break;
-			
+
 		default:
 			break;
 	}

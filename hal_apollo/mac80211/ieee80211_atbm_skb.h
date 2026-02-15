@@ -96,14 +96,14 @@ extern void ieee80211_atbm_skb_orphan(struct sk_buff *skb,const char *func);
 #define RX_DEBUG_FLAG_ADDWORK   BIT(13)
 
 #define IEEE80211_ATBM_SKB_HEAD_SIZE 0
-#define __atbm_dev_alloc_skb(_length,_gfp_mask) 				__ieee80211_atbm_dev_alloc_skb(_length,_gfp_mask,__func__)																														
-#define atbm_dev_alloc_skb(_length)								ieee80211_atbm_dev_alloc_skb(_length,__func__)              																														    
-#define atbm_alloc_skb(_size,_priority) 						ieee80211_atbm_alloc_skb(_size,_priority,__func__)      																														
-#define atbm_dev_kfree_skb_any(_skb)							ieee80211_atbm_dev_kfree_skb_any(_skb)																														
-#define atbm_dev_kfree_skb(_skb)								ieee80211_atbm_dev_kfree_skb(_skb)																														
-#define atbm_kfree_skb(_skb)									ieee80211_atbm_kfree_skb(_skb)																														
-#define atbm_dev_kfree_skb_irq(_skb)							ieee80211_atbm_dev_kfree_skb_irq(_skb)																														
-#define atbm_skb_reserve(_skb,_len)								ieee80211_atbm_skb_reserve(_skb,_len)																														
+#define __atbm_dev_alloc_skb(_length,_gfp_mask) 				__ieee80211_atbm_dev_alloc_skb(_length,_gfp_mask,__func__)
+#define atbm_dev_alloc_skb(_length)								ieee80211_atbm_dev_alloc_skb(_length,__func__)
+#define atbm_alloc_skb(_size,_priority) 						ieee80211_atbm_alloc_skb(_size,_priority,__func__)
+#define atbm_dev_kfree_skb_any(_skb)							ieee80211_atbm_dev_kfree_skb_any(_skb)
+#define atbm_dev_kfree_skb(_skb)								ieee80211_atbm_dev_kfree_skb(_skb)
+#define atbm_kfree_skb(_skb)									ieee80211_atbm_kfree_skb(_skb)
+#define atbm_dev_kfree_skb_irq(_skb)							ieee80211_atbm_dev_kfree_skb_irq(_skb)
+#define atbm_skb_reserve(_skb,_len)								ieee80211_atbm_skb_reserve(_skb,_len)
 #define atbm_skb_trim(_skb, _len)								ieee80211_atbm_skb_trim(_skb, _len)
 #define atbm_skb_put(_skb,_len)									ieee80211_atbm_skb_put(_skb,_len)
 #define atbm_skb_queue_tail(_list,_newsk)						ieee80211_atbm_skb_queue_tail(_list,_newsk)
@@ -133,7 +133,7 @@ extern void ieee80211_atbm_skb_orphan(struct sk_buff *skb,const char *func);
 #define atbm_skb_queue_splice(_list,_head)						ieee80211_atbm_skb_queue_splice(_list,_head)
 #define atbm_skb_queue_splice_init(_list,_head)					ieee80211_atbm_skb_queue_splice_init(_list,_head)
 #define __atbm_pskb_trim(_skb,_len)								__ieee80211_atbm_pskb_trim(_skb,_len)
-#define atbm_pskb_may_pull(_skb,_len)							ieee80211_atbm_pskb_may_pull(_skb,_len)																	
+#define atbm_pskb_may_pull(_skb,_len)							ieee80211_atbm_pskb_may_pull(_skb,_len)
 #define atbm_skb_headroom(_skb)									ieee80211_atbm_skb_headroom(_skb)
 #define atbm_pskb_expand_head(_skb,_nhead,_ntail,_gfp_mask)		ieee80211_atbm_pskb_expand_head(_skb,_nhead,_ntail,_gfp_mask,__func__)
 #define atbm_skb_copy_expand(_skb,_newheadroom,_newtailroom,_gfp_mask)	\
@@ -155,14 +155,14 @@ extern void ieee80211_atbm_skb_orphan(struct sk_buff *skb,const char *func);
 		ieee80211_atbm_amsdu_to_8023s(_skb, _list,_addr,_iftype,_extra_headroom,true)
 #define atbm_skb_orphan(_skb)									ieee80211_atbm_skb_orphan(_skb,__func__)
 #else
-#define __atbm_dev_alloc_skb(_length,_gfp_mask) 				__dev_alloc_skb(_length,_gfp_mask)																														
-#define atbm_dev_alloc_skb(_length)								dev_alloc_skb(_length)              																														    
-#define atbm_alloc_skb(_size,_priority) 						alloc_skb(_size,_priority)      																														
-#define atbm_dev_kfree_skb_any(_skb)							dev_kfree_skb_any(_skb)																														
-#define atbm_dev_kfree_skb(_skb)								dev_kfree_skb(_skb)																														
-#define atbm_kfree_skb(_skb)									kfree_skb(_skb)																														
-#define atbm_dev_kfree_skb_irq(_skb)							dev_kfree_skb_irq(_skb)																														
-#define atbm_skb_reserve(_skb,_len)								skb_reserve(_skb,_len)																														
+#define __atbm_dev_alloc_skb(_length,_gfp_mask) 				__dev_alloc_skb(_length,_gfp_mask)
+#define atbm_dev_alloc_skb(_length)								dev_alloc_skb(_length)
+#define atbm_alloc_skb(_size,_priority) 						alloc_skb(_size,_priority)
+#define atbm_dev_kfree_skb_any(_skb)							dev_kfree_skb_any(_skb)
+#define atbm_dev_kfree_skb(_skb)								dev_kfree_skb(_skb)
+#define atbm_kfree_skb(_skb)									kfree_skb(_skb)
+#define atbm_dev_kfree_skb_irq(_skb)							dev_kfree_skb_irq(_skb)
+#define atbm_skb_reserve(_skb,_len)								skb_reserve(_skb,_len)
 #define atbm_skb_trim(_skb, _len)								skb_trim(_skb, _len)
 #define atbm_skb_put(_skb,_len)									skb_put(_skb,_len)
 #define atbm_skb_queue_tail(_list,_newsk)						skb_queue_tail(_list,_newsk)
@@ -196,7 +196,7 @@ extern void ieee80211_atbm_skb_orphan(struct sk_buff *skb,const char *func);
 #define atbm_skb_queue_splice(_list,_head)						skb_queue_splice(_list,_head)
 #define atbm_skb_queue_splice_init(_list,_head)					skb_queue_splice_init(_list,_head)
 #define __atbm_pskb_trim(_skb,_len)								__pskb_trim(_skb,_len)
-#define atbm_pskb_may_pull(_skb,_len)							pskb_may_pull(_skb,_len)																	
+#define atbm_pskb_may_pull(_skb,_len)							pskb_may_pull(_skb,_len)
 #define atbm_skb_headroom(_skb)									skb_headroom(_skb)
 #define atbm_pskb_expand_head(_skb,_nhead,_ntail,_gfp_mask)		pskb_expand_head(_skb,_nhead,_ntail,_gfp_mask)
 #define atbm_skb_copy_expand(_skb,_newheadroom,_newtailroom,_gfp_mask)	skb_copy_expand(_skb,_newheadroom,_newtailroom,_gfp_mask)
@@ -217,14 +217,14 @@ extern void ieee80211_atbm_skb_orphan(struct sk_buff *skb,const char *func);
 		ieee80211_amsdu_to_8023s(_skb, _list,_addr,_iftype,_extra_headroom,true)
 #else
 
-#if (LINUX_VERSION_CODE <= KERNEL_VERSION(4, 9, 129)) 
+#if (LINUX_VERSION_CODE <= KERNEL_VERSION(4, 9, 129))
 #define atbm_ieee80211_data_to_8023_exthdr(_skb,_eth,_addr,_iftype) \
 	ieee80211_data_to_8023_exthdr(_skb,_eth,_addr,_iftype)
-#elif (LINUX_VERSION_CODE < KERNEL_VERSION(5, 5, 0)) 
+#elif (LINUX_VERSION_CODE < KERNEL_VERSION(5, 5, 0))
 
 #define atbm_ieee80211_data_to_8023_exthdr(_skb,_eth,_addr,_iftype) \
 	ieee80211_data_to_8023_exthdr(_skb,_eth,_addr,_iftype,0)
-		
+
 #else
 #define atbm_ieee80211_data_to_8023_exthdr(_skb,_eth,_addr,_iftype) \
 	ieee80211_data_to_8023_exthdr(_skb,_eth,_addr,_iftype,0,true)

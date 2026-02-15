@@ -68,7 +68,7 @@ static void *__ieee80211_atbm_kmalloc(size_t s, gfp_t gfp,const char *call_addr)
 	struct ieee80211_atbm_mem *atbm_mem = NULL;
 	void *p = NULL;
 	unsigned long flags;
-	
+
 	atbm_mem = kmalloc(s+sizeof(struct ieee80211_atbm_mem),gfp);
 	atbm_printk_debug( "alloc atbm_mem(%p)\n",atbm_mem);
 	if(atbm_mem){
@@ -110,14 +110,14 @@ void *ieee80211_atbm_krealloc(void *p, size_t new_size, gfp_t gfp,const char *fu
 	struct ieee80211_atbm_mem *atbm_mem_new = NULL;
 	void *p_new = NULL;
 	unsigned long flags;
-	
+
 	if((p == NULL)||(new_size == 0))
 		return NULL;
 
 	atbm_mem = container_of(p, struct ieee80211_atbm_mem, mem);
 
-	
-	spin_lock_irqsave(&ieee80211_atbm_mem_spin_lock, flags);	
+
+	spin_lock_irqsave(&ieee80211_atbm_mem_spin_lock, flags);
 	list_del(&atbm_mem->head);
 	mem_del_generation++;
 	spin_unlock_irqrestore(&ieee80211_atbm_mem_spin_lock, flags);
@@ -128,7 +128,7 @@ void *ieee80211_atbm_krealloc(void *p, size_t new_size, gfp_t gfp,const char *fu
 		p_new = (void*)atbm_mem_new->mem;
 		atbm_mem_new->call_addr = func;
 		atbm_mem_new->mem_len = new_size+sizeof(struct ieee80211_atbm_mem);
-		spin_lock_irqsave(&ieee80211_atbm_mem_spin_lock, flags);		
+		spin_lock_irqsave(&ieee80211_atbm_mem_spin_lock, flags);
 		list_add_tail(&atbm_mem_new->head, &ieee80211_atbm_mem_list);
 		mem_add_generation++;
 		spin_unlock_irqrestore(&ieee80211_atbm_mem_spin_lock, flags);
@@ -141,12 +141,12 @@ void ieee80211_atbm_kfree(void *p)
 {
 	struct ieee80211_atbm_mem *atbm_mem = NULL;
 	unsigned long flags;
-	
+
 	if(p == NULL)
 		return;
 	atbm_mem = container_of(p, struct ieee80211_atbm_mem, mem);
 
-	spin_lock_irqsave(&ieee80211_atbm_mem_spin_lock, flags);	
+	spin_lock_irqsave(&ieee80211_atbm_mem_spin_lock, flags);
 	list_del(&atbm_mem->head);
 	mem_del_generation++;
 	spin_unlock_irqrestore(&ieee80211_atbm_mem_spin_lock, flags);
@@ -161,7 +161,7 @@ static ssize_t atbm_mem_show(struct kobject *kobj,
 	struct ieee80211_atbm_mem *atbm_mem = NULL;
 	u32 mem_in_list = 0;
 	u32 mem_total_bytes = 0;
-	
+
 	mem_show.show_buff = buf;
 	mem_show.show_count = 0;
 	mem_show.show_size = ATBM_MEM_SHOW_BUFF_MAX_SIZE;

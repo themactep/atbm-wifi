@@ -14,12 +14,12 @@ void ELOG_Clear(void);
 #define EELOG_Show()			ELOG_Show()
 #define EELOG_Clear()			ELOG_Clear()
 #else
-#define EELOG_INIT()			
-#define EELOG_Add( id, data)  	
-#define EELOG_Stop()			
-#define EELOG_Start()			
-#define EELOG_Show()			
-#define EELOG_Clear()			
+#define EELOG_INIT()
+#define EELOG_Add( id, data)
+#define EELOG_Stop()
+#define EELOG_Start()
+#define EELOG_Show()
+#define EELOG_Clear()
 #endif
 enum{
 	USB_RX_EVENT_BASE=0x10,

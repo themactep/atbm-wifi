@@ -3,7 +3,7 @@
  *
  *
  * Copyright (c) 2016, altobeam
- * Author: 
+ * Author:
  *
  * Based on 2010, ST-Ericsson
  * Author: Dmitry Tarnyagin <dmitry.tarnyagin@stericsson.com>
@@ -77,7 +77,7 @@ int atbm_sta_add(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
 	struct wsm_map_link map_link = {
 		.link_id = 0,
 	};
-		
+
 	if(atbm_bh_is_term(hw_priv)){
 		return -ENOENT;
 	}
@@ -92,7 +92,7 @@ int atbm_sta_add(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
 			atbm_do_join(vif,bss);
 			ieee80211_atbm_put_bss(hw_priv->hw->wiphy, bss);
 		}
-		
+
 		return 0;
 	}
 	if (priv->mode != NL80211_IFTYPE_AP)
@@ -102,34 +102,34 @@ int atbm_sta_add(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
 		atbm_printk_err("add sta[%pM]],Aid[%d] err\n", sta->addr, sta->aid);
 		return -ENOENT;
 	}
-	
-#ifdef AP_MODE_SUPPORT_SLEEP	
+
+#ifdef AP_MODE_SUPPORT_SLEEP
 		if(hw_priv->connected_sta_cnt == 0){
 			atbm_printk_err("[STA] Setting p2p powersave "
 						"close.\n");
-#ifdef CONFIG_ATBM_SUPPORT_P2P		
+#ifdef CONFIG_ATBM_SUPPORT_P2P
 			priv->p2p_ps_modeinfo.oppPsCTWindow &= 0x7F;
-			
+
 			WARN_ON(wsm_set_p2p_ps_modeinfo(hw_priv,
 				&priv->p2p_ps_modeinfo, priv->if_id));
 			atbm_notify_noa(priv, ATBM_APOLLO_NOA_NOTIFICATION_DELAY);
 #endif
 		}
 		hw_priv->connected_sta_cnt++;
-#endif	
+#endif
 
-		
+
 	atbm_printk_err("sta(%pM)(%d) add\n",sta->addr,sta->aid);
-	
+
 	spin_lock_bh(&priv->ps_state_lock);
-	
+
 
 	sta_priv->priv = priv;
 	sta_priv->link_id = sta->aid;
 	entry = &priv->link_id_db[sta_priv->link_id - 1];
 
 	BUG_ON(entry->status != ATBM_APOLLO_LINK_OFF);
-	
+
 	entry->status = ATBM_APOLLO_LINK_HARD;
 	entry->timestamp = jiffies;
 	priv->sta_asleep_mask &= ~BIT(sta_priv->link_id);
@@ -137,9 +137,9 @@ int atbm_sta_add(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
 	priv->link_id_map |= BIT(sta_priv->link_id);
 	map_link.link_id = sta_priv->link_id;
 	memcpy(map_link.mac_addr, sta->addr, ETH_ALEN);
-	
+
 	spin_unlock_bh(&priv->ps_state_lock);
-	
+
 	if (WARN_ON(wsm_map_link(hw_priv, &map_link, priv->if_id))) {
 		atbm_printk_err("Sta[%pM][%d] add errr\n", sta->addr, sta->aid);
 		entry->status = ATBM_APOLLO_LINK_OFF;
@@ -169,23 +169,23 @@ int atbm_sta_remove(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
 	}
 	if (priv->mode != NL80211_IFTYPE_AP || !sta_priv->link_id)
 		return 0;
-	
+
 	atbm_printk_err("sta(%pM)(%d)(%d) remove\n",sta->addr,sta_priv->link_id,sta->aid);
 	WARN_ON(sta_priv->link_id != sta->aid);
-	
+
 	entry = &priv->link_id_db[sta_priv->link_id - 1];
 	/*
 	*wait tx path and rx path finished .after that the data frame can not
 	*send to low path
 	*/
 	synchronize_rcu();
-	
+
 	atbm_wait_event_timeout_stay_awake(hw_priv,
 				hw_priv->tx_queue_stats.wait_link_id_empty,
 				atbm_queue_stats_is_empty(
 					&hw_priv->tx_queue_stats, BIT(sta_priv->link_id), priv->if_id),
 				7* HZ,true);
-	
+
 	spin_lock_bh(&priv->ps_state_lock);
 	entry->status = ATBM_APOLLO_LINK_OFF;
 	priv->link_id_map &= ~BIT(sta_priv->link_id);
@@ -194,15 +194,15 @@ int atbm_sta_remove(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
 	unmap_link.link_id = sta_priv->link_id;
 	memcpy(unmap_link.mac_addr, sta->addr, ETH_ALEN);
 	spin_unlock_bh(&priv->ps_state_lock);
-	
+
 	WARN_ON(wsm_map_link(hw_priv, &unmap_link, priv->if_id));
-	
+
 #ifdef AP_MODE_SUPPORT_SLEEP
 	hw_priv->connected_sta_cnt--;
 	if(hw_priv->connected_sta_cnt == 0){
 		atbm_printk_err("[STA] Setting p2p powersave "
 					"open.\n");
-#ifdef CONFIG_ATBM_SUPPORT_P2P		
+#ifdef CONFIG_ATBM_SUPPORT_P2P
 		priv->p2p_ps_modeinfo.oppPsCTWindow |= BIT(7);
 
 		WARN_ON(wsm_set_p2p_ps_modeinfo(hw_priv,
@@ -210,7 +210,7 @@ int atbm_sta_remove(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
 		atbm_notify_noa(priv, ATBM_APOLLO_NOA_NOTIFICATION_DELAY);
 #endif
 	}
-#endif	
+#endif
 	return 0;
 }
 
@@ -298,7 +298,7 @@ static int atbm_set_tim_impl(struct atbm_vif *priv, bool aid0_bit_set)
 		.count = 1,
 	};
 	u16 tim_offset, tim_length;
-	
+
 	skb = ieee80211_beacon_get_tim(priv->hw, priv->vif,
 			&tim_offset, &tim_length);
 	if (!skb) {
@@ -539,7 +539,7 @@ void atbm_ibss_join_work(struct atbm_vif *priv)
 	}
 #endif
 	if(priv->if_id&&(priv->vif->p2p==true)){
-		join.channel_type = (u32)(hw_priv->channel_type>NL80211_CHAN_NO_HT ? 
+		join.channel_type = (u32)(hw_priv->channel_type>NL80211_CHAN_NO_HT ?
 								  NL80211_CHAN_HT20 : NL80211_CHAN_NO_HT);
 	} else {
 		join.channel_type = (u32)hw_priv->channel_type;
@@ -624,7 +624,7 @@ void atbm_bss_info_changed(struct ieee80211_hw *dev,
 		*sta and ap mode change channel or channel type
 		*/
 		if(info->assoc || (priv->join_status == ATBM_APOLLO_JOIN_STATUS_AP)){
-			struct wsm_set_chantype set_channtype;	
+			struct wsm_set_chantype set_channtype;
 			wsm_lock_tx_async(hw_priv);
 			wsm_flush_tx(hw_priv);
 			BUG_ON(hw_priv->channel == NULL);
@@ -722,7 +722,7 @@ void atbm_bss_info_changed(struct ieee80211_hw *dev,
 			if (priv->setbssparams_done) {
 				struct wsm_set_pm pm = priv->powersave_mode;
 				int ret = 0;
-				
+
 				if(info->ps_enabled)
 					priv->powersave_mode.pmMode = WSM_PSM_FAST_PS;
 				else
@@ -733,7 +733,7 @@ void atbm_bss_info_changed(struct ieee80211_hw *dev,
 					priv->powersave_mode = pm;
 			} else{
 //				priv->powersave_mode.pmMode = WSM_PSM_FAST_PS;
-				
+
 			}
 			atbm_printk_err("%s %d : pmMode(%d) \n",__func__,__LINE__,priv->powersave_mode.pmMode);
 		}
@@ -880,7 +880,7 @@ void atbm_bss_info_changed(struct ieee80211_hw *dev,
 	     BSS_CHANGED_HT |
 	     BSS_CHANGED_ERP_SLOT |
 	     BSS_CHANGED_IBSS)) {
-		
+
 		atbm_printk_ap("BSS_CHANGED_ASSOC.changed(%x)\n",changed);
 		if (info->assoc || info->ibss_joined) { /* TODO: ibss_joined */
 			struct ieee80211_sta *sta = NULL;
@@ -1017,7 +1017,7 @@ void atbm_bss_info_changed(struct ieee80211_hw *dev,
 			memset(&priv->bss_params, 0, sizeof(priv->bss_params));
 		}
 	}
-	
+
 	if(BSS_CHANGED_STA_DTIM & changed){
 		priv->join_dtim_period = info->dtim_period;
 		WARN_ON(wsm_set_beacon_wakeup_period(hw_priv,
@@ -1044,7 +1044,7 @@ void atbm_bss_info_changed(struct ieee80211_hw *dev,
 				};
 				u32 erp_info;
 				__le32 use_cts_prot;
-				
+
 				erp_info = priv->erp_info;
 				use_cts_prot =
 					erp_info & WLAN_ERP_USE_PROTECTION ?
@@ -1083,7 +1083,7 @@ void atbm_bss_info_changed(struct ieee80211_hw *dev,
 		atbm_printk_ap( "[STA] Slot time :%d us.\n",__le32_to_cpu(slot_time));
 		WARN_ON(wsm_write_mib(hw_priv, WSM_MIB_ID_DOT11_SLOT_TIME,
 			&slot_time, sizeof(slot_time), priv->if_id));
-		
+
 #if defined(CONFIG_NL80211_TESTMODE) || defined(CONFIG_ATBM_IOCTRL)
 		{
 			extern int atbm_tool_use_short_slot;
@@ -1163,7 +1163,7 @@ void atbm_bss_info_changed(struct ieee80211_hw *dev,
 	}
 #endif
 	if (changed & BSS_CHANGED_PS) {
-		
+
 		if (info->ps_enabled == false){
 			priv->powersave_mode.pmMode = WSM_PSM_ACTIVE;
 		}else {
@@ -1186,7 +1186,7 @@ void atbm_bss_info_changed(struct ieee80211_hw *dev,
 		else
 			priv->powersave_mode.fastPsmIdlePeriod =
 					info->dynamic_ps_timeout << 1;
-		
+
 		if (priv->join_status == ATBM_APOLLO_JOIN_STATUS_STA &&
 				priv->bss_params.aid &&
 				priv->setbssparams_done &&
@@ -1199,7 +1199,7 @@ void atbm_bss_info_changed(struct ieee80211_hw *dev,
 			atbm_printk_err("%s %d:pmMode = %d \n",__func__,__LINE__,priv->powersave_mode.pmMode);
 			atbm_set_pm(priv, &priv->powersave_mode);
 		}
-		
+
 	}
 #ifndef CONFIG_RATE_HW_CONTROL
 	if (changed & BSS_CHANGED_RETRY_LIMITS) {
@@ -1238,11 +1238,11 @@ void atbm_bss_info_changed(struct ieee80211_hw *dev,
 				priv->powersave_mode.pmMode = WSM_PSM_PS;
 			if (priv->join_status == ATBM_APOLLO_JOIN_STATUS_STA){
 				atbm_printk_err("%s %d:pmMode = %d \n",__func__,__LINE__,priv->powersave_mode.pmMode);
-			
+
 				atbm_set_pm(priv, &priv->powersave_mode);
 
 			}
-				
+
 		}
 
 		atbm_printk_ap("[AP] CTWindow: %d\n",
@@ -1385,11 +1385,11 @@ int atbm_ampdu_action(struct ieee80211_hw *hw,
 	 * sends ADDBA Response which is discarded in the driver as
 	 * FW generates the ADDBA Response on its own.*/
 	int ret;
-	
+
 	if(ieee80211_hw_setup_ba(hw)){
 		return 0;
 	}
-	
+
 	atbm_printk_err("AMPDU[%s]:action[%d],tid[%d],ssn[%d],buff_size[%d],token[%d],ta[%pM]\n",
 			vif_to_sdata(vif)->name,action,tid,ssn ? *ssn:0,buf_size,hw_token,sta->addr);
 	switch (action) {
@@ -1541,7 +1541,7 @@ static int atbm_upload_beacon(struct atbm_vif *priv)
 			priv->erp_info &= ~WLAN_ERP_NON_ERP_PRESENT;
 		}
 	}
-	
+
 #ifdef CONFIG_ATBM_AP_CHANNEL_CHANGE_EVENT
 	//change AP dsparam channel when ap & sta not at the same channel
 	ds_params = (u8 *)atbm_ieee80211_find_ie( ATBM_WLAN_EID_DS_PARAMS, ies, ies_len);
@@ -1779,7 +1779,7 @@ static int atbm_start_ap(struct atbm_vif *priv)
 		start.mode |= WSM_FLAG_MAC_INSTANCE_1;
 	else
 		start.mode &= ~WSM_FLAG_MAC_INSTANCE_1;
-#ifdef CONFIG_ATBM_SUPPORT_P2P	
+#ifdef CONFIG_ATBM_SUPPORT_P2P
 	if(priv->vif->p2p){
 		inactivity.min_inactivity = 15;
 		inactivity.max_inactivity = 5;
@@ -1816,13 +1816,13 @@ static int atbm_start_ap(struct atbm_vif *priv)
 	memcpy(&start.ssid[0], priv->ssid, start.ssidLength);
 
 	memset(&priv->link_id_db, 0, sizeof(priv->link_id_db));
-	
+
 	start.channel_type = (u32)(vif_chw(priv->vif));
 	if(start_choff<=NL80211_CHAN_HT40PLUS){
 		atbm_printk_ap("%s:fix chatype(%d)\n",__func__,start_choff);
 		start.channel_type = start_choff;
 	}
-	
+
 	atbm_printk_ap("%s:start.channel_type,(%d),channelNumber(%d)\n",__func__,start.channel_type,start.channelNumber);
 
 	atbm_printk_ap("[AP] ch: %d(%d), bcn: %d(%d), "
@@ -1914,7 +1914,7 @@ void atbm_notify_noa(struct atbm_vif *priv, int delay)
 	modeinfo = &priv->p2p_ps_modeinfo;
 
 	ap_printk( "[AP]: %s called\n", __func__);
-	
+
 	if (priv->join_status != ATBM_APOLLO_JOIN_STATUS_AP)
 		return;
 
@@ -2032,7 +2032,7 @@ int atbm_start_monitor_mode(struct atbm_vif *priv,
 	*/
 	smp_mb();
 	/*
-	* clear the pkg 
+	* clear the pkg
 	*/
 	ret = WARN_ON(__atbm_flush(hw_priv, false,priv->if_id));
 	if(!ret){
@@ -2040,8 +2040,8 @@ int atbm_start_monitor_mode(struct atbm_vif *priv,
 	}
 
 #ifndef ATBM_NOT_SUPPORT_40M_CHW
-	if(hw_priv->chip_version == ARES_6012B || 
-		(hw_priv->chip_version == ARES_LITE && 
+	if(hw_priv->chip_version == ARES_6012B ||
+		(hw_priv->chip_version == ARES_LITE &&
 			(hw_priv->chip_flag == 1 || hw_priv->chip_flag == 2))){
 		start.channel_type = (u32)(NL80211_CHAN_HT20);
 	}else{
@@ -2079,10 +2079,10 @@ int atbm_stop_monitor_mode(struct atbm_vif *priv)
 	if (!ret) {
 		wsm_unlock_tx(hw_priv);
 	}
-	
+
 	ret = wsm_reset(priv->hw_priv, &reset, ATBM_WIFI_GENERIC_IF_ID);
 	smp_mb();
-	hw_priv->monitor_if_id = -1;	
+	hw_priv->monitor_if_id = -1;
 	atbm_printk_ap("%s:if_id(%d)\n",__func__,priv->if_id);
 	return ret;
 }

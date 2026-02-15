@@ -112,9 +112,9 @@ void atbm_monitor_pc(struct atbm_common *hw_priv)
 														testreg1[5],
 														testreg1[6]);
 
-	atbm_printk_err( "[PC]:0x16101028(%x)\n",val28);	
+	atbm_printk_err( "[PC]:0x16101028(%x)\n",val28);
 	atbm_printk_err( "[PC]:0x16101020(%x)\n",val20);
-	
+
 }
 
 
@@ -157,7 +157,7 @@ void atbm_clear_priv_queue_cap(struct atbm_vif *priv)
 			continue;
 		if(other_priv->join_status <=  ATBM_APOLLO_JOIN_STATUS_MONITOR)
 			continue;
-		
+
 		other_priv->queue_cap = ATBM_QUEUE_SINGLE_CAP;
 
 		if(prev_priv == NULL){
@@ -168,7 +168,7 @@ void atbm_clear_priv_queue_cap(struct atbm_vif *priv)
 		prev_priv->queue_cap = ATBM_QUEUE_COMB_CAP;
 		other_priv->queue_cap = ATBM_QUEUE_COMB_CAP;
 		prev_priv = other_priv;
-		
+
 	}
 }
 #endif
@@ -176,10 +176,10 @@ void atbm_clear_priv_queue_cap(struct atbm_vif *priv)
 void atbm_xmit_linearize(struct atbm_common	*hw_priv,
 	 struct wsm_tx *wsm,char *xmit,int xmit_len)
 {
-	int wsm_id = __le16_to_cpu(wsm->hdr.id) & 0x3F;	
-	
+	int wsm_id = __le16_to_cpu(wsm->hdr.id) & 0x3F;
+
 	while(wsm_id == WSM_TRANSMIT_REQ_MSG_ID){
-		
+
 		u8 queueId = wsm_queue_id_to_linux(wsm->queueId & 0x03);
 		struct atbm_queue *queue = &hw_priv->tx_queue[queueId];
 		const struct atbm_txpriv *txpriv = NULL;
@@ -187,7 +187,7 @@ void atbm_xmit_linearize(struct atbm_common	*hw_priv,
 		int sg_len = 0;
 		int sg = 0;
 		struct ieee80211_tx_info *tx_info;
-		
+
 		if(atbm_queue_get_skb(queue,wsm->packetID,
 				&skb, &txpriv) != 0){
 			WARN_ON(1);
@@ -201,20 +201,20 @@ void atbm_xmit_linearize(struct atbm_common	*hw_priv,
 		}
 
 		tx_info = IEEE80211_SKB_CB(skb);
-		
+
 		printk_once(KERN_ERR "sg process\n");
 
 		memcpy(xmit,skb->data,skb_headlen(skb));
 
 		sg_len += skb_headlen(skb);
 		xmit += sg_len;
-		
+
 		for (sg = 0; sg < skb_shinfo(skb)->nr_frags; sg++){
-			
+
 			skb_frag_t *frag = &skb_shinfo(skb)->frags[sg];
 #if (LINUX_VERSION_CODE > KERNEL_VERSION(5, 4, 0))
 			memcpy(xmit,page_address(frag->bv_page) + frag->bv_offset,frag->bv_len);
-#elif (LINUX_VERSION_CODE < KERNEL_VERSION(3, 2, 0))		
+#elif (LINUX_VERSION_CODE < KERNEL_VERSION(3, 2, 0))
 			memcpy(xmit,page_address(frag->page) + frag->page_offset,frag->size);
 #else
 			memcpy(xmit,page_address(frag->page.p) + frag->page_offset,frag->size);
@@ -227,7 +227,7 @@ void atbm_xmit_linearize(struct atbm_common	*hw_priv,
 			sg_len += frag->size;
 #endif
 		}
-		
+
 		if(tx_info->sg_tailneed){
 			printk_once(KERN_ERR "sg_tailneed(%d)\n",tx_info->sg_tailneed);
 			memset(xmit,0,tx_info->sg_tailneed);
@@ -239,7 +239,7 @@ void atbm_xmit_linearize(struct atbm_common	*hw_priv,
 			sg_len += tx_info->sg_tailneed;
 		}
 		WARN_ON_ONCE(sg_len != xmit_len);
-		return;		
+		return;
 	}
 
 	memcpy(xmit,wsm,xmit_len);
@@ -251,10 +251,10 @@ int atbm_save_efuse(struct atbm_common *hw_priv,struct efuse_headr *efuse_save)
 	int iResult=0;
 	//struct atbm_vif *vif;
 	struct efuse_headr efuse_bak;
-	
+
 	/*
-	*LMC_STATUS_CODE__EFUSE_VERSION_CHANGE	failed because efuse version change  
-	*LMC_STATUS_CODE__EFUSE_FIRST_WRITE, 		failed because efuse by first write   
+	*LMC_STATUS_CODE__EFUSE_VERSION_CHANGE	failed because efuse version change
+	*LMC_STATUS_CODE__EFUSE_FIRST_WRITE, 		failed because efuse by first write
 	*LMC_STATUS_CODE__EFUSE_PARSE_FAILED,		failed because efuse data wrong, cannot be parase
 	*LMC_STATUS_CODE__EFUSE_FULL,				failed because efuse have be writen full
 	*/
@@ -290,7 +290,7 @@ int atbm_save_efuse(struct atbm_common *hw_priv,struct efuse_headr *efuse_save)
 			//sigmastar oid
 			efuse_save->specific = efuse_bak.specific;
 		}
-		
+
 		if(memcmp((void *)&efuse_bak, efuse_save, sizeof(struct efuse_headr)) !=0)
 		{
 			frame_hexdump("efuse_bak", (u8 *)&efuse_bak, sizeof(struct efuse_headr));
@@ -324,7 +324,7 @@ void atbm_destroy_wsm_cmd(struct atbm_common *hw_priv)
 	spin_unlock_bh(&hw_priv->wsm_pm_spin_lock);
 #endif
 	/*
-	*release scan 
+	*release scan
 	*/
 	if(atomic_read(&hw_priv->scan.in_progress)){
 		/*
@@ -341,7 +341,7 @@ void atbm_destroy_wsm_cmd(struct atbm_common *hw_priv)
 	atbm_printk_exit("Flush pm and scan\n");
 	atbm_flush_workqueue(hw_to_local(hw_priv->hw)->workqueue);
 	atbm_flush_workqueue(hw_priv->workqueue);
-	
+
 	synchronize_net();
 }
 
@@ -389,7 +389,7 @@ int atbm_reinit_firmware(struct atbm_common *hw_priv)
 #endif
 		}
 	}
-	
+
 error_reload:
 	return ret;
 }
@@ -409,7 +409,7 @@ void atbm_bh_halt(struct atbm_common *hw_priv)
 		atomic_set(&hw_priv->atbm_pluged,0);
 		wake_up(&hw_priv->bh_wq);
 	}
-#if 0	
+#if 0
 	spin_lock_bh(&hw_priv->wsm_cmd.lock);
 	if(hw_priv->wsm_cmd.ptr == NULL){
 		if(hw_priv->wsm_cmd.cmd != 0xFFFF){
@@ -418,7 +418,7 @@ void atbm_bh_halt(struct atbm_common *hw_priv)
 			hw_priv->wsm_cmd.done = 1;
 			wake_up(&hw_priv->wsm_cmd_wq);
 		}else {
-			
+
 		}
 	}else {
 		atbm_printk_err("%s:cmd[%x] not send\n",__func__,hw_priv->wsm_cmd.cmd);

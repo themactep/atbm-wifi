@@ -144,7 +144,7 @@ int atbm_bh_wake_lock(struct atbm_common *hw_priv)
 			wake_lock(&hw_priv->bh_wake);
 #elif defined(SDIO_BUS) && (LINUX_VERSION_CODE > KERNEL_VERSION(2, 6, 36))
 			//pm_stay_awake(hw_priv);
-#endif		
+#endif
 			hw_priv->wakelock_bh_counter++;
 		}
 		spin_unlock_irqrestore(&hw_priv->wakelock_spinlock, flags);
@@ -243,14 +243,14 @@ static int atbm_rx_directly(struct atbm_common *hw_priv,struct sk_buff *skb)
 	u8 wsm_seq;
 	static int rx_resync = 1;
 	int status = 0;;
-	
+
 	data = skb->data;
 	wsm = (struct wsm_hdr *)data;
-	
+
 	wsm_len = __le32_to_cpu(wsm->len);
 	wsm_id  = __le32_to_cpu(wsm->id) & 0xFFF;
 	wsm_seq = (__le32_to_cpu(wsm->id) >> 13) & 7;
-	
+
 	atbm_skb_trim(skb, wsm_len);
 	if (unlikely(wsm_id == 0x0800)) {
 		if(wsm_handle_exception(hw_priv,
@@ -269,7 +269,7 @@ static int atbm_rx_directly(struct atbm_common *hw_priv,struct sk_buff *skb)
 		//			rx_resync,hw_priv->wsm_rx_seq,wsm_seq,wsm_len,wsm_id);
 		if (wsm_seq != hw_priv->wsm_rx_seq) {
 			atbm_printk_err("atbm_rx_directly :yzh hw_priv->wsm_rx_seq=%d,wsm_seq=%d \n",hw_priv->wsm_rx_seq,wsm_seq);
-	/*		
+	/*
 			status = -2;
 			atbm_hif_status_set(1);
 			atbm_bh_halt(hw_priv);
@@ -306,7 +306,7 @@ static int atbm_sdio_submit_skb(struct atbm_common *hw_priv,struct sk_buff *skb)
 {
 	bool bh_running = false;
 	__u32 queue_len = 0;
-	
+
 	spin_lock_bh(&hw_priv->rx_frame_queue.lock);
 	__atbm_skb_queue_tail(&hw_priv->rx_frame_queue, skb);
 	bh_running = hw_priv->bh_running;
@@ -369,7 +369,7 @@ rx_continue:
 			(read_len > EFFECTIVE_BUF_SIZE))) {
 			atbm_printk_err("Invalid read len: %d,read_cnt(%d)\n",
 				read_len,rx_continue_cnt);
-		
+
 		atbm_bh_halt(hw_priv);
 		goto err;
 	}
@@ -394,24 +394,24 @@ rx_continue:
 	atbm_skb_trim(skb_rx, 0);
 	atbm_skb_put(skb_rx, read_len);
 	data = skb_rx->data;
-	
+
 	if (WARN_ON(!data)){
 		goto err;
 	}
-	
+
 	if (WARN_ON(read_data_func(hw_priv, data, alloc_len))){
 		atbm_bh_halt(hw_priv);
 		goto err;
 	}
-	
+
 	/* Piggyback */
 	ctrl_reg = __le16_to_cpu(
 		((__le16 *)data)[alloc_len / 2 - 1]);
-	
+
 	if(atbm_bh_is_term(hw_priv) || atomic_read(&hw_priv->bh_term)){
 		goto err;
 	}
-	
+
 	hw_priv->irq_timestamp = jiffies;
 
 	skb_rx->pkt_type = frame_type;
@@ -420,15 +420,15 @@ rx_continue:
 	if(rx_handle(hw_priv,skb_rx) != 0){
 		return rx_continue_cnt;
 	}
-	
+
 	read_len_lsb = (ctrl_reg & ATBM_HIFREG_CONT_NEXT_LEN_LSB_MASK)*2;
 	read_len_msb = (ctrl_reg & ATBM_HIFREG_CONT_NEXT_LEN_MSB_MASK)*2;
 	read_len=((read_len_msb>>2)+read_len_lsb);
-	
+
 	if(read_len)
 		goto rx_continue;
 	goto rx_check;
-	
+
 	return rx_continue_cnt;
 err:
 	if(skb_rx)
@@ -448,9 +448,9 @@ static bool atbm_sdio_wait_enough_space(struct atbm_common	*hw_priv,u32 n_needs)
 	spin_lock_bh(&hw_priv->tx_com_lock);
 	enough = hw_priv->hw_bufs_free >= n_needs ? true : false;
 	spin_unlock_bh(&hw_priv->tx_com_lock);
-	
+
 	while(enough == false){
-		
+
 		if(atbm_bh_is_term(hw_priv)){
 			atbm_printk_err("%s:bh term\n",__func__);
 			return false;
@@ -476,7 +476,7 @@ static bool atbm_sdio_wait_enough_space(struct atbm_common	*hw_priv,u32 n_needs)
 		   	enough = false;
 		}else {
 			hw_priv->hw_xmits = hw_xmited;
-			hw_priv->hw_bufs_free =  (hw_priv->wsm_caps.numInpChBufs) - 
+			hw_priv->hw_bufs_free =  (hw_priv->wsm_caps.numInpChBufs) -
 									 (hw_priv->n_xmits-hw_xmited);
 			hw_priv->hw_bufs_free_init = hw_priv->hw_bufs_free;
 			enough = hw_priv->hw_bufs_free >= n_needs ? true : false;
@@ -489,7 +489,7 @@ static bool atbm_sdio_wait_enough_space(struct atbm_common	*hw_priv,u32 n_needs)
 				continue;
 			if(loop>=MAX_LOOP_POLL_CNT)
 				break;
-			if((loop >= 3)&&(print == 0)){			
+			if((loop >= 3)&&(print == 0)){
 				atbm_printk_debug("%s:n_xmits(%d),hw_xmited(%d),need(%d)\n",__func__,
 					hw_priv->n_xmits,hw_xmited,n_needs);
 				print = 1;
@@ -523,13 +523,13 @@ static bool atbm_sdio_have_enough_space(struct atbm_common	*hw_priv,u32 n_needs)
 	bool enough = false;
 	int ret = 0;
 	int n_pools = 0;
-	
+
 	spin_lock_bh(&hw_priv->tx_com_lock);
 	enough = hw_priv->hw_bufs_free >= n_needs ? true : false;
 	spin_unlock_bh(&hw_priv->tx_com_lock);
 
 	if(enough == false){
-		
+
 		if(atbm_bh_is_term(hw_priv)){
 			atbm_printk_err("%s:bh term\n",__func__);
 			spin_lock_bh(&hw_priv->tx_com_lock);
@@ -537,11 +537,11 @@ static bool atbm_sdio_have_enough_space(struct atbm_common	*hw_priv,u32 n_needs)
 			spin_unlock_bh(&hw_priv->tx_com_lock);
 			return true;
 		}
-		
+
 pool_buffs:
-		n_pools ++;		
+		n_pools ++;
 #ifdef CONFIG_TX_NO_CONFIRM
-#ifndef CONFIG_ATBM_SDIO_TX_HOLD	
+#ifndef CONFIG_ATBM_SDIO_TX_HOLD
 		hw_priv->sbus_ops->lock(hw_priv->sbus_priv);
 #endif
 		ret = atbm_direct_read_unlock(hw_priv,hw_priv->wsm_caps.NumOfHwXmitedAddr,&hw_xmited);
@@ -549,9 +549,9 @@ pool_buffs:
 		hw_priv->sbus_ops->unlock(hw_priv->sbus_priv);
 #endif
 		if(ret){
-			return false;			
+			return false;
 		}
-		
+
 		spin_lock_bh(&hw_priv->tx_com_lock);
 		if((int)hw_priv->n_xmits < (int)hw_xmited ||
 		   (int)(hw_priv->n_xmits - hw_xmited) > hw_priv->wsm_caps.numInpChBufs ||
@@ -559,13 +559,13 @@ pool_buffs:
 		   	enough = false;
 		}else {
 			hw_priv->hw_xmits = hw_xmited;
-			hw_priv->hw_bufs_free =  (hw_priv->wsm_caps.numInpChBufs) - 
+			hw_priv->hw_bufs_free =  (hw_priv->wsm_caps.numInpChBufs) -
 									 (hw_priv->n_xmits-hw_xmited);
 			hw_priv->hw_bufs_free_init = hw_priv->hw_bufs_free;
 			enough = hw_priv->hw_bufs_free >= n_needs ? true : false;
 		}
 		spin_unlock_bh(&hw_priv->tx_com_lock);
-		
+
 		if((enough == false) && (n_pools%MAX_POOL_BUFF_NUM)){
 			goto pool_buffs;
 		}
@@ -586,14 +586,14 @@ static void atbm_sdio_release_err_data(struct atbm_common	*hw_priv,struct wsm_tx
 	u8 queue_id;
 	struct sk_buff *skb;
 	const struct atbm_txpriv *txpriv;
-	
+
 	BUG_ON(wsm == NULL);
 	queue_id = atbm_queue_get_queue_id(wsm->packetID);
 
 	BUG_ON(queue_id >= 4);
 	queue = &hw_priv->tx_queue[queue_id];
 	BUG_ON(queue == NULL);
-	
+
 	wsm_release_tx_buffer(hw_priv, 1);
 	if(!WARN_ON(atbm_queue_get_skb(queue, wsm->packetID, &skb, &txpriv))) {
 
@@ -619,7 +619,7 @@ static void atbm_sdio_release_err_data(struct atbm_common	*hw_priv,struct wsm_tx
 static int atbm_sdio_free_tx_wsm(struct atbm_common	*hw_priv,struct wsm_tx *wsm)
 {
 	if((wsm) && (!(wsm->htTxParameters&__cpu_to_le32(WSM_NEED_TX_CONFIRM)))){
-		
+
 		struct atbm_queue *queue;
 		u8 queue_id;
 		struct sk_buff *skb;
@@ -640,7 +640,7 @@ static int atbm_sdio_free_tx_wsm(struct atbm_common	*hw_priv,struct wsm_tx *wsm)
 
 			wsm_release_vif_tx_buffer(hw_priv,txpriv->if_id,1);
 			wsm_release_tx_buffer(hw_priv, 1);
-			
+
 			tx->flags |= IEEE80211_TX_STAT_ACK;
 			tx->status.rates[0].count = 1;
 			for (i = 1; i < IEEE80211_TX_MAX_RATES; ++i) {
@@ -667,7 +667,7 @@ static void atbm_sdio_force_free_wsm(struct atbm_common	*hw_priv,struct wsm_tx *
 
 	if(wsm == NULL)
 		return;
-	
+
 	wsm_id = __le16_to_cpu(wsm->hdr.id) & 0x3F;
 
 	switch(wsm_id){
@@ -686,8 +686,8 @@ static void atbm_sdio_force_free_wsm(struct atbm_common	*hw_priv,struct wsm_tx *
 			hw_priv->wsm_cmd.cmd = 0xFFFF;
 			hw_priv->wsm_cmd.ptr = NULL;
 			hw_priv->wsm_cmd.arg = NULL;
-			wake_up(&hw_priv->wsm_cmd_wq);		
-		}	
+			wake_up(&hw_priv->wsm_cmd_wq);
+		}
 		spin_unlock_bh(&hw_priv->wsm_cmd.lock);
 		break;
 	}
@@ -719,7 +719,7 @@ void atbm_sdio_tx_bh(struct atbm_common *hw_priv)
 	bool enough = false;
 
 	prefetchw(hw_priv->xmit_buff);
-	
+
 xmit_continue:
 
 	txMutiFrameCount = 0;
@@ -727,30 +727,30 @@ xmit_continue:
 	enough = false;
 	need_confirm = NULL;
 	do {
-		
+
 		enough = atbm_sdio_have_enough_space(hw_priv,1);
-		
+
 		if(enough == false){
 			if(txMutiFrameCount > 0)
 				break;
 			else
 				goto xmit_wait;
 		}
-		
+
 		ret = wsm_get_tx(hw_priv, &data, &tx_len, &tx_burst,&vif_selected);
-		
+
 		if (ret <= 0) {
 			if(txMutiFrameCount > 0)
 				break;
 			else
 				goto xmit_finished;
 		}
-		
+
 		txMutiFrameCount++;
 		wsm_tx = (struct wsm_hdr_tx *)data;
 		BUG_ON(tx_len < sizeof(*wsm_tx));
 		BUG_ON(__le32_to_cpu(wsm_tx->len) != tx_len);
-		
+
 		if (tx_len <= 8)
 			tx_len = 16;
 
@@ -765,7 +765,7 @@ xmit_continue:
 			atbm_printk_err("Write aligned len:"
 			" %d\n", tx_len);
 		}
-		
+
 		wsm_tx->id &= __cpu_to_le32(~WSM_TX_SEQ(WSM_TX_SEQ_MAX));
 		wsm_tx->id |= cpu_to_le32(WSM_TX_SEQ(hw_priv->wsm_tx_seq));
 		wsm_alloc_tx_buffer(hw_priv);
@@ -773,7 +773,7 @@ xmit_continue:
 		spin_lock_bh(&hw_priv->tx_com_lock);
 		ATBM_SDIO_FREE_BUFF_ERR(hw_priv->hw_bufs_free <= 0,hw_priv->hw_bufs_free,hw_priv->hw_bufs_free_init,hw_priv->n_xmits,hw_priv->hw_xmits);
 		hw_priv->n_xmits ++;
-		hw_priv->hw_bufs_free --;		
+		hw_priv->hw_bufs_free --;
 		ATBM_SDIO_FREE_BUFF_ERR(hw_priv->hw_bufs_free < 0,hw_priv->hw_bufs_free,hw_priv->hw_bufs_free_init,hw_priv->n_xmits,hw_priv->hw_xmits);
 
 		if (vif_selected != -1) {
@@ -781,9 +781,9 @@ xmit_continue:
 		}
 
 		spin_unlock_bh(&hw_priv->tx_com_lock);
-		
+
 		atbm_xmit_linearize(hw_priv,(struct wsm_tx *)data,&hw_priv->xmit_buff[putLen],wsm_tx->len);
-		
+
 		putLen += tx_len;
 		hw_priv->wsm_tx_seq = (hw_priv->wsm_tx_seq + 1) & WSM_TX_SEQ_MAX;
 
@@ -803,7 +803,7 @@ xmit_continue:
 			need_confirm = data;
 #endif
 		}
-		
+
 		if (putLen+hw_priv->wsm_caps.sizeInpChBuf>SDIO_TX_MAXLEN){
 			break;
 		}
@@ -817,18 +817,18 @@ xmit_continue:
 		atbm_sdio_force_free_wsm(hw_priv,(struct wsm_tx *)need_confirm);
 		goto xmit_continue;
 	}
-#ifdef CONFIG_ATBM_SDIO_TX_HOLD	
-	if (WARN_ON(atbm_data_write_unlock(hw_priv,hw_priv->xmit_buff, putLen))) {		
+#ifdef CONFIG_ATBM_SDIO_TX_HOLD
+	if (WARN_ON(atbm_data_write_unlock(hw_priv,hw_priv->xmit_buff, putLen))) {
 		atbm_printk_err("%s: xmit data err\n",__func__);
 		goto xmit_err;
 	}
 #else
-	if (WARN_ON(atbm_data_write(hw_priv,hw_priv->xmit_buff, putLen))) {		
+	if (WARN_ON(atbm_data_write(hw_priv,hw_priv->xmit_buff, putLen))) {
 		atbm_printk_err("%s: xmit data err\n",__func__);
 		goto xmit_err;
 	}
 #endif
-xmit_wait:	
+xmit_wait:
 	if((enough == false)&&(atbm_sdio_wait_enough_space(hw_priv,1) == false)){
 #ifdef CONFIG_TX_NO_CONFIRM
 		atbm_printk_err("%s: wait space timeout\n",__func__);
@@ -837,10 +837,10 @@ xmit_wait:
 		goto xmit_finished;
 #endif
 	}
-	
+
 	goto xmit_continue;
-	
-xmit_finished:	
+
+xmit_finished:
 	return;
 xmit_err:
 	atbm_sdio_force_free_wsm(hw_priv,(struct wsm_tx *)need_confirm);
@@ -851,16 +851,16 @@ xmit_err:
 void atbm_sdio_rx_bh(struct atbm_common *hw_priv)
 {
 	static bool hard_irq = true;
-	
+
 	if(hw_priv->hard_irq == false){
-#ifdef CONFIG_SDIO_IRQ_THREAD_PROCESS_DATA	
+#ifdef CONFIG_SDIO_IRQ_THREAD_PROCESS_DATA
 		/*
 		*irq bh has read the lmac packages
 		*/
 		struct sk_buff *skb;
-		struct sk_buff_head local_list;		
+		struct sk_buff_head local_list;
 		u16 ctrl_reg = 0;
-		
+
 		hard_irq = false;
 		__atbm_skb_queue_head_init(&local_list);
 		spin_lock_bh(&hw_priv->rx_frame_queue.lock);
@@ -891,7 +891,7 @@ restart:
 		}
 		hw_priv->sbus_ops->unlock(hw_priv->sbus_priv);
 
-		
+
 		spin_lock_bh(&hw_priv->rx_frame_queue.lock);
 		if(!atbm_skb_queue_empty(&hw_priv->rx_frame_queue))
 			goto restart;
@@ -918,17 +918,17 @@ void atbm_irq_handler(struct atbm_common *hw_priv)
 
 	if (atbm_bh_is_term(hw_priv))
 		return;
-	
+
 	hw_priv->hard_irq = !in_interrupt() ? false : true;
 	if(hw_priv->hard_irq == false)	{
 		int rx_counter = 0;
-		
+
 		__atbm_irq_enable(hw_priv,0);
 rx_continue:
 #ifdef CONFIG_SDIO_IRQ_THREAD_PROCESS_DATA
 		rx_counter = atbm_sdio_process_read_data(hw_priv,atbm_bh_read_ctrl_reg_unlock,atbm_data_read_unlock,
 									atbm_sdio_submit_skb,ATBM_RX_DERICTLY_DATA_FRAME);
-#else 
+#else
 		rx_counter = 0;
 #endif
 		if(rx_counter == 0){
@@ -940,7 +940,7 @@ rx_continue:
 		}else if(rx_counter >= ATBM_MAX_OVERFLOW_SIZE){
 			hw_priv->sbus_ops->unlock(hw_priv->sbus_priv);
 			atbm_printk_debug("%s:over flow\n",__func__);
-			schedule_timeout_interruptible(msecs_to_jiffies(10));			
+			schedule_timeout_interruptible(msecs_to_jiffies(10));
 			hw_priv->sbus_ops->lock(hw_priv->sbus_priv);
 			goto rx_continue;
 		}
@@ -949,7 +949,7 @@ rx_continue:
 		}
 		return;
 	}
-triger_rx:	
+triger_rx:
 	if(hw_priv->sbus_ops->sbus_rev_schedule)
 		hw_priv->sbus_ops->sbus_rev_schedule(hw_priv->sbus_priv);
 	else if (atomic_add_return(1, &hw_priv->bh_rx) == 1){
@@ -986,7 +986,7 @@ int atbm_bh_suspend(struct atbm_common *hw_priv)
 	ret = atbm_wait_event_timeout_stay_awake(hw_priv,hw_priv->bh_evt_wq, hw_priv->bh_error ||
 		(ATBM_APOLLO_BH_SUSPENDED == atomic_read(&hw_priv->bh_suspend)),
 		 60 * HZ,false) ? 0 : -ETIMEDOUT;
-	
+
 	if((ret == 0)&&(hw_priv->sbus_ops->sbus_bh_suspend))
 		ret = hw_priv->sbus_ops->sbus_bh_suspend(hw_priv->sbus_priv);
 
@@ -1223,7 +1223,7 @@ int atbm_bh_read_ctrl_reg_unlock(struct atbm_common *hw_priv,
 //used this function to clear sdio rtl bug register
 // if not do this sdio direct mode (wr/read reigster) will not work
 // this function is the same to atbm_data_force_write (used queue mode clear bit to clear)
-// 
+//
 int atbm_powerave_sdio_sync(struct atbm_common *hw_priv)
 {
 	int ret=0;
@@ -1293,19 +1293,19 @@ int atbm_rx_tasklet(struct atbm_common *hw_priv, int id,
 		wsm_id	= __le32_to_cpu(wsm->id) & 0xFFF;
 		if((wsm_id == WSM_MULTI_RECEIVE_INDICATION_ID)||
 			(WSM_SINGLE_CHANNEL_MULTI_RECEIVE_INDICATION_ID == wsm_id)){
-			struct wsm_multi_rx *  multi_rx = (struct wsm_multi_rx *)skb->data;			
+			struct wsm_multi_rx *  multi_rx = (struct wsm_multi_rx *)skb->data;
 			int RxFrameNum = multi_rx->RxFrameNum;
-			
+
 			data_len = wsm_len ;
 			data_len -= sizeof(struct wsm_multi_rx);
-			
+
 			rxMutiCnt[ALIGN(wsm_len,1024)/1024]++;
 			rxMutiCnt_Num+=RxFrameNum;
 			atbm_bh_multrx_trace(hw_priv,RxFrameNum);
 			wsm = (struct wsm_hdr *)(multi_rx+1);
 			wsm_len = __le32_to_cpu(wsm->len);
 			wsm_id	= __le32_to_cpu(wsm->id) & 0xFFF;
-			
+
 			//frame_hexdump("dump sdio wsm rx ->",wsm,32);
 			do {
 
@@ -1336,13 +1336,13 @@ int atbm_rx_tasklet(struct atbm_common *hw_priv, int id,
 				wsm = (struct wsm_hdr *)((u8 *)wsm +ALIGN(( wsm_len + RX_ALLOC_BUFF_OFFLOAD),4));
 				wsm_len = __le32_to_cpu(wsm->len);
 				wsm_id	= __le32_to_cpu(wsm->id) & 0xFFF;
-				
+
 				if(atbm_skb_copy != NULL){
 					atbm_dev_kfree_skb(atbm_skb_copy);
 				}
 			}while((RxFrameNum>0) && (data_len > 32));
 			BUG_ON(RxFrameNum != 0);
-			
+
 		}
 		else {
 			//rxMutiCnt[ALIGN(wsm_len,1024)/1024]++;
@@ -1362,14 +1362,14 @@ static int atbm_bh(void *arg)
 	long status;
 	bool powersave_enabled;
 	int i;
-	int ret_flush;				
+	int ret_flush;
 
-	
+
 #define __ALL_HW_BUFS_USED (hw_priv->hw_bufs_used)
 	while (1) {
 		powersave_enabled = 1;
 		atbm_hw_vif_read_lock(&hw_priv->vif_list_lock);
-		atbm_for_each_vif_safe(hw_priv, priv, i) 
+		atbm_for_each_vif_safe(hw_priv, priv, i)
 		{
 			if (!priv)
 				continue;
@@ -1404,7 +1404,7 @@ static int atbm_bh(void *arg)
 					0 : atomic_read(&hw_priv->bh_suspend);
 				(rx || tx || term || suspend || hw_priv->bh_error || atomic_read(&hw_priv->bh_halt));
 			}), status);
-		
+
 		if (status < 0 || term || hw_priv->bh_error){
 			atbm_bh_read_ctrl_reg(hw_priv, &ctrl_reg);
 			//printk(" ++ctrl_reg= %x,\n",ctrl_reg);
@@ -1422,14 +1422,14 @@ static int atbm_bh(void *arg)
 				break;
 			}
 		}
-		
+
 		if (0)
 		{
 			unsigned long timestamp = jiffies;
 			long timeout;
 			bool pending = false;
 			int i;
-			
+
 			atbm_printk_warn("Missed interrupt Status =%d, buffused=%d\n",(int)status,(int)__ALL_HW_BUFS_USED);
 			rx = 1;
 			atbm_printk_debug("[bh] next wsm_rx_seq %d wsm_tx_seq %d\n",hw_priv->wsm_rx_seq,hw_priv->wsm_tx_seq);
@@ -1537,7 +1537,7 @@ static int atbm_bh(void *arg)
 				term = atomic_xchg(&hw_priv->bh_term, 0);
 				(term);
 				}));
-			
+
 			atbm_dbg(ATBM_APOLLO_DBG_ERROR, "[BH] Fatal error, exitting.2\n");
 			if (status || term)
 				break;
@@ -1605,7 +1605,7 @@ static int atbm_bh(void *arg)
 					}													\
 				}														\
 				while(0)
-					
+
 #ifdef CONFIG_ATBM_SUPPORT_P2P
 			if(atbm_hw_cancel_delayed_work(&hw_priv->rem_chan_timeout,true))
 				atbm_rem_chan_timeout(&hw_priv->rem_chan_timeout.work);
@@ -1640,7 +1640,7 @@ static int atbm_bh(void *arg)
 #endif
 #if (LINUX_VERSION_CODE < KERNEL_VERSION(3,3,0))
 				ATBM_CANCEL_PENDDING_WORK(&priv->ht_info_update_work, atbm_ht_info_update_work);
-#endif				
+#endif
 #ifndef CONFIG_TX_NO_CONFIRM
 				if(atbm_hw_cancel_delayed_work(&priv->bss_loss_work,true))
 					atbm_bss_loss_work(&priv->bss_loss_work.work);

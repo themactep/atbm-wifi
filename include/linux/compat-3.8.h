@@ -4,7 +4,7 @@
 #include <linux/version.h>
 //#include <arch/arm/mach-exynos/include/mach/gpio.h>
 #if (LINUX_VERSION_CODE < KERNEL_VERSION(3,8,0))
-#define led_brightness_set led_set_brightness 
+#define led_brightness_set led_set_brightness
 #if 0
 /**
  * struct genl_info - receiving information

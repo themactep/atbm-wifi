@@ -9,7 +9,7 @@ int atbm_read_status(struct atbm_common *priv, u32 *status)
 {
 	int ret = 0;
 	u32 stat= 0;
-	
+
 	BUG_ON(!priv->sbus_ops);
 	ret = priv->sbus_ops->sbus_read_status(priv->sbus_priv,
 					&stat, sizeof(stat));
@@ -24,7 +24,7 @@ int atbm_read_status_ready(struct atbm_common *priv, u32 *ready)
 {
 	int ret = 0;
 	u32 rdy = 0;
-	
+
 	BUG_ON(!priv->sbus_ops);
 	ret = priv->sbus_ops->sbus_read_ready(priv->sbus_priv,
 					&rdy);
@@ -39,7 +39,7 @@ int atbm_read_status_channelflag(struct atbm_common *priv, u32 *channelflag)
 {
 	int ret = 0;
 	u32 chanflag = 0;
-	
+
 	BUG_ON(!priv->sbus_ops);
 	ret = priv->sbus_ops->sbus_read_channelflag(priv->sbus_priv,
 					&chanflag);
@@ -54,7 +54,7 @@ int atbm_read_status_channelflag(struct atbm_common *priv, u32 *channelflag)
 int atbm_update_status_channelflag(struct atbm_common *priv)
 {
 	int ret = 0;
-	
+
 	BUG_ON(!priv->sbus_ops);
 	ret = priv->sbus_ops->sbus_update_channelflag(priv->sbus_priv);
 	return ret;
@@ -64,26 +64,26 @@ int atbm_update_status_channelflag(struct atbm_common *priv)
 static int atbm_read_block(struct atbm_common *priv, void *buf, u32 buf_len)
 {
 	int ret = 0;
-	
+
 	BUG_ON(!priv->sbus_ops);
 	ret = priv->sbus_ops->sbus_read_data(priv->sbus_priv,
 					buf, buf_len);
-	
+
 	return ret;
 }
 
 static int atbm_write_block(struct atbm_common *priv,  const void *buf, u32 buf_len)
 {
-	int ret = 0;	
+	int ret = 0;
 	BUG_ON(!priv->sbus_ops);
-	
+
 	ret = priv->sbus_ops->sbus_write_data(priv->sbus_priv,
 					buf, buf_len);
 	return ret;
 }
 
 int atbm_read_data(struct atbm_common *priv,  void *buf, u32 buf_len)
-{	
+{
 	int ret = 0;
 	u32 status = 0;
 //	int retrynum = 0;
@@ -93,7 +93,7 @@ int atbm_read_data(struct atbm_common *priv,  void *buf, u32 buf_len)
 		atbm_printk_err("atbm_read_data error buf_len%%SPI_READ_BLOCK_SIZE !=0 \n");
 		return -1;
 	}
-		
+
 //retry:
 		ret = atbm_read_block(priv, buf, buf_len);
 		if (ret)
@@ -107,7 +107,7 @@ int atbm_read_data(struct atbm_common *priv,  void *buf, u32 buf_len)
 		{
 			atbm_printk_err( "atbm_read_status error\n");
 			goto out;
-			
+
 		}else
 		{
 #if 0
@@ -117,8 +117,8 @@ int atbm_read_data(struct atbm_common *priv,  void *buf, u32 buf_len)
 				if (retrynum > 5)
 				{
 					printk( "spi retry times too mach, return failed\n");
-					ret = -1;	
-					goto out;			
+					ret = -1;
+					goto out;
 				}
 				printk( "spi under error\n");
 				printk( "spi retry\n");
@@ -132,7 +132,7 @@ out:
 }
 
 int atbm_write_data(struct atbm_common *priv,  const void *buf, u32 buf_len)
-{	
+{
 	int ret = 0;
 	u32 status = 0;
 	int totalLen = 0;
@@ -185,9 +185,9 @@ int atbm_fw_write(struct atbm_common *priv, u32 addr, const void *buf,
                         u32 buf_len)
 {
 	int ret = 0;
-	
+
 	BUG_ON(!priv->sbus_ops);
-	
+
 	ret = priv->sbus_ops->sbus_write_firmware(priv->sbus_priv,
 							addr, buf, buf_len);
 
@@ -223,12 +223,12 @@ int atbm_before_load_firmware(struct atbm_common *hw_priv)
 	while (1)
 	{
 		atbm_read_status(hw_priv, &status);
-		
+
 		if (SPI_HW_SW_RDY & status)
 		{
-			break;	
+			break;
 		}
-		
+
 		count++;
 		if (count > 1000)
 		{
@@ -241,7 +241,7 @@ int atbm_before_load_firmware(struct atbm_common *hw_priv)
 
 
 int atbm_after_load_firmware(struct atbm_common *hw_priv)
-{ 
+{
 	int ret;
 	int count = 0;
 	u32 ready;
@@ -267,7 +267,7 @@ int atbm_after_load_firmware(struct atbm_common *hw_priv)
 			break;
 		}
 	}while(1);
-	
+
 	msleep(2000);
 	return ret;
 }

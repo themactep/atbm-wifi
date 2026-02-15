@@ -145,7 +145,7 @@ typedef uint64_t os_membuf_t;
 /** Calculates the number of bytes required to initialize a memory pool. */
 #define OS_MEMPOOL_BYTES(n,blksize)     \
     (sizeof (os_membuf_t) * OS_MEMPOOL_SIZE((n), (blksize)))
-    
+
 #if (INDIRECT_ROM_PATCH==0)
 
 /**

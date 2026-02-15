@@ -22,9 +22,9 @@
 #define ATBM_POWER_SET   _IOW(ATBM_POWER, 0, char)
 
 static struct ap_cfg ap_cfg_set;
-static struct etf_cfg etf_cfg_set; 
+static struct etf_cfg etf_cfg_set;
 static struct powersave_mode power_save_set;
-static struct tcp_filter_info tcp_filter_set; 
+static struct tcp_filter_info tcp_filter_set;
 static struct ipc_data_info ipc_data_set;
 
 
@@ -88,7 +88,7 @@ static struct transform rate_trans[RATE_INDEX_MAX]={
 };
 
 static int rate_set[20]={
-	10,   20, 55, 110,  60,  90, 120, 180, 240, 360, 
+	10,   20, 55, 110,  60,  90, 120, 180, 240, 360,
 	480, 540, 65, 130, 195, 260, 390, 520, 585, 650
 };
 
@@ -140,7 +140,7 @@ int powersave_transform( char *ps_type)
 				return ps_trans[i].type_value;
 			}
 		}
-		
+
 	}
 
 	printf("Line:%d fail\n", __LINE__);
@@ -248,7 +248,7 @@ int wifi_param_check(struct connect_info *info, check_type type, char is_ap)
 			{
 				printf("Line:%d ssid len %d is invalid\n", __LINE__,info->ssidLength);
 				goto err;
-				
+
 			}
 			break;
 		case CHECK_KEY:
@@ -530,7 +530,7 @@ int get_status_send(int fp, int argc, char *argv[])
 	int ret = 0;
 	struct status_info status_info;
 	struct in_addr addr;
- 
+
 	memset(&status_info, 0, sizeof(struct status_info));
 	ret = ioctl(fp, ATBM_STATUS, (unsigned int)(&status_info));
 	if (ret)
@@ -563,7 +563,7 @@ int get_status_send(int fp, int argc, char *argv[])
 	{
 		printf("wpa_state=INACTIVE\n");
 	}
- 
+
 	return 0;
 err:
 	return -1;
@@ -634,7 +634,7 @@ int list_filters_cmd(int fp, int argc, char *argv[])
 {
 	int ret = 0;
 	int i = 0;
-	struct tcp_filter_info tcp_filter_get; 
+	struct tcp_filter_info tcp_filter_get;
 
 	ret = ioctl(fp, ATBM_GET_FILTER, (unsigned int)(&tcp_filter_get));
 	if (!ret)
@@ -825,7 +825,7 @@ int scan_results_cmd(int fp, int argc, char *argv[])
 				for (i=0; i<scan_info.scan_cnt; i++)
 				{
 					MAC_printf(scan_info.scan_info[i].bssid);
-					printf("\t%d\t%d\t%s\n", scan_info.scan_info[i].rssi, 
+					printf("\t%d\t%d\t%s\n", scan_info.scan_info[i].rssi,
 						scan_info.scan_info[i].channel, scan_info.scan_info[i].ssid);
 				}
 			}
@@ -863,7 +863,7 @@ int set_wifi_mode_cmd(int fp, int argc, char *argv[])
 		printf("Line:%d invalid wifi mode %s\n", __LINE__, argv[0]);
 		goto err;
 	}
-	
+
 	ret = ioctl(fp, ATBM_WIFI_MODE, is_ap);
 	if (ret)
 	{
@@ -1051,7 +1051,7 @@ int get_country_cmd(int fp, int argc, char *argv[])
 {
 	int ret = 0;
 	char country_id = 0;
-	
+
 	ret = ioctl(fp, ATBM_GET_COUNTRY, &country_id);
 	if (ret)
 	{
@@ -1624,7 +1624,7 @@ int send_ipc_data_cmd(int fp, int argc, char *argv[])
 			{
 				printf("invalid server argument.\n");
 				goto err;
-				
+
 			}
 			strcpy(ipc_data_set.server, argv[i]+7);
 			ipc_server_set = 1;
@@ -1634,7 +1634,7 @@ int send_ipc_data_cmd(int fp, int argc, char *argv[])
 			if (strlen(argv[i]) <= 5)
 			{
 				printf("invalid port argument.\n");
-				goto err;	
+				goto err;
 			}
 			ipc_data_set.port = atoi(argv[i]+5);
 			ipc_port_set = 1;
@@ -1644,7 +1644,7 @@ int send_ipc_data_cmd(int fp, int argc, char *argv[])
 			if (strlen(argv[i]) <= 4)
 			{
 				printf("invalid cnt argument.\n");
-				goto err;	
+				goto err;
 			}
 			send_cnt = atoi(argv[i]+4);
 		}
@@ -1766,9 +1766,9 @@ int get_etf_rx_info_cmd(int fp, int argc, char *argv[])
 		goto err;
 	}
 
-	printf("current etf rx: success_cnt%d, fcs_err_cnt:%d, per:%d%%, rssi:%d\n", 
-		rx_info.rx_success_cnt, 
-		rx_info.fcs_err_cnt, 
+	printf("current etf rx: success_cnt%d, fcs_err_cnt:%d, per:%d%%, rssi:%d\n",
+		rx_info.rx_success_cnt,
+		rx_info.fcs_err_cnt,
 		rx_info.fcs_err_cnt*100/(rx_info.rx_success_cnt+rx_info.fcs_err_cnt),
 		rx_info.rssi);
 
@@ -1818,7 +1818,7 @@ int add_netpattern_cmd(int fp, int argc, char *argv[])
 		netpattern_info.netpattern_len = 63;
 	}
 	memcpy(netpattern_info.netpattern_data, argv[4], netpattern_info.netpattern_len);
-	netpattern_info.netpattern_data[netpattern_info.netpattern_len] = '\0'; 
+	netpattern_info.netpattern_data[netpattern_info.netpattern_len] = '\0';
 
 	ret = ioctl(fp, ATBM_NETPATTERN_ADD, &netpattern_info);
 	if (ret)
@@ -2501,7 +2501,7 @@ int cmd_parse(int fp, char *arg)
 {
 	int i = 0;
 	int cnt = sizeof(command)/sizeof(command[0]);
-	char *argv[MAX_ARGS];		
+	char *argv[MAX_ARGS];
 	int argc;
 	int ret = 0;
 
@@ -2537,7 +2537,7 @@ int cmd_parse(int fp, char *arg)
 			}
 		}
 	}
-	
+
 	printf("Line:%d not match command\n", __LINE__);
 	return -1;
 }
@@ -2561,12 +2561,12 @@ int insmod_driver(int test_insmod)
 		printf("open /dev/atbm_ioctl fail.\n");
 		return -1;
 	}
-	
+
 	is_insmod_driver = 1;
 	driver_can_rmmod = 0;
 
 	fcntl(fp, F_SETOWN, getpid());
-	flags = fcntl(fp, F_GETFL); 
+	flags = fcntl(fp, F_GETFL);
 	fcntl(fp, F_SETFL, flags | FASYNC);
 
 	memset(&status_info, 0, sizeof(struct status_info));
@@ -2699,21 +2699,21 @@ void *get_command_func(void *arg)
 
 	unlink(SER_SOCKET_PATH);
 
-	memset(&ser_un, 0, sizeof(ser_un));  
-    ser_un.sun_family = AF_UNIX;  
+	memset(&ser_un, 0, sizeof(ser_un));
+    ser_un.sun_family = AF_UNIX;
 	strcpy(ser_un.sun_path, SER_SOCKET_PATH);
     ret = bind(socket_fd, (struct sockaddr *)&ser_un, sizeof(struct sockaddr_un));
     if (ret < 0)
 	{
-		printf("bind err\n"); 
+		printf("bind err\n");
 	   return;
-    }  
+    }
 
 	ret = listen(socket_fd, 5);
-    if (ret < 0) 
-	{  
-        printf("listen err\n"); 
-	   return;          
+    if (ret < 0)
+	{
+        printf("listen err\n");
+	   return;
     }
 
 	while (1)
@@ -2733,7 +2733,7 @@ void *get_command_func(void *arg)
 				break;
 			}
 		}
-		
+
 		write(connect_fd, recall, strlen(recall)+1);
 		close(connect_fd);
 		printf("cmd_line: %s\n", cmd_line);
@@ -2756,7 +2756,7 @@ void *tcp_detect_func(void *arg)
 	int connect_server = 0;
 	char data[]="IPC DATA";
 	unsigned short tcp_port = 10010;
-	struct sockaddr_in ser_addr;	
+	struct sockaddr_in ser_addr;
 
 	memset(&ser_addr,0,sizeof(ser_addr));
 	ser_addr.sin_family=AF_INET;
@@ -2780,7 +2780,7 @@ void *tcp_detect_func(void *arg)
 		}
 		if (connect_flag)
 		{
-			struct tcp_filter_info tcp_filter_get; 
+			struct tcp_filter_info tcp_filter_get;
 			ret = ioctl(fp, ATBM_GET_FILTER, (unsigned int)(&tcp_filter_get));
 			if (ret)
 			{
@@ -2995,7 +2995,7 @@ int main(int argc, char *argv[])
 	pthread_t tcp_tid;
 	#endif
 	is_insmod_driver = 0;
-	
+
 	memset(server_ipaddr, 0, sizeof(server_ipaddr));
 	strcpy(server_ipaddr, "192.168.3.147");
 

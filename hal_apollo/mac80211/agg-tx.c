@@ -172,7 +172,7 @@ static void ieee80211_tx_ba_free_hw_token(struct ieee80211_local *local,int toke
 	if(ieee80211_hw_setup_ba(&local->hw)){
 		goto exit;
 	}
-	
+
 	if(token > local->hw.max_hw_support_tx_aggs || token < 0){
 		goto exit;
 	}
@@ -287,9 +287,9 @@ int ___ieee80211_stop_tx_ba_session(struct sta_info *sta, u16 tid,
 		 * Not bothering with a workaround for now.
 		 */
 //	}
-	
+
 	ieee80211_tx_ba_free_hw_token(local,tid_tx->hw_token);
-	
+
 	spin_lock_bh(&sta->lock);
 
 	if (tid_tx->stop_initiator == WLAN_BACK_INITIATOR && tid_tx->tx_stop && !ieee80211_hw_setup_ba(&local->hw))
@@ -573,7 +573,7 @@ int ieee80211_start_tx_ba_session(struct ieee80211_sta *pubsta, u16 tid,
 		return -EINVAL;
 	}
 	token = ieee80211_tx_ba_alloc_hw_token(local);
-	
+
 	if(token == -1){
 		return -EINVAL;
 	}

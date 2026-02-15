@@ -181,7 +181,7 @@ char* cmd_system(const char* command,char * buf,int buff_len)
   //  char buf[1024];
 	    memset(buf,'\0',sizeof(buf));
 	    while(fgets(buf,buff_len-1,fpRead)!=NULL)
-	    { 
+	    {
 			result=buf;
 	    }
 	}
@@ -197,14 +197,14 @@ int smt_check_wpa_status()
 {
 #if 0
 	int result = 0;
-	
+
 	int wpa_success = 0;
 	char tmpstring[50];
 	char* wpa_state = "wpa_state=COMPLETED";
 
 	result = system("wpa_cli status | tee /tmp/wpa_status.txt");
-	
-		
+
+
 	fprintf(stdout, "check_wap_status result:%d\n", result);
 
 	FILE* status_file = fopen("/tmp/wpa_status.txt", "r");
@@ -231,7 +231,7 @@ int smt_check_wpa_status()
 	int wpa_success = 0;
 	char buff[32];
 	cmd_system("iwpriv wlan0 common get_conn_state > /tmp/wpa_status.txt",NULL,0);
-	cmd_system("cat /tmp/wpa_status.txt | grep wifi",buff,32); 
+	cmd_system("cat /tmp/wpa_status.txt | grep wifi",buff,32);
 	sscanf(buff,"wifi_status=%d",&wpa_success);
 #endif
 
@@ -271,7 +271,7 @@ void connect_wifi_ap(u8* ssid, u8 ssidLen, u8* pwd, u8 pwdLen)
 	printf("start CMD:%s \n",gCmdStr);
 	system(gCmdStr);
 //	cmd_system(gCmdStr,NULL,0);
-	
+
 #else
 
 	sprintf(gCmdStr, "ifconfig wlan0 down");
@@ -361,11 +361,11 @@ int smt_demo_end_indicate(u8* event_buffer)
 
 				//change_driver_to_wifi(driverName_ble, driverName_wifi);
 				connect_wifi_ap(ble_smt.ssid, ble_smt.ssid_len, ble_smt.pwd, ble_smt.pwd_len);
-				
+
 				cmd_system("iwpriv wlan0 common get_conn_state > /tmp/wpa_status.txt",NULL,0);
-				cmd_system("cat /tmp/wpa_status.txt | grep wifi",buff,32); 
+				cmd_system("cat /tmp/wpa_status.txt | grep wifi",buff,32);
 				sscanf(buff,"wifi_status=%d",&result);
-				
+
 				fprintf(stdout, "check_wap_status result:%d pwd:%s len:%d\n", result, ble_smt.pwd, ble_smt.pwd_len);
 
 				goto config_err;
@@ -374,7 +374,7 @@ int smt_demo_end_indicate(u8* event_buffer)
 
 			//	result = system("wpa_cli status | tee /tmp/wpa_status.txt");
 				cmd_system("iwpriv wlan0 common get_conn_state > /tmp/wpa_status.txt",NULL,0);
-				cmd_system("cat /tmp/wpa_status.txt | grep wifi",buff,32); 
+				cmd_system("cat /tmp/wpa_status.txt | grep wifi",buff,32);
 				sscanf(buff,"wifi_status=%d",&result);
 				fprintf(stdout, " wap_status:%d\n", result);
 				//fprintf(stdout,"ble smart config Done(0x%X)\n", ble_smt.status);

@@ -39,7 +39,7 @@
 #define DELECT_KEY                   0x7F
 
 static void bleuart_deinit(void);
-    
+
 struct bleuart_console
 {
     struct rt_semaphore *rx_end;
@@ -218,7 +218,7 @@ static void bleuart_uart_proc(void)
                 rt_kprintf("%c", ch);
                 continue;
             }
-        }    
+        }
 
         console_buf[off] = '\0';
         rt_kprintf("\n");

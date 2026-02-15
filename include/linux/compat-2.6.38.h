@@ -24,7 +24,7 @@ static inline int skb_checksum_start_offset(const struct sk_buff *skb)
 	return skb->csum_start - skb_headroom(skb);
 }
 
-/* from include/linux/printk.h */ 
+/* from include/linux/printk.h */
 #define pr_emerg_once(fmt, ...)					\
 	printk_once(KERN_EMERG pr_fmt(fmt), ##__VA_ARGS__)
 #define pr_alert_once(fmt, ...)					\

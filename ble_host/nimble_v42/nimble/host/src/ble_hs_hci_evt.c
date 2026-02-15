@@ -312,11 +312,11 @@ ble_hs_hci_evt_vendor(uint8_t event_code, uint8_t *data, int len)
 {
 	uint8_t subevent;
 	uint8_t length;
-	
+
     if (len < BLE_HCI_EVENT_HDR_LEN + BLE_HCI_LE_MIN_LEN) {
         return BLE_HS_ECONTROLLER;
     }
-	
+
 	length = data[1];
 	subevent = data[2];
 	switch(subevent){
@@ -325,11 +325,11 @@ ble_hs_hci_evt_vendor(uint8_t event_code, uint8_t *data, int len)
 			ble_startup_indication(&data[3]);
 #endif
 			break;
-	
+
 		default:
 			break;
 	}
-	
+
 	return 0;
 }
 

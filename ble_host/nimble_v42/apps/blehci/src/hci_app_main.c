@@ -60,17 +60,17 @@ static int hci_app_gap_event(struct ble_gap_event *event, void *arg)
 	int i, rc;
 	struct ble_sm_io pkey;
 	struct os_mbuf *om;
-	
+
 	uint8_t local_irk[16] = {
 		0xec, 0x02, 0x34, 0xa3, 0x57, 0xc8, 0xad, 0x05,
 		0x34, 0x10, 0x10, 0xa6, 0x0a, 0x39, 0x7d, 0x9b
 	};
 
-	
+
 	printf("gap event->type:%d\n", event->type);
 	switch(event->type){
 #if 1
-		case BLE_GAP_EVENT_CONNECT:	
+		case BLE_GAP_EVENT_CONNECT:
 			if (event->connect.status == 0){
 				rc = ble_gap_conn_find(event->connect.conn_handle, &desc);
 				if(desc.role == BLE_GAP_ROLE_MASTER){
@@ -79,7 +79,7 @@ static int hci_app_gap_event(struct ble_gap_event *event, void *arg)
 				}
 			}
 			break;
-			
+
 		case BLE_GAP_EVENT_NOTIFY_RX:
         	printf("notification rx event; attr_handle=%d indication=%d "
                        "len=%d\n",
@@ -103,7 +103,7 @@ static int hci_app_gap_event(struct ble_gap_event *event, void *arg)
 			break;
 #endif
 #if 0
-			case BLE_GAP_EVENT_CONNECT: 	
+			case BLE_GAP_EVENT_CONNECT:
 				if (event->connect.status == 0) {
 					rc = ble_gap_conn_find(event->connect.conn_handle, &desc);
 					assert(rc == 0);
@@ -131,7 +131,7 @@ static int hci_app_gap_event(struct ble_gap_event *event, void *arg)
 					}
 				}
 				break;
-	
+
 			case BLE_GAP_EVENT_PASSKEY_ACTION:
 				printf("passkey action event; action=%d",
 							event->passkey.params.action);
@@ -142,11 +142,11 @@ static int hci_app_gap_event(struct ble_gap_event *event, void *arg)
 					pkey.numcmp_accept = 1;
 				}
 				printf("\n");
-	
+
 				if(event->passkey.params.action == BLE_SM_IOACT_INPUT){
 					pkey.action = BLE_SM_IOACT_INPUT;
 					pkey.passkey = 123456;
-					printf("event->connect.conn_handle:%d, event->passkey.conn_handle:%d\n", 
+					printf("event->connect.conn_handle:%d, event->passkey.conn_handle:%d\n",
 							event->connect.conn_handle, event->passkey.conn_handle);
 					ble_sm_inject_io(event->passkey.conn_handle, &pkey);
 				}
@@ -156,7 +156,7 @@ static int hci_app_gap_event(struct ble_gap_event *event, void *arg)
 		default:
 			break;
 	}
-	
+
 	return 0;
 }
 #endif
@@ -167,7 +167,7 @@ static int hci_app_gap_event(struct ble_gap_event *event, void *arg)
 *  Command: Disconnect_Command
 *  OGF	  : 0x06
 *  OCF	  : 0x0001
-*  Opcode : 
+*  Opcode :
 *  Param  : None
 *  Return : Status
 
@@ -184,17 +184,17 @@ int HCI_Disconnect_Command(){
 //	iot_printf("HCI Command HCI_Disconnect_Command test Start ...\n");
 	printf("conn_handle = %x\n",conn_handle);
 	printf("disconnect_reason = %x\n",disconnect_reason);
-	
+
 	uint8_t buf[BLE_HCI_DISCONNECT_CMD_LEN];
 	int rc;
     ble_hs_hci_cmd_build_disconnect(conn_handle, disconnect_reason,
                                     buf, sizeof buf);
 
-		
+
     rc = ble_hs_hci_cmd_tx_empty_ack(BLE_HCI_OP(BLE_HCI_OGF_LINK_CTRL,
                                                 BLE_HCI_OCF_DISCONNECT_CMD),
                                      buf, sizeof(buf));
-#if LL_CHECK	
+#if LL_CHECK
 	if(rc == CMD_SUCCEED){
 		iot_printf("sw_check_case10_disconnect_hci_cmd success\n");
 		iot_printf(" \r\n HCI_Disconnect_Command SUCCEED\r\n");
@@ -202,7 +202,7 @@ int HCI_Disconnect_Command(){
 		iot_printf(" \r\n HCI_Disconnect_Command FAILED rc = %d\r\n",rc);
 	}
 #endif
-	
+
 //	iot_printf("HCI_Disconnect_Command test end ...\n");
 	return rc;
 }
@@ -231,7 +231,7 @@ int  HCI_Reset_Command(void){
 	}else{
 		iot_printf(" \r\n Reset_Command FAILED\r\n");
 	}
-	
+
 //	iot_printf("Reset_Command test end ...\n");
 	return rc;
 }
@@ -248,10 +248,10 @@ int  HCI_Write_Authenticated_Payload_Timeout_Command(){
 	struct ble_ll_conn_sm *connsm;
 	conn_handle = HW_READ_REG(SIM_SRAM+0xa5c) & 0xfff;
 	auth_pyld_tmo = (HW_READ_REG(SIM_SRAM+0xac0)>>16) & 0xffff;
-	
+
 	ble_hs_hci_cmd_build_auth_pyld_tmo(conn_handle, auth_pyld_tmo,
                                     buf, sizeof buf);
-	
+
 	rc =  ble_hs_hci_cmd_tx(BLE_HCI_OP(BLE_HCI_OGF_CTLR_BASEBAND,
                                         BLE_HCI_OCF_CB_WR_AUTH_PYLD_TMO),
                              buf, sizeof buf, ack_params, sizeof ack_params, &ack_params_len);
@@ -259,16 +259,16 @@ int  HCI_Write_Authenticated_Payload_Timeout_Command(){
 	if(rc == CMD_SUCCEED){
 		iot_printf(" \r\n Write_Authenticated_Payload_Timeout_Command SUCCEED  conn_handle = %x\r\n",conn_handle);
 		printf("sw_check_case7_write_authenticated_hci_cmd success\n");
-		
+
 	}else{
 		iot_printf(" \r\n Write_Authenticated_Payload_Timeout_Command FAILED\r\n");
 		iot_printf("\r\n sw_check_le_ping Write Authenticated Payload Timeout failed \r\n");
 	}
 #endif
 	connsm = ble_ll_conn_find_active_conn(conn_handle);
-	
+
 	ble_ll_ctrl_proc_start(connsm, BLE_LL_CTRL_PROC_LE_PING);
-//	iot_printf("Write_Authenticated_Payload_Timeout_Command test end ...\n");	
+//	iot_printf("Write_Authenticated_Payload_Timeout_Command test end ...\n");
 	return rc;
 }
 
@@ -351,19 +351,19 @@ BLE_HCI_Read_RSSI_Command(void)
  *  Return : Status
  *
  */
- 
+
 int
 HCI_LE_Set_Event_Mask_Command(void)
 {
 //	iot_printf("HCI_LE_Set_Event_Mask test start ...\n");
 	uint8_t rc;
     uint8_t buf[BLE_HCI_SET_LE_EVENT_MASK_LEN];
-	
+
     uint64_t event_mask = 0xffffffffffffffff;
-	
+
 	//memcpy(event_mask,SIM_SRAM+0xa54,8);
     ble_hs_hci_cmd_build_le_set_event_mask(event_mask, buf, sizeof(buf));
-	
+
     rc = ble_hs_hci_cmd_tx(BLE_HCI_OP(BLE_HCI_OGF_LE,BLE_HCI_OCF_LE_SET_EVENT_MASK), buf, sizeof(buf),NULL,0,NULL);
 
 	if(rc == CMD_SUCCEED){
@@ -371,7 +371,7 @@ HCI_LE_Set_Event_Mask_Command(void)
 	}else{
 		iot_printf(" \r\n HCI_LE_Set_Event_Mask FAILED\r\n");
 	}
-	
+
 //	iot_printf("HCI_LE_Set_Event_Mask test end ...\n");
 	return rc;
 }
@@ -382,11 +382,11 @@ HCI_CB_Set_Event_Mask_Command(void)
 	uint8_t rc;
     uint8_t buf[BLE_HCI_SET_LE_EVENT_MASK_LEN];
 
-	
+
 //	iot_printf("HCI_CB_Set_Event_Mask test start ...\n");
 
 	ble_hs_hci_cmd_build_set_event_mask(0xffffffffffffffff, buf, sizeof buf);
-	rc = ble_hs_hci_cmd_tx(BLE_HCI_OP(BLE_HCI_OGF_CTLR_BASEBAND,BLE_HCI_OCF_CB_SET_EVENT_MASK), 
+	rc = ble_hs_hci_cmd_tx(BLE_HCI_OP(BLE_HCI_OGF_CTLR_BASEBAND,BLE_HCI_OCF_CB_SET_EVENT_MASK),
 										buf, sizeof(buf),NULL,0,NULL);
 
 	if(rc == CMD_SUCCEED){
@@ -545,8 +545,8 @@ HCI_LE_Set_Advertising_Parameters_Command(void)
 	adv.peer_addr_type = 0x00;
 	adv.adv_channel_map = 0x07;
 	adv.adv_filter_policy = 0x00;
-	
-	memcpy(&adv, SIM_SRAM+0xa00, sizeof(struct hci_adv_params));	
+
+	memcpy(&adv, SIM_SRAM+0xa00, sizeof(struct hci_adv_params));
 	//memcpy(adv.peer_addr, ble_addr, BLE_DEV_ADDR_LEN);
 	iot_printf("adv_type = %x \r\n",adv.adv_type);
 	iot_printf("adv_channel_map = %x \r\n",adv.adv_channel_map);
@@ -561,7 +561,7 @@ HCI_LE_Set_Advertising_Parameters_Command(void)
 	}
 	printf("\n");
 	rc = ble_hs_hci_cmd_build_le_set_adv_params(&adv, buf, sizeof buf);
-	
+
 	if (!rc) {
 		rc = ble_hs_hci_cmd_tx_empty_ack(BLE_HCI_OP(BLE_HCI_OGF_LE,
 													BLE_HCI_OCF_LE_SET_ADV_PARAMS),
@@ -569,13 +569,13 @@ HCI_LE_Set_Advertising_Parameters_Command(void)
 		if(rc == CMD_SUCCEED){
 			iot_printf(" \r\n HCI_LE_SET_ADVERTISING_PARAMETERS_OCF SUCCEED\r\n");
 		}else{
-		
+
 			iot_printf(" \r\n HCI_LE_SET_ADVERTISING_PARAMETERS_OCF FAILED rc = %x\r\n",rc);
 		}
 
 	}
 //	iot_printf("HCI_LE_SET_ADVERTISING_PARAMETERS_OCF test end ...\n");
-	 
+
 	return rc;
 }
 
@@ -640,10 +640,10 @@ HCI_LE_Set_Advertising_Data(void){
     int rc;
     uint16_t opcode;
     uint8_t buf[BLE_HCI_SET_ADV_DATA_LEN];
-	
+
 	len = (HW_READ_REG(SIM_SRAM+0xab8)>>24) & 0xff;
 	memcpy(data,SIM_SRAM+0xa9c,len);
-	
+
     opcode = BLE_HCI_OP(BLE_HCI_OGF_LE, BLE_HCI_OCF_LE_SET_ADV_DATA);
     rc = ble_hs_hci_cmd_build_le_set_adv_data(data, len, buf, sizeof buf);
     assert(rc == 0);
@@ -681,7 +681,7 @@ HCI_LE_Set_Scan_Response_Data(void){
     int rc;
     uint16_t opcode;
     uint8_t buf[BLE_HCI_SET_SCAN_RSP_DATA_LEN];
-	
+
 	len = (HW_READ_REG(SIM_SRAM+0xae0)>>24) & 0xff;
 	memcpy(data,SIM_SRAM+0xac4,len);
 
@@ -759,7 +759,7 @@ HCI_LE_Set_Scan_Parameters(void){
     int rc;
     uint8_t own_addr_type;
     uint8_t buf[BLE_HCI_SET_SCAN_PARAM_LEN];
-	
+
     own_addr_type = BLE_HCI_ADV_OWN_ADDR_PUBLIC;
 	struct hci_scan_params scan;
 	memcpy(&scan,SIM_SRAM+0xa14,sizeof(struct hci_scan_params));
@@ -768,7 +768,7 @@ HCI_LE_Set_Scan_Parameters(void){
 	iot_printf("own_addr_type = %x \r\n",scan.own_addr_type);
 	iot_printf("scan_itvl = %x \r\n",scan.scan_itvl);
 	iot_printf("scan_window = %x \r\n",scan.scan_window);
-	
+
     //rc = ble_hs_hci_cmd_build_le_set_scan_params(BLE_HCI_SCAN_TYPE_PASSIVE,
     //											 (700000 / BLE_HCI_SCAN_ITVL),
     //											 (700000 / BLE_HCI_SCAN_ITVL),
@@ -887,7 +887,7 @@ HCI_LE_Create_Connection(void){
 	hcc.own_addr_type = (HW_READ_REG(SIM_SRAM+0xa44)>>16) & 0xff;
 	memcpy(hcc.peer_addr, SIM_SRAM+0xa0c, BLE_DEV_ADDR_LEN);
 	memcpy((char*)(&hcc)+14,SIM_SRAM+0xa48,12);
-	
+
 	//iot_printf("hcc.scan_itvl = %x \r\n",*(u32 *)SIM_SRAM+0x0c);
 	iot_printf("scan_itvl = %x \r\n",hcc.scan_itvl);
 	iot_printf("scan_window = %x \r\n",hcc.scan_window);
@@ -900,7 +900,7 @@ HCI_LE_Create_Connection(void){
 	iot_printf("supervision_timeout = %x \r\n",hcc.supervision_timeout);
 	iot_printf("min_ce_len = %x \r\n",hcc.min_ce_len);
 	iot_printf("max_ce_len = %x \r\n",hcc.max_ce_len);
-	
+
 	int i;
 	printf("peer_addr : ");
 	for(i=0;i<6;i++){
@@ -935,7 +935,7 @@ HCI_LE_Create_Connection(void){
                                                     BLE_HCI_OCF_LE_CREATE_CONN),
                                          buf, sizeof(buf));
 		if(rc == CMD_SUCCEED){
-			
+
 			iot_printf(" \r\n HCI_LE_CREATE_CONNECTION_OCF SUCCEED\r\n");
 		}else{
 			iot_printf(" \r\n HCI_LE_CREATE_CONNECTION_OCF FAILED\r\n");
@@ -1053,7 +1053,7 @@ HCI_LE_Add_Device_To_White_List(void){
 	printf("HCI_LE_Add_Device_To_White_List:ble_addr = ");
 	for(i=0;i <= 5;i++){
 		printf("%0x ",ble_addr[i]);
-		}	
+		}
 	printf("\n");
     rc = ble_hs_hci_cmd_build_le_add_to_whitelist(ble_addr, addr_type, buf,
                                                 sizeof buf);
@@ -1094,7 +1094,7 @@ HCI_LE_Remove_Device_From_White_list(void){
 	iot_printf("addr_type = %x \r\n",addr_type);
 	for(i=0;i <= 5;i++){
 		iot_printf("ble_addr[%d] = %x \r\n",i,ble_addr[i]);
-		}	
+		}
 
     rc = ble_hs_hci_cmd_build_le_add_to_whitelist(ble_addr, addr_type, buf,sizeof buf);
 
@@ -1146,7 +1146,7 @@ HCI_LE_Connect_Updata(void){
 
     hcu.handle = HW_READ_REG(SIM_SRAM+0xa5c) & 0xfff;
 	// memcpy((char*)(&hcu)+2,SIM_SRAM+0xa48,12);
-	
+
 	iot_printf("hcc.handle = %x \r\n",hcu.handle);
 	iot_printf("hcc.conn_itvl_min = %x \r\n",hcu.conn_itvl_min);
 	iot_printf("hcc.conn_itvl_max = %x \r\n",hcu.conn_itvl_max);
@@ -1176,7 +1176,7 @@ HCI_LE_Connect_Updata(void){
 	iot_printf("HCI Command HCI_LE_CONNECTION_UPDATE_OCF test end ...\n");
 
 	return rc;
-	
+
 }
 
 /*
@@ -1216,7 +1216,7 @@ HCI_LE_Set_Host_Channel_Classification(void){
 //	iot_printf("HCI Command HCI_LE_SET_HOST_CHANNEL_CLASSIFICATION_OCF test end ...\n");
 
 	return rc;
-	
+
 }
 
 /*
@@ -1238,11 +1238,11 @@ HCI_LE_Read_Channel_Map(void){
     uint8_t rsplen;
     uint8_t handle;
 	int i;
-	
+
 	handle = HW_READ_REG(SIM_SRAM+0xa5c) & 0xfff;
 
     put_le16(buf, handle);
-	
+
     rc = ble_hs_hci_cmd_tx(BLE_HCI_OP(BLE_HCI_OGF_LE, BLE_HCI_OCF_LE_RD_CHAN_MAP),
                         buf, sizeof(buf), rspbuf, BLE_HCI_RD_CHANMAP_RSP_LEN, &rsplen);
 
@@ -1251,7 +1251,7 @@ HCI_LE_Read_Channel_Map(void){
 		printf("%02X ", rspbuf[i]);
 	}
 	printf("\n");
-	
+
 	if (rsplen != BLE_HCI_RD_CHANMAP_RSP_LEN) {
         return BLE_HS_ECONTROLLER;
     }
@@ -1260,7 +1260,7 @@ HCI_LE_Read_Channel_Map(void){
 		#if BLE_SIM_CMD_MODE
 	       HW_WRITE_REG_BIT(SIM_SRAM+0xd24,10,10,0x1); // wait Read_Channel_Map SUCCEED
         #endif
-		
+
 		#if LL_CHECK
 		  printf("sw_check_case0_read_channel_map_hci_cmd success\n");
 	    #endif
@@ -1270,7 +1270,7 @@ HCI_LE_Read_Channel_Map(void){
 	}
 
 //	iot_printf("HCI Command HCI_LE_READ_CHANNEL_CLASSIFICATION_OCF test end ...\n");
-	
+
     return rc;
 
 }
@@ -1435,7 +1435,7 @@ HCI_LE_Start_Encryption(void){
     cmd.encrypted_diversifier = 0x0000000000000000;
     cmd.random_number = 0x0000;
 	// memcpy(cmd.long_term_key, term_key, 16);
-	
+
     cmd.connection_handle = HW_READ_REG(SIM_SRAM+0xa5c) & 0xfff;
     //cmd.encrypted_diversifier = (HW_READ_REG(SIM_SRAM+0xa5c)>>16) & 0xffff;
 	//memcpy(cmd.random_number,SIM_SRAM+0xa88,8);
@@ -1467,7 +1467,7 @@ HCI_LE_Start_Encryption(void){
  *  2.use ltk encryption
  *  return 0:succ
  */
-static int 
+static int
 ble_test_smp(){
     int rc;
     uint16_t connection_handle;
@@ -1508,7 +1508,7 @@ HCI_LE_Long_Term_Key_Request_Reply(void){
     hkr.conn_handle = 0x0001; /* Connection_Handle */
     hkr.conn_handle = HW_READ_REG(SIM_SRAM+0xa5c) & 0xfff;
 	memcpy(hkr.long_term_key,SIM_SRAM+0xa68,BLE_ENC_BLOCK_SIZE);
-	
+
     // swap_buf(hkr.long_term_key, (uint8_t *)bletest_LTK, 16);
 
     ble_hs_hci_cmd_build_le_lt_key_req_reply(&hkr, buf, sizeof buf);
@@ -1696,7 +1696,7 @@ HCI_LE_Test_End(void){
 	rc = ble_hs_hci_cmd_tx(BLE_HCI_OP(BLE_HCI_OGF_LE, BLE_HCI_OCF_LE_TEST_END),
                             NULL, 0, rspbuf, 8, &rsplen);
 
-							
+
 	if(rc == CMD_SUCCEED){
 		iot_printf(" \r\n HCI_LE_Test_End SUCCEED\r\n");
 
@@ -1744,7 +1744,7 @@ HCI_LE_Remote_Connection_Parameter_Request_Reply(void){
 
     hcr.handle = HW_READ_REG(SIM_SRAM+0xa5c) & 0xfff;
 	memcpy((char*)(&hcr)+2,SIM_SRAM+0xa48,12);
-	
+
 	iot_printf("handle = %x \r\n",hcr.handle);
 	iot_printf("conn_itvl_min = %x \r\n",hcr.conn_itvl_min);
 	iot_printf("conn_itvl_max = %x \r\n",hcr.conn_itvl_max);
@@ -1904,7 +1904,7 @@ HCI_LE_Read_Suggested_Default_Data_Length(void){
 		printf("%02X ", rspbuf[i]);
 	}
 	printf("\n");
-	
+
     if (rsplen != BLE_HCI_RD_SUGG_DATALEN_RSPLEN) {
         return BLE_HS_ECONTROLLER;
     }
@@ -1955,7 +1955,7 @@ HCI_LE_Write_Suggested_Defalt_Data_Length(void){
     txoctets = HW_READ_REG(SIM_SRAM+0xa98) & 0xffff;
     txtime = (HW_READ_REG(SIM_SRAM+0xa98)>>16) & 0xffff;
 	printf("HCI_LE_Write_Suggested_Defalt_Data_Length: %x,%x\n",txoctets,txtime);
-	
+
     put_le16(buf, txoctets);
     put_le16(buf + 2, txtime);
     rc =  ble_hs_hci_cmd_tx(BLE_HCI_OP(BLE_HCI_OGF_LE, BLE_HCI_OCF_LE_WR_SUGG_DEF_DATA_LEN),
@@ -2052,19 +2052,19 @@ HCI_LE_Add_Device_To_Resolving_List(void){
 		printf("%x ",padd.addr[i]);
 	}
 	printf("\n");
-	
+
 	//printf("padd.peer_irk : ");
 	//for(i=0;i<16;i++){
 	//	printf("%x ",padd.peer_irk[i]);
 	//}
-	//printf("\n");	
-	
+	//printf("\n");
+
 	//printf("padd.local_irk : ");
 	//for(i=0;i<16;i++){
 	//	printf("%x ",padd.local_irk[i]);
 	//}
 	//printf("\n");
-	
+
     rc = ble_hs_hci_cmd_build_add_to_resolv_list(&padd, buf, sizeof buf);
     if (!rc) {
         rc = ble_hs_hci_cmd_tx_empty_ack(BLE_HCI_OP(BLE_HCI_OGF_LE,
@@ -2103,11 +2103,11 @@ HCI_LE_Remove_Device_From_Resolving_List(void){
     memcpy(addr, ble_addr, BLE_DEV_ADDR_LEN);
 	struct hci_params{
 		uint8_t addr_type;
-		uint8_t addr[BLE_DEV_ADDR_LEN];	
+		uint8_t addr[BLE_DEV_ADDR_LEN];
 	};
 	struct hci_params paddr;
 	memcpy(&paddr,SIM_SRAM+0xa1c,sizeof(struct hci_params));
-	
+
     rc = ble_hs_hci_cmd_build_remove_from_resolv_list(paddr.addr_type, paddr.addr,
                                                       buf, sizeof(buf));
     if (rc != 0) {
@@ -2211,14 +2211,14 @@ HCI_LE_Read_Peer_Resolvable_Address(void){
 	uint8_t rsq_len;
 	int i;
 	struct hci_params{
-		uint8_t Peer_Identity_Address_Type;	
+		uint8_t Peer_Identity_Address_Type;
 		uint8_t Peer_Identity_Address[6];
 		uint8_t revered;
 	};
 	struct hci_params paddr;
 	// printf("RPA_REG_0 = %x\n",HW_READ_REG(SIM_SRAM+0xa1c));
 	// printf("RPA_REG_1 = %x\n",HW_READ_REG(SIM_SRAM+0xa20));
-	
+
 	memcpy(&paddr,SIM_SRAM+0xa1c,sizeof(struct hci_params));
 	put_le16(buf, paddr.Peer_Identity_Address_Type);
 	//swap_buf(buf+1,paddr.Peer_Identity_Address,6);
@@ -2231,13 +2231,13 @@ HCI_LE_Read_Peer_Resolvable_Address(void){
 //	buf[5] = 0x09;
 //	buf[6] = 0x96;
 
-	
+
 	printf("Peer RPA and addr type:");
 	for(i=0; i<BLE_HCI_RD_PEER_RESOLV_ADDR_LEN; i++){
 		printf("%02X ", buf[i]);
 	}
 	printf("\n");
-	
+
 	rc = ble_hs_hci_cmd_tx(BLE_HCI_OP(BLE_HCI_OGF_LE,
 									  BLE_HCI_OCF_LE_RD_PEER_RESOLV_ADDR),
 									  buf,BLE_HCI_RD_PEER_RESOLV_ADDR_LEN, rsqbuf,BLE_HCI_RD_PEER_RESOLV_ADDR_LEN-1,&rsq_len);
@@ -2247,14 +2247,14 @@ HCI_LE_Read_Peer_Resolvable_Address(void){
 		printf("%02X ", rsqbuf[i]);
 	}
 	printf("\n");
-	
+
 	if(rc == CMD_SUCCEED){
 		iot_printf(" \r\n HCI_LE_Read_Peer_Resolvable_Address SUCCEED\r\n");
 
 	}else{
 		iot_printf(" \r\n HCI_LE_Read_Peer_Resolvable_Address FAILED\r\n");
 	}
-	
+
 	return rc;
 
 }
@@ -2281,7 +2281,7 @@ HCI_LE_Read_Local_Resolvable_Address(void){
 	int i;
 	struct hci_params{
 		uint8_t Peer_Identity_Address_Type;
-		uint8_t Peer_Identity_Address[6];	
+		uint8_t Peer_Identity_Address[6];
 		uint8_t revered;
 	};
 	struct hci_params paddr;
@@ -2435,7 +2435,7 @@ HCI_LE_Read_PHY(void){
 	uint8_t cmd[BLE_HCI_LE_RD_PHY_LEN];
 	uint16_t Connection_Handle = 0x0001;
 	Connection_Handle = HW_READ_REG(SIM_SRAM+0xa5c) & 0xfff;
-	
+
 	put_le16(cmd, Connection_Handle);
 	int i;
     rc = ble_hs_hci_cmd_tx(BLE_HCI_OP(BLE_HCI_OGF_LE, BLE_HCI_OCF_LE_RD_PHY),
@@ -2446,7 +2446,7 @@ HCI_LE_Read_PHY(void){
 		printf("%02X ", rspbuf[i]);
 	}
 	printf("\n");
-	
+
 	if(rc == CMD_SUCCEED){
 		iot_printf(" \r\n HCI_LE_Read_PHY SUCCEED\r\n");
 		#if LL_CHECK
@@ -2523,12 +2523,12 @@ HCI_LE_Set_PHY(){
 	uint8_t tx_phys_mask;
 	uint8_t rx_phys_mask;
 	uint16_t phy_opts;
-	
+
 	conn_handle = HW_READ_REG(SIM_SRAM+0xa5c) & 0xfff;
 	tx_phys_mask = (HW_READ_REG(SIM_SRAM+0xae4)>>24) & 0xff;
 	rx_phys_mask = (HW_READ_REG(SIM_SRAM+0xae4)>>16) & 0xff;
 	phy_opts = HW_READ_REG(SIM_SRAM+0xae4) & 0xff;
-	
+
     rc = ble_hs_hci_cmd_build_le_set_phy(conn_handle, tx_phys_mask,
                                          rx_phys_mask, phy_opts, buf,
                                          sizeof(buf));
@@ -2729,7 +2729,7 @@ HCI_LE_Set_ExtendedAdvertising_Parameters(void){
     buf[22] = hci_adv_params.secondary_phy;
     buf[23] = hci_adv_params.sid;
     buf[24] = hci_adv_params.scan_req_notif;
-	
+
 	if (rc == 0) {
 	   rc = ble_hs_hci_cmd_tx(BLE_HCI_OP(BLE_HCI_OGF_LE, BLE_HCI_OCF_LE_SET_EXT_ADV_PARAM), buf, sizeof(buf), &rsp, 1, NULL);
 
@@ -3617,7 +3617,7 @@ HCI_LE_Read_Rem_Version(void)
 {
     uint8_t buf[sizeof(uint16_t)];
 	uint16_t handle;
-	
+
 	handle = HW_READ_REG(SIM_SRAM+0xa5c) & 0xfff;
 	iot_printf("\r\n Read_Rem_Version start handle:%X \r\n", handle);
     put_le16(buf, handle);
@@ -3625,7 +3625,7 @@ HCI_LE_Read_Rem_Version(void)
                                 buf, sizeof(buf), NULL, 0, NULL);
 }
 
-	
+
 /*
 *send  acl data
 *
@@ -3650,7 +3650,7 @@ bletest_send_acl_packet(void)
 	}
 
     om = os_msys_get_pkthdr(len, 0);
-	
+
     if (om){
         om->om_len = len;
         /* Put the HCI header in the mbuf */
@@ -3669,7 +3669,7 @@ bletest_send_acl_packet(void)
     }else{
 		printf("os_msys_get_pkthdr malloc err\n");
 	}
-	
+
     return rc;
 }
 #else
@@ -3693,7 +3693,7 @@ bletest_send_acl_packet(void)
     if (os_msys_num_free() >= 4) {
         om = os_msys_get_pkthdr(len + 4, sizeof(struct ble_mbuf_hdr));
     }
-	
+
     if (om){
         om->om_len = len;
         /* HCI header will be put in ble_hs_hci_acl_tx_now */
@@ -3708,18 +3708,18 @@ bletest_send_acl_packet(void)
         dptr[3] = 0xff;
         dptr += 4;
         len -= 4;
-		
+
         /* Fill data with fixed pattern (0) */
         for (i = 0; i < len; ++i) {
             *dptr = 0;
             ++dptr;
         }
-		
+
         /* Transmit it */
         OS_MBUF_PKTHDR(om)->omp_len = om->om_len;
 		printf("bletest_send_acl_packet om->om_len:%0x\n",om->om_len);
 
-		
+
         rc = ble_hs_hci_acl_tx_now(conn, &om);
     }
     return rc;
@@ -3739,9 +3739,9 @@ start_scan_test(void)
 
 /*
 
-Step 1: 
+Step 1:
 Step 2:
-Step 3: 
+Step 3:
 
 */
 int ble_hci_test_set_ranrom_addr(){
@@ -3755,7 +3755,7 @@ int ble_hci_test_set_ranrom_addr(){
 //bit[29] scan_en
 //bit[28] filter_duplicates
 //bit[27] 1:hci command send success
-//		  0:hci command send failed		
+//		  0:hci command send failed
 //bit[26] 1: set ACL data flag
 
 //****************simulation function**************//
@@ -3766,7 +3766,7 @@ int ble_hci_test_set_ranrom_addr(){
 void hci_sim(void){
 	u32 sim_params;
 	u32 send_begin;
-	u32 send_end;	
+	u32 send_end;
 	u16 op_test;
 	int rc;
 	hal_sleep(1);
@@ -3797,14 +3797,14 @@ void hci_sim(void){
 			}
 			g_sim_hci_sched = 0;
 		}
-#endif		
+#endif
 		sim_params = HW_READ_REG(HCI_REG);
 		send_begin = (sim_params >> 31) & 0x1;
 	    op_test = sim_params & 0xffff;
 
 		if(send_begin == 1){
 			iot_printf("\r\nHci command sending begin,op_test:0x%X\r\n", op_test);
-			
+
 			if(BLE_HCI_OGF(op_test) == BLE_HCI_OGF_LINK_CTRL){
 				switch(BLE_HCI_OCF(op_test)){
 					case BLE_HCI_OCF_DISCONNECT_CMD:
@@ -3815,10 +3815,10 @@ void hci_sim(void){
 						break;
 					default:
 						iot_printf("########ocf value is illegal##########\n\n");
-						break;	
+						break;
 				}
 			}
-			
+
 			if(BLE_HCI_OGF(op_test) == BLE_HCI_OGF_CTLR_BASEBAND){
 				switch(BLE_HCI_OCF(op_test)){
 					case BLE_HCI_OCF_CB_WR_AUTH_PYLD_TMO:
@@ -3828,7 +3828,7 @@ void hci_sim(void){
 						rc = HCI_CB_Set_Event_Mask_Command();
 					default:
 						iot_printf("########ocf value is illegal##########\n\n");
-						break;	
+						break;
 				}
 			}
 
@@ -3854,12 +3854,12 @@ void hci_sim(void){
 				}
 			}
 
-			
+
 			if(BLE_HCI_OGF(op_test) == BLE_HCI_OGF_LE){
 				switch(BLE_HCI_OCF(op_test)){
 				case 0x0001:
 					rc = HCI_LE_Set_Event_Mask_Command();
-					break;	
+					break;
 				case 0x0002:
 					rc = HCI_LE_Read_Buffer_Size_Command();
 					break;
@@ -4115,7 +4115,7 @@ void hci_sim(void){
 			HW_WRITE_REG_BIT(HCI_REG,27,27,0x0);//clear hci command send success flag
 
 		}
-	
+
 	}
 }
 

@@ -34,16 +34,16 @@ static int ieee80211_send_mgmt_action_packet(struct ieee80211_sub_if_data *sdata
 {
 	struct ieee80211_local *local = sdata->local;
 //	struct atbm_common *hw_priv=(struct atbm_common *)local->hw.priv;
-	
+
 	//struct atbm_vif *priv = (struct atbm_vif *)sdata->vif.drv_priv;
 //	int ret = 0;
 	unsigned char da[6]={0};
-	
+
 	struct sk_buff *skb;
 	struct atbm_ieee80211_mgmt *mgmt;
 //	u16 params;
 	unsigned long flags;
-/*		
+/*
 	int work_chan;
 
 	work_chan = get_work_channel(sdata,1);
@@ -51,19 +51,19 @@ static int ieee80211_send_mgmt_action_packet(struct ieee80211_sub_if_data *sdata
 		atbm_printk_err("ieee80211_send_mgmt_action_packet: work chan = 0! \n");
 		return -1;
 	}
-*/	
+*/
 	if(sdata == NULL){
 		atbm_printk_err("ieee80211_send_mgmt_action_packet sdata is NULL \n");
 		msleep(1000);
 		return -1 ;
 	}
-	
+
 	if (!ieee80211_sdata_running(sdata)){
 		atbm_printk_err("ieee80211_send_mgmt_action_packet net interface not runing! \n");
 		msleep(1000);
 		return -1 ;
 	}
-	
+
 	skb = atbm_dev_alloc_skb(sizeof(*mgmt) + local->hw.extra_tx_headroom);
 	if (!skb){
 		atbm_printk_always("ieee80211_send_mgmt_action_packet :atbm_dev_alloc_skb err!! \n");
@@ -97,7 +97,7 @@ static int ieee80211_send_mgmt_action_packet(struct ieee80211_sub_if_data *sdata
 	spin_unlock_irqrestore(&hw_priv->send_prvmgmt_skb_queue.lock,flags);
 	IEEE80211_SKB_CB(skb)->flags |=
 			IEEE80211_TX_CTL_NO_CCK_RATE;
-			
+
 	ieee80211_tx_skb(sdata, skb);
 
 	return 0;
@@ -117,7 +117,7 @@ static int ieee80211_send_probe_resp_packet(struct ieee80211_sub_if_data *sdata,
 		msleep(1000);
 		return -1 ;
 	}
-	
+
 	if (!ieee80211_sdata_running(sdata)){
 		atbm_printk_err("atbm_ieee80211_send_probe_resp net interface not runing! \n");
 		msleep(1000);
@@ -129,7 +129,7 @@ static int ieee80211_send_probe_resp_packet(struct ieee80211_sub_if_data *sdata,
 		return -1 ;
 	}
 
-	
+
 #ifdef ATBM_PROBE_RESP_EXTRA_IE
 	skb = ieee80211_proberesp_get(&sdata->local->hw,&sdata->vif);
 #endif
@@ -148,14 +148,14 @@ static int ieee80211_send_probe_resp_packet(struct ieee80211_sub_if_data *sdata,
 	}
 	special = skb->data + skb->len;
 	//atbm_printk_err("atbm_ieee80211_send_probe_resp  special=%x \n",special);
-	
+
 	spin_lock_irqsave(&hw_priv->send_prvmgmt_skb_queue.lock,flags);
 	memcpy(special,&hw_priv->ap_vendor_cfg_ie.private_ie,sizeof(struct atbm_vendor_cfg_ie));
 	sdata = hw_priv->ap_vendor_cfg_ie.ap_sdata;
 	spin_unlock_irqrestore(&hw_priv->send_prvmgmt_skb_queue.lock,flags);
 
 	atbm_skb_put(skb,sizeof(struct atbm_vendor_cfg_ie));
-	
+
 
 	mgmt = (struct atbm_ieee80211_mgmt *)skb->data;
 	memcpy(mgmt->da,dest,6);
@@ -170,14 +170,14 @@ static int ieee80211_send_probe_resp_packet(struct ieee80211_sub_if_data *sdata,
 
 static int atbm_ieee80211_send_private_mgmt_thread(void *arg)
 {
-	
+
 	struct atbm_common *hw_priv = arg;
 	struct ieee80211_hw *hw = hw_priv->hw;
-//	struct ieee80211_local *local = 
+//	struct ieee80211_local *local =
 //		container_of(hw, struct ieee80211_local, hw);
-	
+
 		//sdata->local;
-	
+
 //	struct atbm_common *hw_priv = (struct atbm_common *) hw->priv;
 //	hw_priv->stop_prvmgmt_thread = false;
 //	hw_priv->start_send_prbresp = false;
@@ -187,14 +187,14 @@ static int atbm_ieee80211_send_private_mgmt_thread(void *arg)
 
 		if(hw_priv->stop_prvmgmt_thread)
 			break;
-		
+
 
 		while(1){
 			if(!hw_priv->start_send_prbresp && !hw_priv->start_send_action)
 				break;
-			
-			
-			
+
+
+
 			if(hw_priv->start_send_prbresp){
 				if(ieee80211_send_probe_resp_packet(hw_priv->ap_vendor_cfg_ie.ap_sdata,hw_priv)){
 					atbm_printk_err("ieee80211_send_probe_resp_packet err! \n");
@@ -209,10 +209,10 @@ static int atbm_ieee80211_send_private_mgmt_thread(void *arg)
 				}
 			}
 
-			
+
 			msleep(4);
 		}
-	
+
 	}
 	while(1){
 		if(kthread_should_stop())
@@ -228,19 +228,19 @@ static int atbm_ieee80211_send_private_mgmt_thread(void *arg)
 
 static void ieee80211_send_mgmt_work_control(struct atbm_work_struct *work)
 {
-	
+
 	struct atbm_common *hw_priv =
 		container_of(work, struct atbm_common, send_prvmgmt_work);
 	struct sk_buff *skb;
 	struct sk_buff_head local_list;
 	unsigned long flags;
-	
-	
+
+
 	__atbm_skb_queue_head_init(&local_list);
 	spin_lock_irqsave(&hw_priv->send_prvmgmt_skb_queue.lock,flags);
 	atbm_skb_queue_splice_tail_init(&hw_priv->send_prvmgmt_skb_queue, &local_list);
 	spin_unlock_irqrestore(&hw_priv->send_prvmgmt_skb_queue.lock,flags);
-	
+
 
 	while ((skb = __atbm_skb_dequeue(&local_list)) != NULL){
 		//atbm_printk_err("ieee80211_send_mgmt_work_control skb=%x skb->data=%x\n",skb,skb->data);
@@ -259,20 +259,20 @@ static void ieee80211_send_mgmt_work_control(struct atbm_work_struct *work)
 				//		hw_priv->ap_vendor_cfg_ie.ap_sdata,
 				//		hw_priv->ap_vendor_cfg_ie.private_ie.ssid,
 				//		hw_priv->ap_vendor_cfg_ie.private_ie.password);
-					
+
 					if(hw_priv->start_send_prbresp == true)
 						break;
-					
+
 					hw_priv->start_send_prbresp = true;
 					wake_up(&hw_priv->send_prvmgmt_wq);
-					
+
 				}
-				
+
 				atbm_dev_kfree_skb(skb);
 				}break;
 			case IEEE80211_SEND_SPECIAL_ACTION:{
 				skb->pkt_type = 0;
-				
+
 				if(skb->protocol == 0){
 					hw_priv->start_send_action = false;
 				}else{
@@ -283,44 +283,44 @@ static void ieee80211_send_mgmt_work_control(struct atbm_work_struct *work)
 				//		hw_priv->customer_action_ie.sdata,hw_priv->customer_action_ie.action);
 					if(hw_priv->start_send_action == true)
 						break;
-					
+
 					hw_priv->start_send_action = true;
 					wake_up(&hw_priv->send_prvmgmt_wq);
 				}
-				
+
 				atbm_dev_kfree_skb(skb);
 				}break;
 			default:{
 				skb->pkt_type = 0;
 
-				
+
 				}break;
 
 		}
-		
-		
-		
-	}	
 
-	
+
+
+	}
+
+
 }
 
 static void ieee80211_send_mgmt_queue_request(struct atbm_common *hw_priv,struct sk_buff *skb)
 {
-	unsigned long flags; 
+	unsigned long flags;
 	//bool work_runing = false;
-	
+
 	spin_lock_irqsave(&hw_priv->send_prvmgmt_skb_queue.lock,flags);
-	
+
 	__atbm_skb_queue_tail(&hw_priv->send_prvmgmt_skb_queue, skb);
-	
+
 	//work_runing = (hw_priv->start_send_action | hw_priv->start_send_prbresp);
-	
+
 	spin_unlock_irqrestore(&hw_priv->send_prvmgmt_skb_queue.lock,flags);
-	
+
 	//if(work_runing == false)
 	ieee80211_queue_work(hw_priv->hw,&hw_priv->send_prvmgmt_work);
-	
+
 }
 
 int ieee80211_send_action_mgmt_queue(struct atbm_common *hw_priv,char *buff,bool start)
@@ -337,12 +337,12 @@ int ieee80211_send_action_mgmt_queue(struct atbm_common *hw_priv,char *buff,bool
 		memcpy(skb->data,buff,sizeof(struct atbm_customer_action));
 		atbm_skb_put(skb,sizeof(struct atbm_customer_action));
 	}
-	
-		
+
+
 	ieee80211_send_mgmt_queue_request(hw_priv,skb);
-		
+
 	return 0;
-	
+
 }
 int ieee80211_send_probe_resp_mgmt_queue(struct atbm_common *hw_priv,char *buff,bool start)
 {
@@ -352,14 +352,14 @@ int ieee80211_send_probe_resp_mgmt_queue(struct atbm_common *hw_priv,char *buff,
 
 	if(skb == NULL)
 		return -1;
-	
+
 	skb->pkt_type = IEEE80211_SEND_SPECIAL_PROBE_RESP;
 	skb->protocol = start;
-	if(buff){		
+	if(buff){
 		memcpy(skb->data,buff,sizeof(struct atbm_ap_vendor_cfg_ie));
-		atbm_skb_put(skb,sizeof(struct atbm_ap_vendor_cfg_ie));	
+		atbm_skb_put(skb,sizeof(struct atbm_ap_vendor_cfg_ie));
 	}
-	
+
 	//atbm_printk_err("ieee80211_send_probe_resp_mgmt_queue skb=%x skb->data=%x\n",skb,skb->data);
 	ieee80211_send_mgmt_queue_request(hw_priv,skb);
 //	atbm_printk_err("%s %d \n",__func__,__LINE__);
@@ -382,9 +382,9 @@ int atbm_send_private_mgmt_init(struct atbm_common *hw_priv)
 	hw_priv->stop_prvmgmt_thread = false;
 	hw_priv->start_send_prbresp = false;
 	hw_priv->start_send_action = false;
-	hw_priv->send_prvmgmt_thread = 
+	hw_priv->send_prvmgmt_thread =
 	kthread_create(&atbm_ieee80211_send_private_mgmt_thread, hw_priv, ieee80211_alloc_name(hw_priv->hw,"atbm_prvmgmt"));
-	
+
 	if (!hw_priv->send_prvmgmt_thread){
 		atbm_printk_err("kthread_create :error!! \n");
 		hw_priv->send_prvmgmt_thread = NULL;
@@ -394,13 +394,13 @@ int atbm_send_private_mgmt_init(struct atbm_common *hw_priv)
 	}
 	atbm_skb_queue_head_init(&hw_priv->send_prvmgmt_skb_queue);
 	ATBM_INIT_WORK(&hw_priv->send_prvmgmt_work, ieee80211_send_mgmt_work_control);
-	
+
 	//ATBM_INIT_WORK(&hw_priv->send_prbresp_work, atbm_ieee80211_send_probe_resp);
 	//mutex_init(&hw_priv->stop_send_prbresp_lock);
 	return 0;
 }
-//int atbm_send_probe_resp_uninit(struct atbm_common *hw_priv) 
-int atbm_send_private_mgmt_uninit(struct atbm_common *hw_priv) 
+//int atbm_send_probe_resp_uninit(struct atbm_common *hw_priv)
+int atbm_send_private_mgmt_uninit(struct atbm_common *hw_priv)
 {
 	struct task_struct *thread = hw_priv->send_prvmgmt_thread;
 	if (WARN_ON(!thread))
@@ -416,7 +416,7 @@ int atbm_send_private_mgmt_uninit(struct atbm_common *hw_priv)
 	hw_priv->start_send_action = true;
 	wake_up(&hw_priv->send_prvmgmt_wq);
 	kthread_stop(thread);
-	
+
 	return 0;
 }
 

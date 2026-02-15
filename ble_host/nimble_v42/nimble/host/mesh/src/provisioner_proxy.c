@@ -203,13 +203,13 @@ bool is_scanning(){
 
 }
 void set_scan_bit(){
-	
+
     atomic_set_bit(bt_mesh_dev.flags, BLE_MESH_DEV_SCANNING);
 
 }
 
 void clear_scan_bit(){
-	
+
     atomic_clear_bit(bt_mesh_dev.flags, BLE_MESH_DEV_SCANNING);
 
 }
@@ -355,7 +355,7 @@ static int dsc_disced(uint16_t conn_handle, const struct ble_gatt_error *error,
 {
     int rc = 0, j, i = (int)arg; /* char index */
     uint8_t value[2] = {0x01, 0x00};
-    
+
 	BT_DBG("error status:%x\n",error->status);
     switch (error->status) {
     case 0:
@@ -364,7 +364,7 @@ static int dsc_disced(uint16_t conn_handle, const struct ble_gatt_error *error,
             bt_mesh_gattc_info[i].ccc_handle = dsc->handle;
 			BT_INFO("cccd handle:%x\n",dsc->handle);
         }
-			
+
         break;
 
     case BLE_HS_EDONE:
@@ -541,7 +541,7 @@ int provisioner_proxy_event(struct ble_gap_event *event, void *arg)
         case BLE_GAP_EVENT_DISC:
         ble_adv_gap_mesh_cb(event, arg);
         break;
-	
+
 		case BLE_GAP_EVENT_CONNECT:
 			if (event->connect.status == 0) {
                 BT_INFO("Connection established");
@@ -698,7 +698,7 @@ int provisioner_proxy_event(struct ble_gap_event *event, void *arg)
        default:
            break;
 
-	}	
+	}
 	return 0;
 }
 
@@ -773,14 +773,14 @@ int bt_mesh_gattc_conn_create(bt_addr_le_t *peer_addr, u16_t service_uuid)
         BT_ERR("Invalid service uuid 0x%04x", service_uuid);
         return -EINVAL;
     }
-	
+
     /* Check if already creating connection with the device */
     for (i = 0; i < ARRAY_SIZE(bt_mesh_gattc_info); i++) {
         if (!memcmp(bt_mesh_gattc_info[i].addr.val, peer_addr->val, 6)) {
             BT_WARN("Already create connection with %s", bt_hex(peer_addr->val, 6));
             return -EALREADY;
         }
-    }	
+    }
 
     /* Find empty element in queue to store device info */
     for (i = 0; i < ARRAY_SIZE(bt_mesh_gattc_info); i++) {
@@ -793,11 +793,11 @@ int bt_mesh_gattc_conn_create(bt_addr_le_t *peer_addr, u16_t service_uuid)
             break;
         }
     }
-	
+
     if (i == ARRAY_SIZE(bt_mesh_gattc_info)) {
         BT_WARN("gattc info is full");
         return -ENOMEM;
-    }	
+    }
 
 	conn_params.itvl_min = 0x18;
     conn_params.itvl_max = 0x18;
@@ -817,10 +817,10 @@ int bt_mesh_gattc_conn_create(bt_addr_le_t *peer_addr, u16_t service_uuid)
 	}else{
 		memset(&bt_mesh_gattc_info[i], 0, sizeof(struct gattc_prov_info));
         bt_mesh_gattc_info[i].mtu = 23; 			/* Default MTU_SIZE 23 */
-        bt_mesh_gattc_info[i].wr_desc_done = false;	
+        bt_mesh_gattc_info[i].wr_desc_done = false;
 		BT_ERR("ble gap connect err, rc:%d", rc);
 	}
-	
+
 	return rc;
 }
 
@@ -1366,7 +1366,7 @@ static int send_proxy_cfg(uint16 handle, u16_t net_idx, struct bt_mesh_proxy_cfg
     int err = 0;
 
 
-if (MYNEWT_VAL(BLE_MESH_PROVISIONER) && bt_mesh_is_provisioner_en()) 
+if (MYNEWT_VAL(BLE_MESH_PROVISIONER) && bt_mesh_is_provisioner_en())
     tx.sub = provisioner_subnet_get(net_idx);
 else
     tx.sub = bt_mesh_subnet_get(net_idx);
@@ -1559,7 +1559,7 @@ static void proxy_sar_timeout(struct ble_npl_event *work)
 {
     struct bt_mesh_proxy_server *server ;
     int rc;
-	
+
     BT_WARN("%s", __func__);
 
     server = ble_npl_event_get_arg(work);
@@ -1569,8 +1569,8 @@ static void proxy_sar_timeout(struct ble_npl_event *work)
 	if ((server->handle != 0)){
 
 	     bt_mesh_gattc_disconnect(server->handle);
-	} 
-   
+	}
+
 }
 
 
@@ -1592,7 +1592,7 @@ void bt_mesh_gattc_init(void)
         //server->buf.size = SERVER_BUF_SIZE;
         //server->buf.__buf = server_buf_data + (i * SERVER_BUF_SIZE);
         server->buf = NET_BUF_SIMPLE(68);
-		
+
 #if MYNEWT_VAL(BLE_MESH_GATT_PROXY_CLIENT)
         server->net_idx = BT_MESH_KEY_UNUSED;
 #endif

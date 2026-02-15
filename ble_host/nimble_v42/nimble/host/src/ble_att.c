@@ -42,23 +42,23 @@ static const struct ble_att_rx_dispatch_entry ble_att_rx_dispatch[] = {
     { BLE_ATT_OP_READ_TYPE_RSP,        ble_att_clt_rx_read_type },
     { BLE_ATT_OP_READ_REQ,             ble_att_svr_rx_read },
     { BLE_ATT_OP_READ_RSP,             ble_att_clt_rx_read },
-#if (CONFIG_BLE_PTS_TEST_MOD == 0)    
+#if (CONFIG_BLE_PTS_TEST_MOD == 0)
     { BLE_ATT_OP_READ_BLOB_REQ,        ble_att_svr_rx_read_blob },
-#endif    
+#endif
     { BLE_ATT_OP_READ_BLOB_RSP,        ble_att_clt_rx_read_blob },
-#if (CONFIG_BLE_PTS_TEST_MOD == 0)    
+#if (CONFIG_BLE_PTS_TEST_MOD == 0)
     { BLE_ATT_OP_READ_MULT_REQ,        ble_att_svr_rx_read_mult },
-#endif    
+#endif
     { BLE_ATT_OP_READ_MULT_RSP,        ble_att_clt_rx_read_mult },
     { BLE_ATT_OP_READ_GROUP_TYPE_REQ,  ble_att_svr_rx_read_group_type },
     { BLE_ATT_OP_READ_GROUP_TYPE_RSP,  ble_att_clt_rx_read_group_type },
-#if (CONFIG_BLE_PTS_TEST_MOD == 0)    
+#if (CONFIG_BLE_PTS_TEST_MOD == 0)
     { BLE_ATT_OP_WRITE_REQ,            ble_att_svr_rx_write },
-#endif    
+#endif
     { BLE_ATT_OP_WRITE_RSP,            ble_att_clt_rx_write },
-#if (CONFIG_BLE_PTS_TEST_MOD == 0)    
+#if (CONFIG_BLE_PTS_TEST_MOD == 0)
     { BLE_ATT_OP_PREP_WRITE_REQ,       ble_att_svr_rx_prep_write },
-#endif    
+#endif
     { BLE_ATT_OP_PREP_WRITE_RSP,       ble_att_clt_rx_prep_write },
     { BLE_ATT_OP_EXEC_WRITE_REQ,       ble_att_svr_rx_exec_write },
     { BLE_ATT_OP_EXEC_WRITE_RSP,       ble_att_clt_rx_exec_write },

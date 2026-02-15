@@ -39,7 +39,7 @@ extern struct atbm_common 			*g_hw_priv;
 #define atbm_show_deinit(show)		rcu_assign_pointer((show)->show_buff,NULL);			\
 									(show)->show_count = 0;				\
 									(show)->show_size=0;				\
-									(show)->overflow = 0				
+									(show)->overflow = 0
 #define atbm_module_show_put(_show,...)	\
 	do{										\
 		int ret = 0;						\
@@ -82,8 +82,8 @@ extern struct atbm_common 			*g_hw_priv;
 		(_show)->show_count += _len;							\
 		rcu_read_unlock();										\
 	}while(0)
-		
-struct mutex atbm_module_fs_lock; 
+
+struct mutex atbm_module_fs_lock;
 #define atbm_modulefs_lock_int()		mutex_init(&atbm_module_fs_lock)
 #define atbm_modulefs_lock()			mutex_lock(&atbm_module_fs_lock)
 #define atbm_modulefs_unlock()			mutex_unlock(&atbm_module_fs_lock)
@@ -276,7 +276,7 @@ struct  atbm_module_halt_conf{
 };
 struct atbm_scan_params{
 	struct atbm_conf_channels channels;
-	struct atbm_conf_ssids    ssids;	
+	struct atbm_conf_ssids    ssids;
 	struct atbm_conf_macs     macs;
 	struct atbm_conf_ies      ies;
 	bool   positive;
@@ -360,7 +360,7 @@ struct atbm_stop_ba_parmas{
 
 #define ATBM_CODE_STR__ATTR_SET_FREQ_INFO			 "set_freq: set special freq,set_freq channel=[xx],freq=[2300~2600]"
 #define ATBM_CODE_STR__ATTR_CLEAR_FREQ_INFO			 "clear_freq: clear special freq,clear_freq channel=[xx]"
-#define ATBM_CODE_STR__ATTR_CHIP_VER_INFO			"chip_ver: get the version of the current running chip(6032/6038/6032i)"		
+#define ATBM_CODE_STR__ATTR_CHIP_VER_INFO			"chip_ver: get the version of the current running chip(6032/6038/6032i)"
 #define ATBM_CODE_STR__ATTR_CH_SELECT_INFO			"auto channel select:channel_select start=[x] end=[y] version=[0 or 1]"
 #define ATBM_CODE_STR__ATTR_STA_SPECIAL_SCAN_INFO    "special_scan:channel=[1][2][3] ssid=[ap1] private=[ie] positive=[true or false]"
 #define ATBM_CODE_STR__ATTR_CHIP_VERSION_INFO		"chip_version:get version of current running chip"
@@ -497,18 +497,18 @@ struct atbm_store_cmd_code cmd_code_buff[]={
 	ATBM_CMD_INIT(ATBM_CODE_STR__ATTR_HALT,ATBM_CODE_STR__ATTR_HALT_INFO,atbm_module_attr_halt,atbm_module_attr_default_show),
 	ATBM_CMD_INIT(ATBM_CODE_STR__ATTR_STOP_BA,ATBM_CODE_STR__ATTR_STOP_BA_INFO,atbm_module_attr_stop_ba,atbm_module_attr_default_show),
 	ATBM_CMD_INIT(ATBM_CODE_STR__ATTR_LMAC_DEBUG,ATBM_CODE_STR__ATTR_LMAC_DEBUG_INFO,atbm_module_attr_lmac_debug,atbm_module_attr_default_show),
-	
+
 };
 
 static unsigned int atbm_hash_string_len(const char *pos,unsigned int pos_len)
 {
 	unsigned int i;
 	unsigned int j;
-	
+
 	if(pos == NULL){
 		return 0;
 	}
-	for(i = 0;i<pos_len;i++){	
+	for(i = 0;i<pos_len;i++){
 		if(pos[i] != ATBM_SPACE)
 			continue;
 		for(j = i;j<pos_len;j++){
@@ -527,23 +527,23 @@ static int atbm_cmd_string_split(const char *pos,int len,const char **pos_l,cons
 	const char *l = NULL;
 	const char *r = NULL;
 	char next_pos;
-	
+
 	if(len == 0){
 		return -1;
 	}
 	atbm_printk_debug("%s:%d %s\n",__func__,len,pos);
 	for(i = 0;i<len;i++){
-		
+
 		if((pos[i] == ATBM_PARAMR)||(pos[i] == ATBM_PARAMR_S)){
 			atbm_printk_debug("%s:left pos err\n",__func__);
 			return -1;
 		}
-		
+
 		if((pos[i] != ATBM_PARAML)&&(pos[i] != ATBM_PARAML_S)){
 			continue;
 		}
 		l = &pos[i];
-		next_pos = pos[i] == ATBM_PARAML ? ATBM_PARAMR:ATBM_PARAMR_S;		
+		next_pos = pos[i] == ATBM_PARAML ? ATBM_PARAMR:ATBM_PARAMR_S;
 		for(j = i+1;j<len;j++){
 
 			if((pos[j] == ATBM_PARAML)||(pos[j] == ATBM_PARAML_S)){
@@ -565,7 +565,7 @@ static int atbm_cmd_string_split(const char *pos,int len,const char **pos_l,cons
 	}else if((l == NULL) || (r == NULL)){
 		return -1;
 	}
-	
+
 	*pos_l = l;
 	*pos_r = r;
 
@@ -576,7 +576,7 @@ static bool atbm_string_parase_echo(const char *pos_l,const char *pos_r,void *pr
 	#define ECHO_ENABLE 	"enable"
 	#define ECHO_DISABLE 	"disable"
 	struct atbm_store_cmd_code *cmd_store = (struct atbm_store_cmd_code *)priv;
-	
+
 	if(pos_r <= pos_l){
 		atbm_printk_debug("%s:len err\n",__func__);
 		return false;
@@ -609,7 +609,7 @@ static bool atbm_string_parase(struct atbm_store_cmd_code *cmd_store,struct atbm
 	struct atbm_sting_s *string_node;
 	struct atbm_sting_s echo_str;
 	unsigned int hash_index = 0;
-	
+
 	if(table_size < 0){
 		return false;
 	}
@@ -633,9 +633,9 @@ static bool atbm_string_parase(struct atbm_store_cmd_code *cmd_store,struct atbm
 		unsigned int hash_index = atbm_hash_index(string_table[index].string,
 								  strlen(string_table[index].string),ATBM_STRING_HASHBITS);
 		BUG_ON(strlen(string_table[index].string) > ATBM_STRING_MAX_LEN);
-		
+
 		hhead = &atbm_string_hash_head[hash_index];
-		
+
 		hlist_for_each(node,hhead){
 			string_node = hlist_entry(node,struct atbm_sting_s,hnode);
 			if ((!strncmp(string_node->string, string_table[index].string, strlen(string_table[index].string)))&&
@@ -647,7 +647,7 @@ static bool atbm_string_parase(struct atbm_store_cmd_code *cmd_store,struct atbm
 		hlist_add_head(&string_table[index].hnode,&atbm_string_hash_head[hash_index]);
 		atbm_printk_debug("%s:[%s]->[%d]\n",__func__,string_table[index].string,hash_index);
 	}
-	
+
 	atbm_printk_debug("%s:len:%d tring:%s\n",__func__,string_len,pos);
 	while(pos<pos_end){
 next_str:
@@ -660,7 +660,7 @@ next_str:
 			atbm_printk_debug("%s nospace_pos == NULL\n",__func__);
 			return pos == string ? false: true;
 		}
-		
+
 		pos = nospace_pos;
 		atbm_printk_debug("%s:len:%zu nospace_pos:%s\n",__func__,pos_end-pos,nospace_pos);
 		if(pos[0] == ATBM_TAIL)
@@ -670,7 +670,7 @@ next_str:
 		/*
 		*find the postion of cmd end =
 		*/
-		target_pos = memchr(pos, ATBM_EQUAL, pos_end-pos); 
+		target_pos = memchr(pos, ATBM_EQUAL, pos_end-pos);
 		if(target_pos == NULL){
 			atbm_printk_always("%s:can not cmd =\n",__func__);
 			return false;
@@ -683,13 +683,13 @@ next_str:
 			return false;
 		}
 		hlist_for_each(node,hhead){
-			
+
 			string_node = hlist_entry(node,struct atbm_sting_s,hnode);
 			atbm_printk_debug("%s:string_node(%s)(%zu),target:%zu:%s\n",__func__,
 				string_node->string,strlen(string_node->string),target_pos-pos+1,pos);
 			if ((!strncmp(pos, string_node->string,target_pos-pos+1))&&
 				(strlen(string_node->string) == target_pos-pos+1)){
-				
+
 				const char *tmp_pos = NULL;
 				if(string_node->found == true){
 					atbm_printk_debug("%s:fund same string(%s)\n",__func__,string_node->string);
@@ -710,7 +710,7 @@ next_str:
 					*find the postion of cmd end,use space between tow string
 					*some cmd not need space ,so find enter or end of line
 					*/
-					pos = memchr(tmp_pos, ATBM_SPACE, pos_end-tmp_pos); 
+					pos = memchr(tmp_pos, ATBM_SPACE, pos_end-tmp_pos);
 					if(pos == NULL){
 						pos  =  memchr(tmp_pos, ATBM_ENTER, pos_end-tmp_pos);
 						if(pos == NULL)
@@ -728,11 +728,11 @@ next_str:
 					const char *pos_l;
 					const char *pos_r;
 					int res = 0;
-					
+
 					pos_r = tmp_pos;
 					pos_l = tmp_pos;
 					while(pos_r<pos_end){
-						
+
 						res = atbm_cmd_string_split(pos_l,pos_end-pos_l,&pos_l,&pos_r);
 
 						if(res<=0){
@@ -765,7 +765,7 @@ next_str:
 
 					pos = pos_r;
 				}
-				
+
 
 				if(pos == NULL)
 					pos = pos_end;
@@ -786,14 +786,14 @@ next_str:
 static void *atbm_store_cmd_init_cmd_private(struct atbm_store_cmd_code *cmd_store,int len,gfp_t gfp)
 {
 	void *cmd_private;
-	
+
 	cmd_private = rcu_dereference(cmd_store->cmd_private);
 	if(cmd_private){
 		if(cmd_store->show_cmd)
 			cmd_store->show_cmd(atbm_hw_priv_dereference(),cmd_store,NULL,false);
 		rcu_assign_pointer(cmd_store->cmd_private,NULL);
 		synchronize_rcu();
-		
+
 		atbm_kfree(cmd_private);
 	}
 
@@ -818,9 +818,9 @@ static struct atbm_store_cmd_code *atbm_store_cmd_find_cmd(const char *pos,unsig
 		atbm_printk_always("%s:[%s] pos_len is too long\n",__func__,pos);
 		return NULL;
 	}
-	
+
 	string_len = atbm_hash_string_len(pos,pos_len);
-	
+
 	if(string_len == 0){
 		atbm_printk_always("%s:[%s] cmd len err\n",__func__,pos);
 		return NULL;
@@ -841,11 +841,11 @@ static struct atbm_store_cmd_code *atbm_store_cmd_find_cmd(const char *pos,unsig
 static bool atbm_store_cmd_init_show(struct atbm_module_show *show)
 {
 	char *show_buff;
-	
+
 	if((show_buff = rcu_dereference(show->show_buff)) == NULL){
 		show_buff = atbm_kzalloc(ATBM_SHOW_MSG_MAX_SIZE,GFP_KERNEL);
 	}
-	
+
 	if(show_buff == NULL){
 		return false;
 	}
@@ -858,7 +858,7 @@ static bool atbm_store_cmd_init_show(struct atbm_module_show *show)
 static void atbm_store_cmd_deinit_show(struct atbm_module_show *show)
 {
 	char *show_buff = rcu_dereference(show->show_buff);
-	
+
 	atbm_show_deinit(show);
 	if(show_buff){
 		synchronize_rcu();
@@ -903,7 +903,7 @@ static struct ieee80211_sub_if_data * atbm_module_get_sdata_by_name(const char *
 {
 	struct net_device *net_dev = NULL;
 	struct ieee80211_sub_if_data *sdata;
-	
+
 	ASSERT_RTNL();
 	net_dev = __dev_get_by_name(&init_net,name);
 
@@ -915,7 +915,7 @@ static struct ieee80211_sub_if_data * atbm_module_get_sdata_by_name(const char *
 
 	if (net_dev->ieee80211_ptr->wiphy->privid != mac80211_wiphy_privid)
 		return NULL;
-	
+
 	sdata = IEEE80211_DEV_TO_SUB_IF(net_dev);
 
 	if (!strncmp(sdata->name, name, IFNAMSIZ))
@@ -928,9 +928,9 @@ static bool atbm_module_config_ifname(const char *posl,const char *posr,void *pr
 {
 	struct atbm_conf_ifname *conf_ifname = (struct atbm_conf_ifname *)priv;
 	u8 len = posr - posl;
-	
+
 	atbm_printk_debug("%s:posl(%p),posr(%p) %s\n",__func__,posl,posr,posl);
-	
+
 	if(conf_ifname == NULL){
 		atbm_printk_err("%s:priv NULL(%p),\n",__func__,priv);
 		return false;
@@ -948,7 +948,7 @@ static bool atbm_module_config_ifname(const char *posl,const char *posr,void *pr
 
 	memcpy(conf_ifname->if_name,posl,len);
 	conf_ifname->size = len;
-	
+
 	return true;
 }
 static bool atbm_module_config_integers(const char *posl,const char *posr,void *priv)
@@ -964,7 +964,7 @@ static bool atbm_module_config_integers(const char *posl,const char *posr,void *
 		return false;
 	}
 
-	if(integers->n_integers == 0xff ){		
+	if(integers->n_integers == 0xff ){
 		atbm_printk_err("%s:integers too mach(%d)\n",__func__,integers->n_integers);
 		return false;
 	}
@@ -972,7 +972,7 @@ static bool atbm_module_config_integers(const char *posl,const char *posr,void *
 	if(new_integers && integers->n_integers){
 		new_integers = atbm_krealloc(integers->integers,(integers->n_integers+1)*sizeof(int),GFP_KERNEL);
 
-		if(new_integers == NULL){			
+		if(new_integers == NULL){
 			atbm_printk_err("%s:integers alloc err(%d)\n",__func__,integers->n_integers);
 			return false;
 		}
@@ -989,7 +989,7 @@ static bool atbm_module_config_integers(const char *posl,const char *posr,void *
 
 	pos_integers = integers->integers + integers->n_integers;
 
-	if(atbm_accsii_to_int(posl,posr-posl,&interge_index) == false){		
+	if(atbm_accsii_to_int(posl,posr-posl,&interge_index) == false){
 		atbm_printk_err("%s:interge_index (%d) err\n",__func__,interge_index);
 		return false;
 	}
@@ -1016,20 +1016,20 @@ static bool atbm_module_config_channels(const char *posl,const char *posr,void *
 		atbm_printk_err("%s:channles too mach(%d)\n",__func__,channels->n_channels);
 		return false;
 	}
-	
+
 	if((posr - posl <= 0) || (posr-posl>2)){
 		atbm_printk_err("%s:channles len err\n",__func__);
 		return false;
 	}
-	
+
 	if(new_channels && channels->n_channels){
-		
+
 		new_channels = atbm_krealloc(channels->channels,channels->n_channels+1,GFP_KERNEL);
 		if(new_channels == NULL){
 			atbm_printk_err("%s:channles alloc err\n",__func__);
 			return false;
 		}
-		
+
 	}else {
 		new_channels = atbm_kzalloc(1,GFP_KERNEL);
 
@@ -1038,10 +1038,10 @@ static bool atbm_module_config_channels(const char *posl,const char *posr,void *
 			return false;
 		}
 	}
-	channels->channels = new_channels;	
+	channels->channels = new_channels;
 	pos_channel = new_channels+channels->n_channels;
 
-	if(atbm_accsii_to_int(posl,posr-posl,&channel_index) == false){		
+	if(atbm_accsii_to_int(posl,posr-posl,&channel_index) == false){
 		atbm_printk_err("%s:channel_index (%d) err\n",__func__,channel_index);
 		return false;
 	}
@@ -1050,7 +1050,7 @@ static bool atbm_module_config_channels(const char *posl,const char *posr,void *
 		atbm_printk_err("%s:channel_index (%d) err\n",__func__,channel_index);
 		return false;
 	}
-	
+
 	channels->n_channels++;
 	*pos_channel = (u8)channel_index;
 	return true;
@@ -1060,7 +1060,7 @@ static bool atbm_module_config_ssids(const char *posl,const char *posr,void *pri
 	struct atbm_conf_ssids *ssids = (struct atbm_conf_ssids *)priv;
 	struct cfg80211_ssid *new_ssid = ssids->ssids;
 	struct cfg80211_ssid *pos_ssid = NULL;
-	
+
 	atbm_printk_debug("%s:posl(%p),posr(%p) %s\n",__func__,posl,posr,posl);
 	if(priv == NULL){
 		atbm_printk_err("%s:priv NULL(%p),\n",__func__,priv);
@@ -1095,7 +1095,7 @@ static bool atbm_module_config_ssids(const char *posl,const char *posr,void *pri
 	memcpy(pos_ssid->ssid,posl,posr-posl);
 	pos_ssid->ssid_len = posr-posl;
 	ssids->n_ssids++;
-	
+
 	atbm_printk_always("%s: ssid (%s) ssid_len(%d) n_ssids(%d)\n",__func__,pos_ssid->ssid,pos_ssid->ssid_len,ssids->n_ssids);
 	return true;
 }
@@ -1110,7 +1110,7 @@ static bool atbm_module_config_macs(const char *posl,const char *posr,void *priv
 	u8 hex;
 	u8 mac_begin = 0;
 	u8 mac_len = 0;
-	
+
 	atbm_printk_debug("%s:posl(%p),posr(%p) %s\n",__func__,posl,posr,posl);
 	if(priv == NULL){
 		atbm_printk_err("%s:priv NULL(%p),\n",__func__,priv);
@@ -1142,9 +1142,9 @@ static bool atbm_module_config_macs(const char *posl,const char *posr,void *priv
 
 	macs->mac = new_mac;
 	pos_mac = macs->mac+macs->n_macs;
-	
+
 	for(i=0;i<posr-posl;i++){
-		
+
 		if(posl[i] == ':'){
 			mac_len++;
 			mac_begin = 0;
@@ -1212,9 +1212,9 @@ static bool atbm_module_config_ies(const char *posl,const char *posr,void *priv)
 		memcpy(ie_pos,&atbm_oui,4);
 		ie_pos+=4;
 	}
-	memcpy(ie_pos,posl,posr-posl);	
+	memcpy(ie_pos,posl,posr-posl);
 	ies->ie_len = posr-posl + (ies->atbm_ie ? 6:0);
-	
+
 	return true;
 }
 static bool atbm_module_config_string(const char *posl,const char *posr,void *priv)
@@ -1224,7 +1224,7 @@ static bool atbm_module_config_string(const char *posl,const char *posr,void *pr
 	int len = posr-posl;
 	struct hlist_head *hhead;
 	struct hlist_node *node;
-	
+
 	if(string_list == NULL){
 		atbm_printk_err("%s:string_list == NULL \n",__func__);
 		return false;
@@ -1241,8 +1241,8 @@ static bool atbm_module_config_string(const char *posl,const char *posr,void *pr
 
 	hhead = atbm_hash_list(posl,len,string_list->hlist_head,ATBM_COMMON_HASHBITS);
 
-	
-	hlist_for_each(node,hhead){			
+
+	hlist_for_each(node,hhead){
 		string_node = hlist_entry(node,struct atbm_conf_string,hnode);
 
 		if ((!strncmp(posl, string_node->strings,len))&&
@@ -1280,7 +1280,7 @@ static void atbm_module_config_mult_string_hash(struct atbm_config_string_hash *
 	size_t index = 0;
 	va_list args;
 	struct atbm_conf_string *string_node;
-	
+
 	atbm_module_config_string_hash_int(string_list);
 
 	va_start(args, n_string);
@@ -1294,7 +1294,7 @@ static bool atbm_module_echo_enable_num_echo(const char *posl,const char *posr,v
 {
 	struct atbm_echo_params *echo_params = (struct atbm_echo_params *)priv;
 	atbm_printk_debug("%s:posl(%p),posr(%p) %s\n",__func__,posl,posr,posl);
-	
+
 	if(priv == NULL){
 		atbm_printk_err("%s:priv NULL(%p),\n",__func__,priv);
 		return false;
@@ -1310,7 +1310,7 @@ static bool atbm_module_echo_enable_num_echo(const char *posl,const char *posr,v
 		return false;
 	}
 
-	if(atbm_accsii_to_int(posl,posr-posl,&echo_params->num) == false){		
+	if(atbm_accsii_to_int(posl,posr-posl,&echo_params->num) == false){
 		atbm_printk_err("%s:echo_params->num (%d) err\n",__func__,echo_params->num);
 		echo_params->num = -1;
 		return false;
@@ -1344,7 +1344,7 @@ static bool atbm_module_attr_echo_enable(struct atbm_common *hw_priv,struct atbm
 	echo_params->num = -1;
 	rcu_assign_pointer(cmd_store->cmd_private,cmd_private);
 
-	
+
 	info = atbm_skip_space(buf,len);
 
 	/*
@@ -1360,7 +1360,7 @@ static bool atbm_module_attr_echo_enable(struct atbm_common *hw_priv,struct atbm
 			res = false;
 			goto exit;
 		}
-	} 
+	}
 
 	num_echo = echo_params->num;
 	res = true;
@@ -1376,7 +1376,7 @@ exit:
 static bool atbm_module_attr_echo_disable(struct atbm_common *hw_priv,struct atbm_store_cmd_code *cmd_store,const char *buf,int len)
 {
 	bool res = true;
-	
+
 	if(buf != NULL || len != 0){
 		atbm_printk_err("%s:len(%d)(%p) err\n",__func__,len,buf);
 		res = false;
@@ -1396,7 +1396,7 @@ static bool atbm_module_attr_scan_action_process(const char *posl,const char *po
 
 	struct atbm_scan_params *scan_params = (struct atbm_scan_params *)priv;
 	size_t len = posr - posl;
-	
+
 	if(posr-posl > 5){
 		atbm_printk_err("%s:(%zu)\n",__func__,posr-posl);
 		return false;
@@ -1405,7 +1405,7 @@ static bool atbm_module_attr_scan_action_process(const char *posl,const char *po
 	if((len==strlen(POS))&&(!strncmp(posl,POS,len))){
 		atbm_printk_debug("%s:positive scan\n",__func__);
 		scan_params->positive = true;
-	}else if((len==strlen(PAS))&&(!strncmp(posl,PAS,len))){		
+	}else if((len==strlen(PAS))&&(!strncmp(posl,PAS,len))){
 		atbm_printk_debug("%s:passive scan\n",__func__);
 		scan_params->positive = false;
 	}else {
@@ -1421,9 +1421,9 @@ static bool atbm_module_attr_scan_paras_scan(struct atbm_store_cmd_code *cmd_sto
 	#define SCAN_PRIVATE "private="
 	#define SCAN_MAC	 "mac="
 	#define SCAN_POS     "positive="
-	
+
 	const char* scan_info = buf;
-	
+
 	struct atbm_sting_s scan_string[]={
 		ATBM_STRING_TABLE_INIT(SCAN_CHANNEL,atbm_module_config_channels,&scan_params->channels),
 		ATBM_STRING_TABLE_INIT(SCAN_SSID,atbm_module_config_ssids,&scan_params->ssids),
@@ -1443,7 +1443,7 @@ static bool atbm_module_attr_scan_paras_scan(struct atbm_store_cmd_code *cmd_sto
 	}
 	return true;
 err:
-	
+
 	if(scan_params->channels.channels)
 		atbm_kfree(scan_params->channels.channels);
 	if(scan_params->macs.mac)
@@ -1470,7 +1470,7 @@ bool atbm_module_attr_scan_result_handle(struct ieee80211_hw *hw,struct atbm_int
 	return true;
 }
 static bool atbm_module_attr_scan(struct atbm_common *hw_priv,struct atbm_store_cmd_code *cmd_store,const char *buf,int len)
-{	
+{
 	struct atbm_scan_params scan_params;
 	struct ieee80211_sub_if_data *sdata = NULL;
 	struct ieee80211_sub_if_data *sdata_tmp = NULL;
@@ -1479,19 +1479,19 @@ static bool atbm_module_attr_scan(struct atbm_common *hw_priv,struct atbm_store_
 	struct atbm_internal_scan_results_req results_req;
 	int i = 0;
 	bool res = true;
-	
+
 	atbm_printk_debug("%s:%d:%s\n",__func__,len,buf);
-	
+
 	memset(&scan_params,0,sizeof(struct atbm_scan_params));
 	scan_params.ies.atbm_ie = 1;
-	
+
 	rcu_assign_pointer(cmd_store->cmd_private,NULL);
 	if(atbm_module_attr_scan_paras_scan(cmd_store,buf,len,&scan_params) == false){
 		atbm_printk_always("%s scan params err\n",__func__);
 		res = false;
 		goto err_params;
 	}
-	
+
 	rtnl_lock();
 
 	list_for_each_entry(sdata_tmp, &local->interfaces, list){
@@ -1513,7 +1513,7 @@ static bool atbm_module_attr_scan(struct atbm_common *hw_priv,struct atbm_store_
 	}
 	atbm_printk_always("triger [%s] to scan\n",sdata->name);
 	memset(&internal_scan,0,sizeof(struct ieee80211_internal_scan_request));
-	
+
 	if(scan_params.ssids.n_ssids){
 		for(i = 0;i<scan_params.ssids.n_ssids;i++){
 			atbm_printk_debug("%s: ssid[%s][%d]\n",__func__,scan_params.ssids.ssids[i].ssid,scan_params.ssids.ssids[i].ssid_len);
@@ -1544,7 +1544,7 @@ static bool atbm_module_attr_scan(struct atbm_common *hw_priv,struct atbm_store_
 	if(atbm_internal_cmd_scan_triger(sdata, &internal_scan) == false){
 		res = false;
 		goto err;
-	}	
+	}
 	atbm_printk_always( "%s\n",__func__);
 	atbm_printk_always("%s:channel(%p)\n",__func__,scan_params.channels.channels);
 	memset(&results_req,0,sizeof(struct atbm_internal_scan_results_req));
@@ -1584,7 +1584,7 @@ static bool atbm_module_attr_start_monitor(struct atbm_common *hw_priv,struct at
 	const char* monitor_info = buf;
 	struct ieee80211_internal_monitor_req req;
 	bool res = true;
-	
+
 	memset(&monitor_params,0,sizeof(struct atbm_start_monitor_params));
 	memset(&req,0,sizeof(struct ieee80211_internal_monitor_req));
 
@@ -1602,14 +1602,14 @@ static bool atbm_module_attr_start_monitor(struct atbm_common *hw_priv,struct at
 		atbm_module_config_string_hash_int(&string_hash);
 		atbm_module_config_string_hash_insert(&string_hash,&ht20);
 		atbm_module_config_string_hash_insert(&string_hash,&ht40);
-		
+
 		atbm_printk_debug("%s:scan_info %s\n",__func__,monitor_info);
 		if(atbm_string_parase(cmd_store,monitor_string,ARRAY_SIZE(monitor_string),monitor_info,len-(monitor_info-buf))==false){
 			atbm_printk_err("%s:monitor %s err\n",__func__,monitor_info);
 			res = false;
 			goto exit_nolock;
 		}
-		
+
 		if(monitor_params.channel.n_channels != 1){
 			atbm_printk_err("%s:channel %d ++++err\n",__func__,monitor_params.channel.n_channels);
 			res = false;
@@ -1629,7 +1629,7 @@ static bool atbm_module_attr_start_monitor(struct atbm_common *hw_priv,struct at
 	rtnl_lock();
 
 	list_for_each_entry(sdata_tmp, &local->interfaces, list){
-		
+
 		if (sdata_tmp->vif.type == NL80211_IFTYPE_MONITOR){
 			atbm_printk_err("%s:monitor already exit\n",__func__);
 			res = false;
@@ -1643,7 +1643,7 @@ static bool atbm_module_attr_start_monitor(struct atbm_common *hw_priv,struct at
 		sdata = sdata_tmp;
 		break;
 	}
-	
+
 	if(sdata == NULL){
 		atbm_printk_err("%s:no staion running\n",__func__);
 		res = false;
@@ -1651,14 +1651,14 @@ static bool atbm_module_attr_start_monitor(struct atbm_common *hw_priv,struct at
 	}
 
 	res = atbm_internal_cmd_monitor_req(sdata,&req);
-	
+
 	atbm_printk_debug("triger [%s] to monitor (%d)\n",sdata->name,res);
 exit:
 	rtnl_unlock();
 exit_nolock:
 	if(monitor_params.channel.channels)
 		atbm_kfree(monitor_params.channel.channels);
-	
+
 	return res;
 }
 static bool atbm_module_attr_stop_monitor(struct atbm_common *hw_priv,struct atbm_store_cmd_code *cmd_store,
@@ -1671,7 +1671,7 @@ static bool atbm_module_attr_stop_monitor(struct atbm_common *hw_priv,struct atb
 	const char* monitor_info = buf;
 
 	monitor_info = atbm_skip_space(buf,len);
-	
+
 	if(monitor_info){
 		atbm_printk_debug("%s:scan_info %s\n",__func__,monitor_info);
 		if(atbm_string_parase(cmd_store,NULL,0,monitor_info,len-(monitor_info-buf))==false){
@@ -1679,11 +1679,11 @@ static bool atbm_module_attr_stop_monitor(struct atbm_common *hw_priv,struct atb
 			goto exit;
 		}
 	}
-	
+
 	rtnl_lock();
 
 	list_for_each_entry(sdata_tmp, &local->interfaces, list){
-		
+
 		if (sdata_tmp->vif.type != NL80211_IFTYPE_MONITOR){
 			atbm_printk_err("%s:monitor already exit\n",__func__);
 			continue;
@@ -1696,7 +1696,7 @@ static bool atbm_module_attr_stop_monitor(struct atbm_common *hw_priv,struct atb
 		sdata = sdata_tmp;
 		break;
 	}
-	
+
 	if(sdata == NULL){
 		rtnl_unlock();
 		atbm_printk_err("%s:no staion running\n",__func__);
@@ -1705,7 +1705,7 @@ static bool atbm_module_attr_stop_monitor(struct atbm_common *hw_priv,struct atb
 	}
 
 	res = atbm_internal_cmd_stop_monitor(sdata);
-	
+
 	atbm_printk_debug("triger [%s] to monitor (%d)\n",sdata->name,res);
 
 	rtnl_unlock();
@@ -1724,10 +1724,10 @@ static ssize_t atbm_module_attr_start_monitor_show(struct atbm_common *hw_priv,s
 
 static bool atbm_module_sta_info_insert(struct atbm_store_cmd_code *cmd_store,struct ieee80211_internal_sta_info *stainfo)
 {
-	
-	atbm_module_show_put(&cmd_store->echo,"ifname[%s]"ATBM_SPACE_STR,stainfo->sdata->name);	
+
+	atbm_module_show_put(&cmd_store->echo,"ifname[%s]"ATBM_SPACE_STR,stainfo->sdata->name);
 	atbm_module_show_put(&cmd_store->echo,"mac[%pM]"ATBM_SPACE_STR,stainfo->mac);
-	if(IEEE80211_INTERNAL_STA_FLAGS_SSID&stainfo->filled){		
+	if(IEEE80211_INTERNAL_STA_FLAGS_SSID&stainfo->filled){
 		atbm_module_show_put(&cmd_store->echo,"ssid[%s]"ATBM_SPACE_STR,stainfo->ssid);
 		atbm_module_show_put(&cmd_store->echo,"ssid_len[%d]"ATBM_SPACE_STR,stainfo->ssid_len);
 	}
@@ -1746,7 +1746,7 @@ static bool atbm_module_sta_info_insert(struct atbm_store_cmd_code *cmd_store,st
 	if(IEEE80211_INTERNAL_STA_FLAGS_TOPRATE&stainfo->filled){
 		atbm_module_show_put(&cmd_store->echo,"toprate[%d]"ATBM_SPACE_STR,stainfo->top_rate);
 	}
-	
+
 	atbm_module_show_put(&cmd_store->echo,ATBM_LINEF_STR);
 	return true;
 }
@@ -1757,7 +1757,7 @@ static bool atbm_module_ap_info_handle(struct ieee80211_internal_sta_info *stain
 	if(cmd_store == NULL){
 		return false;
 	}
-	
+
 	if(stainfo->sdata->vif.type != NL80211_IFTYPE_STATION){
 		return false;
 	}
@@ -1777,7 +1777,7 @@ static bool atbm_module_sta_info_req_spilt(struct atbm_store_cmd_code *cmd_store
 	struct atbm_conf_string txrxbytes = {.strings = "txrxbytes",.set = false};
 	struct atbm_conf_string ssid = {.strings = "ssid",.set = false};
 	struct atbm_config_string_hash string_hash;
-	
+
 	struct atbm_sting_s req_string[]={
 		ATBM_STRING_TABLE_INIT(REQ_MAC,atbm_module_config_macs,&req->req_mac),
 		ATBM_STRING_TABLE_INIT(REQ_INFO,atbm_module_config_string,&string_hash),
@@ -1789,7 +1789,7 @@ static bool atbm_module_sta_info_req_spilt(struct atbm_store_cmd_code *cmd_store
 	atbm_module_config_string_hash_insert(&string_hash,&channel);
 	atbm_module_config_string_hash_insert(&string_hash,&txrxbytes);
 	atbm_module_config_string_hash_insert(&string_hash,&ssid);
-	
+
 	if(atbm_string_parase(cmd_store,req_string,ARRAY_SIZE(req_string),buf,len) == false){
 		goto err;
 	}
@@ -1804,7 +1804,7 @@ static bool atbm_module_sta_info_req_spilt(struct atbm_store_cmd_code *cmd_store
 		req->req_txrxbytes = 1;
 	if(ssid.set)
 		req->req_ssid = 1;
-	
+
 	return true;
 err:
 	if(req){
@@ -1824,23 +1824,23 @@ static bool atbm_module_attr_ap_info(struct atbm_common *hw_priv,struct atbm_sto
 	const char* ap_info = buf;
 	void *cmd_private = NULL;
 	struct atbm_stainfo_req_params *req_params = NULL;
-	
+
 	cmd_private = atbm_store_cmd_init_cmd_private(cmd_store,sizeof(struct atbm_stainfo_req_params),GFP_KERNEL);
 
 	if(cmd_private == NULL){
-		goto err;		
+		goto err;
 	}
-	
+
 	rcu_assign_pointer(cmd_store->cmd_private,cmd_private);
 	ap_info = atbm_skip_space(buf,len);
-	
+
 	req_params = cmd_private;
 	req_params->req_channel = false;
 	req_params->req_rate = false;
 	req_params->req_rssi = false;
 	req_params->req_txrxbytes = false;
 	req_params->type = NL80211_IFTYPE_STATION;
-	
+
 	if(ap_info){
 		atbm_printk_debug("%s:ap_info %s\n",__func__,ap_info);
 		if(atbm_module_sta_info_req_spilt(cmd_store,ap_info,len-(ap_info-buf))==false){
@@ -1850,10 +1850,10 @@ static bool atbm_module_attr_ap_info(struct atbm_common *hw_priv,struct atbm_sto
 		}
 	}
 	memset(&req,0,sizeof(struct ieee80211_internal_sta_req));
-	
+
 	req.sta_handle = atbm_module_ap_info_handle;
 	req.priv = cmd_store;
-	
+
 	if(req_params->req_channel)
 		req.req_flag |=IEEE80211_INTERNAL_STA_FLAGS_CHANNEL;
 	if(req_params->req_rssi)
@@ -1866,7 +1866,7 @@ static bool atbm_module_attr_ap_info(struct atbm_common *hw_priv,struct atbm_sto
 		req.req_flag |=IEEE80211_INTERNAL_STA_FLAGS_SSID;
 	if(req.req_flag == 0)
 		req.req_flag = (u32)-1;
-	
+
 	req.n_macs = req_params->req_mac.n_macs;
 	req.macs = req_params->req_mac.mac;
 	req.type = NL80211_IFTYPE_STATION;
@@ -1883,11 +1883,11 @@ err:
 static bool atbm_module_sta_info_handle(struct ieee80211_internal_sta_info *stainfo,void *priv)
 {
 	struct atbm_store_cmd_code *cmd_store = (struct atbm_store_cmd_code *)priv;
-	
+
 	if(cmd_store == NULL){
 		return false;
 	}
-	
+
 	if(stainfo->sdata->vif.type!= NL80211_IFTYPE_AP){
 		return false;
 	}
@@ -1904,13 +1904,13 @@ static bool atbm_module_attr_sta_info(struct atbm_common *hw_priv,struct atbm_st
 	const char* sta_info = buf;
 	void *cmd_private = NULL;
 	struct atbm_stainfo_req_params *req_params = NULL;
-	
+
 	cmd_private = atbm_store_cmd_init_cmd_private(cmd_store,sizeof(struct atbm_stainfo_req_params),GFP_KERNEL);
-	
+
 	if(cmd_private == NULL){
-		goto err;		
+		goto err;
 	}
-	
+
 	rcu_assign_pointer(cmd_store->cmd_private,cmd_private);
 	req_params = cmd_private;
 	req_params->type = NL80211_IFTYPE_AP;
@@ -1919,7 +1919,7 @@ static bool atbm_module_attr_sta_info(struct atbm_common *hw_priv,struct atbm_st
 	req_params->req_rssi = false;
 	req_params->req_txrxbytes = false;
 	sta_info = atbm_skip_space(buf,len);
-	
+
 	if(sta_info){
 		atbm_printk_debug("%s:scan_info %s\n",__func__,sta_info);
 		if(atbm_module_sta_info_req_spilt(cmd_store,sta_info,len-(sta_info-buf))==false){
@@ -1929,10 +1929,10 @@ static bool atbm_module_attr_sta_info(struct atbm_common *hw_priv,struct atbm_st
 		}
 	}
 	memset(&req,0,sizeof(struct ieee80211_internal_sta_req));
-	
+
 	req.sta_handle = atbm_module_sta_info_handle;
 	req.priv = cmd_store;
-	
+
 	if(req_params->req_channel)
 		req.req_flag |=IEEE80211_INTERNAL_STA_FLAGS_CHANNEL;
 	if(req_params->req_rssi)
@@ -1945,7 +1945,7 @@ static bool atbm_module_attr_sta_info(struct atbm_common *hw_priv,struct atbm_st
 		req.req_flag |=IEEE80211_INTERNAL_STA_FLAGS_SSID;
 	if(req.req_flag == 0)
 		req.req_flag = (u32)-1;
-	
+
 	req.type = NL80211_IFTYPE_AP;
 	req.n_macs = req_params->req_mac.n_macs;
 	req.macs = req_params->req_mac.mac;
@@ -1965,9 +1965,9 @@ static bool atbm_module_wsm_adaptive_process(const char *posl,const char *posr,v
 	#define ADAPTIVE_OFF	"off"
 	struct atbm_wsm_req_parmas *wsm_req = (struct atbm_wsm_req_parmas *)priv;
 	u8 len = posr - posl;
-	
+
 	atbm_printk_debug("%s:posl(%p),posr(%p) %s\n",__func__,posl,posr,posl);
-	
+
 	if(posl>=posr){
 		atbm_printk_err("%s:posr(%p),posl(%p)\n",__func__,posr,posl);
 		return false;
@@ -1998,9 +1998,9 @@ static bool atbm_module_wsm_txpwr_dcxo_process(const char *posl,const char *posr
 {
 	struct atbm_wsm_req_parmas *wsm_req = (struct atbm_wsm_req_parmas *)priv;
 	u8 len = posr - posl;
-	
+
 	atbm_printk_debug("%s:posl(%p),posr(%p) %s\n",__func__,posl,posr,posl);
-	
+
 	if(posl>=posr){
 		atbm_printk_err("%s:posr(%p),posl(%p)\n",__func__,posr,posl);
 		return false;
@@ -2026,9 +2026,9 @@ static bool atbm_module_wsm_txpwr_process(const char *posl,const char *posr,void
 {
 	struct atbm_wsm_req_parmas *wsm_req = (struct atbm_wsm_req_parmas *)priv;
 	u8 len = posr - posl;
-	
+
 	atbm_printk_debug("%s:posl(%p),posr(%p) %s\n",__func__,posl,posr,posl);
-	
+
 	if(posl>=posr){
 		atbm_printk_err("%s:posr(%p),posl(%p)\n",__func__,posr,posl);
 		return false;
@@ -2059,7 +2059,7 @@ static bool atbm_module_wsm_cmd_info_spilt(struct atbm_store_cmd_code *cmd_store
 	#define REQ_TXPWR_DCXO	 	"txpwr_dcxo="
 	#define REQ_TXPWR			"txpwr="
 	bool res = true;
-	
+
 	struct atbm_sting_s req_string[]={
 		ATBM_STRING_TABLE_INIT(REQ_ADAPTIVE,atbm_module_wsm_adaptive_process,cmd_store->cmd_private),
 		ATBM_STRING_TABLE_INIT(REQ_TXPWR_DCXO,atbm_module_wsm_txpwr_dcxo_process,cmd_store->cmd_private),
@@ -2080,14 +2080,14 @@ static bool atbm_module_attr_wsm_cmd(struct atbm_common *hw_priv,struct atbm_sto
 	void *cmd_private = NULL;
 	bool res=true;
 
-	
+
 	cmd_private = atbm_store_cmd_init_cmd_private(cmd_store,sizeof(struct atbm_wsm_req_parmas),GFP_KERNEL);
-	
+
 	if(cmd_private == NULL){
 		res = false;
-		goto err;		
+		goto err;
 	}
-	
+
 	wsm_req = (struct atbm_wsm_req_parmas *)cmd_private;
 	rcu_assign_pointer(cmd_store->cmd_private,cmd_private);
 	wsm_req->req_adaptive = 0;
@@ -2122,7 +2122,7 @@ static bool atbm_module_attr_wsm_cmd(struct atbm_common *hw_priv,struct atbm_sto
 
 	if(wsm_req->req_pwrdcxo){
 		struct ieee80211_internal_wsm_txpwr_dcxo txpwr_dcxo;
-		
+
 		if(wsm_req->dcxo_index != 4){
 			atbm_printk_err("%s:set req_pwrdcxo too short\n",__func__);
 			goto err;
@@ -2133,11 +2133,11 @@ static bool atbm_module_attr_wsm_cmd(struct atbm_common *hw_priv,struct atbm_sto
 		txpwr_dcxo.dcxo    = wsm_req->txpwr_dcxo[3];
 
 		res = atbm_internal_wsm_txpwr_dcxo(hw_priv,&txpwr_dcxo);
-		
+
 		if(res == false){
 			atbm_printk_err("%s:set txpwr_dcxo err\n",__func__);
 			goto err;
-		}		
+		}
 	}
 	if(wsm_req->req_pwr){
 		struct ieee80211_internal_wsm_txpwr txpwr;
@@ -2158,7 +2158,7 @@ err:
 	}
 
 	return res;
-	
+
 }
 static bool atbm_module_send_probe_request_spilt(struct atbm_store_cmd_code *cmd_store,
 														const char *buf,int len)
@@ -2167,7 +2167,7 @@ static bool atbm_module_send_probe_request_spilt(struct atbm_store_cmd_code *cmd
 	#define REQ_IE	 	"private="
 	bool res = true;
 	struct atbm_probe_request *request = (struct atbm_probe_request *)cmd_store->cmd_private;
-	
+
 	struct atbm_sting_s req_string[]={
 		ATBM_STRING_TABLE_INIT(REQ_NUM,atbm_module_config_integers,&request->n_request),
 		ATBM_STRING_TABLE_INIT(REQ_IE,atbm_module_config_ies,&request->ies),
@@ -2204,17 +2204,17 @@ static bool atbm_module_attr_send_probe_request(struct atbm_common *hw_priv,
 	struct ieee80211_local *local = hw_to_local(hw_priv->hw);
 	int i = 0;
 
-	
+
 	cmd_private = atbm_store_cmd_init_cmd_private(cmd_store,sizeof(struct atbm_probe_request),GFP_KERNEL);
-	
+
 	if(cmd_private == NULL){
 		res = false;
-		goto err;		
+		goto err;
 	}
-	
+
 	request = (struct atbm_probe_request *)cmd_private;
 	rcu_assign_pointer(cmd_store->cmd_private,cmd_private);
-	
+
 	request_info = atbm_skip_space(buf,len);
 
 	if(request_info == NULL){
@@ -2231,7 +2231,7 @@ static bool atbm_module_attr_send_probe_request(struct atbm_common *hw_priv,
 	rtnl_lock();
 
 	list_for_each_entry(sdata_tmp, &local->interfaces, list){
-		
+
 #ifndef AP_MODE_SEND_PROBE_REQ
 			if ((sdata_tmp->vif.type != NL80211_IFTYPE_MONITOR)&&(sdata_tmp->vif.type != NL80211_IFTYPE_STATION)){
 				atbm_printk_err("%s:monitor already exit\n",__func__);
@@ -2244,11 +2244,11 @@ static bool atbm_module_attr_send_probe_request(struct atbm_common *hw_priv,
 			continue;
 		}
 
-#ifdef AP_MODE_SEND_PROBE_REQ		
+#ifdef AP_MODE_SEND_PROBE_REQ
 		if(sdata_tmp->vif.type == NL80211_IFTYPE_AP){
 			goto ap_mode;
 		}
-#endif		
+#endif
 
 
 		if(sdata_tmp->vif.type == NL80211_IFTYPE_STATION){
@@ -2260,19 +2260,19 @@ static bool atbm_module_attr_send_probe_request(struct atbm_common *hw_priv,
 				continue;
 		}
 #ifdef AP_MODE_SEND_PROBE_REQ
-ap_mode:		
+ap_mode:
 #endif
 		sdata = sdata_tmp;
 		break;
 	}
-	
+
 	if(sdata == NULL){
 		rtnl_unlock();
 		atbm_printk_err("%s:no staion running\n",__func__);
 		res = false;
 		goto err;
 	}
-	
+
 	atbm_printk_err("triger [%s] to monitor/sta to send probe(%d),ie_len(%d)\n",sdata->name,request->n_request.integers[0],request->ies.ie_len);
 	for(i = 0;i<request->n_request.integers[0];i++){
 		ieee80211_send_special_probe_req(sdata, NULL, NULL,
@@ -2288,7 +2288,7 @@ err:
 		if(request->n_request.integers)
 			atbm_kfree(request->n_request.integers);
 		atbm_kfree(cmd_private);
-		
+
 		rcu_assign_pointer(cmd_store->cmd_private,NULL);
 	}
 	return res;
@@ -2339,13 +2339,13 @@ static bool atbm_module_attr_sta_listen(struct atbm_common *hw_priv,
 	sta_listen = (struct atbm_sta_listen *)cmd_private;
 
 	rcu_assign_pointer(cmd_store->cmd_private,cmd_private);
-	
-	request_info = atbm_skip_space(buf,len);	
+
+	request_info = atbm_skip_space(buf,len);
 	if(request_info == NULL){
 		res = false;
 		goto  err;
 	}
-	
+
 	res = atbm_module_sta_listen_spilt(cmd_store,buf,len);
 
 	if(res == false){
@@ -2354,7 +2354,7 @@ static bool atbm_module_attr_sta_listen(struct atbm_common *hw_priv,
 	rtnl_lock();
 
 	list_for_each_entry(sdata_tmp, &local->interfaces, list){
-		
+
 		if (sdata_tmp->vif.type != NL80211_IFTYPE_STATION){
 			atbm_printk_err("%s:not sta\n",__func__);
 			continue;
@@ -2370,14 +2370,14 @@ static bool atbm_module_attr_sta_listen(struct atbm_common *hw_priv,
 		sdata = sdata_tmp;
 		break;
 	}
-	
+
 	if(sdata == NULL){
 		rtnl_unlock();
 		atbm_printk_err("%s:no staion running\n",__func__);
 		res = false;
 		goto err;
 	}
-	
+
 	atbm_printk_err("%s:[%s] enter sta listen mode\n",__func__,sdata->name);
 	if(ieee80211_set_sta_channel(sdata,sta_listen->channel.channels[0]) != 0)
 		res = false;
@@ -2386,7 +2386,7 @@ err:
 	if(cmd_private){
 		if(sta_listen->channel.channels)
 			atbm_kfree(sta_listen->channel.channels);
-		atbm_kfree(cmd_private);		
+		atbm_kfree(cmd_private);
 		rcu_assign_pointer(cmd_store->cmd_private,NULL);
 	}
 
@@ -2434,7 +2434,7 @@ static bool atbm_module_attr_ap_set_beacon(struct atbm_common *hw_priv,struct at
 	ap_beacon = (struct atbm_ap_set_beacon *)cmd_private;
 	rcu_assign_pointer(cmd_store->cmd_private,cmd_private);
 
-	request_info = atbm_skip_space(buf,len);	
+	request_info = atbm_skip_space(buf,len);
 	if(request_info == NULL){
 		res = false;
 		goto  err;
@@ -2459,7 +2459,7 @@ static bool atbm_module_attr_ap_set_beacon(struct atbm_common *hw_priv,struct at
 	}
 	rtnl_lock();
 	list_for_each_entry(sdata_tmp, &local->interfaces, list){
-		
+
 		if (sdata_tmp->vif.type != NL80211_IFTYPE_AP){
 			continue;
 		}
@@ -2474,7 +2474,7 @@ static bool atbm_module_attr_ap_set_beacon(struct atbm_common *hw_priv,struct at
 		sdata = sdata_tmp;
 		break;
 	}
-	
+
 	if(sdata == NULL){
 		rtnl_unlock();
 		atbm_printk_err("%s:[%s] is not running\n",__func__,ap_beacon->ifname.if_name);
@@ -2489,7 +2489,7 @@ err:
 		if(ap_beacon->ies.ies)
 			atbm_kfree(ap_beacon->ies.ies);
 		ap_beacon->ies.ies = NULL;
-		atbm_kfree(ap_beacon);		
+		atbm_kfree(ap_beacon);
 		rcu_assign_pointer(cmd_store->cmd_private,NULL);
 	}
 
@@ -2504,19 +2504,19 @@ static bool atbm_module_attr_sta_special_scan(struct atbm_common *hw_priv,struct
 	struct ieee80211_sub_if_data *sdata_tmp = NULL;
 	struct ieee80211_local *local = hw_to_local(hw_priv->hw);
 	int i = 0;
-	
+
 	atbm_printk_debug("%s:%d:%s\n",__func__,len,buf);
 	rtnl_lock();
-	
+
 	memset(&scan_params,0,sizeof(struct atbm_scan_params));
-	
+
 	scan_params.ies.atbm_ie = 1;
 	if(atbm_module_attr_scan_paras_scan(cmd_store,buf,len,&scan_params) == false){
 		atbm_printk_always("%s scan params err\n",__func__);
 		res = false;
 		goto err;
 	}
-	
+
 	list_for_each_entry(sdata_tmp, &local->interfaces, list){
 		if (sdata_tmp->vif.type != NL80211_IFTYPE_STATION){
 			continue;
@@ -2535,7 +2535,7 @@ static bool atbm_module_attr_sta_special_scan(struct atbm_common *hw_priv,struct
 		goto err;
 	}
 	atbm_printk_always("triger [%s] to scan\n",sdata->name);
-	
+
 	if(scan_params.ssids.n_ssids){
 		for(i = 0;i<scan_params.ssids.n_ssids;i++){
 			atbm_printk_debug("%s: ssid[%s][%d]\n",__func__,scan_params.ssids.ssids[i].ssid,scan_params.ssids.ssids[i].ssid_len);
@@ -2551,7 +2551,7 @@ static bool atbm_module_attr_sta_special_scan(struct atbm_common *hw_priv,struct
 			atbm_printk_debug("%s: channel[%d]\n",__func__,scan_params.channels.channels[i]);
 		}
 	}
-		
+
 	atbm_printk_always( "%s\n",__func__);
 	atbm_printk_always("%s:channel(%p)\n",__func__,scan_params.channels.channels);
 
@@ -2562,7 +2562,7 @@ static bool atbm_module_attr_sta_special_scan(struct atbm_common *hw_priv,struct
 		if(scan_params.ssids.n_ssids){
 			scan_ssid = scan_params.ssids.ssids[0].ssid;
 			scan_ssid_len = scan_params.ssids.ssids[0].ssid_len;
-		}	
+		}
 		res = ieee80211_sta_triger_positive_scan(sdata,scan_params.channels.channels,scan_params.channels.n_channels,
 			  scan_ssid,scan_ssid_len,scan_params.ies.ies,scan_params.ies.ie_len,NULL);
 	}else {
@@ -2590,7 +2590,7 @@ static bool atbm_module_attr_set_freq(struct atbm_common *hw_priv,struct atbm_st
 	bool res = true;
 	const char* request_info = NULL;
 	struct ieee80211_internal_set_freq_req req;
-	
+
 	cmd_private = atbm_store_cmd_init_cmd_private(cmd_store,sizeof(struct atbm_special_freq),GFP_KERNEL);
 
 	if(cmd_private == NULL){
@@ -2602,7 +2602,7 @@ static bool atbm_module_attr_set_freq(struct atbm_common *hw_priv,struct atbm_st
 
 	rcu_assign_pointer(cmd_store->cmd_private,cmd_private);
 
-	request_info = atbm_skip_space(buf,len);	
+	request_info = atbm_skip_space(buf,len);
 	if(request_info == NULL){
 		res = false;
 		goto  err;
@@ -2633,7 +2633,7 @@ static bool atbm_module_attr_set_freq(struct atbm_common *hw_priv,struct atbm_st
 		res = false;
 		goto err;
 	}
-	
+
 	req.channel_num = set_freq->channel.integers[0];
 	req.freq  = set_freq->freq.integers[0];
 	req.set   = true;
@@ -2662,7 +2662,7 @@ static bool atbm_module_attr_clear_freq(struct atbm_common *hw_priv,struct atbm_
 	bool res = true;
 	const char* request_info = NULL;
 	struct ieee80211_internal_set_freq_req req;
-	
+
 	cmd_private = atbm_store_cmd_init_cmd_private(cmd_store,sizeof(struct atbm_special_freq),GFP_KERNEL);
 
 	if(cmd_private == NULL){
@@ -2674,7 +2674,7 @@ static bool atbm_module_attr_clear_freq(struct atbm_common *hw_priv,struct atbm_
 
 	rcu_assign_pointer(cmd_store->cmd_private,cmd_private);
 
-	request_info = atbm_skip_space(buf,len);	
+	request_info = atbm_skip_space(buf,len);
 	if(request_info == NULL){
 		res = false;
 		goto  err;
@@ -2692,14 +2692,14 @@ static bool atbm_module_attr_clear_freq(struct atbm_common *hw_priv,struct atbm_
 			goto err;
 		}
 	}
-	
+
 
 	if(set_freq->channel.n_integers != 1){
 		atbm_printk_err("%s: channel not set\n",__func__);
 		res = false;
 		goto err;
 	}
-	
+
 	req.channel_num = set_freq->channel.integers[0];
 	req.set = false;
 
@@ -2737,9 +2737,9 @@ static bool atbm_module_attr_channel_select(struct atbm_common *hw_priv,struct a
 //	u8 ignor_channels[2]; // = {13,14};
 	bool res = true;
 	const char* select_info = buf;
-	void *cmd_private = NULL;	
+	void *cmd_private = NULL;
 	int i;
-	
+
 	rtnl_lock();
 	cmd_private = atbm_store_cmd_init_cmd_private(cmd_store,sizeof(struct atbm_channel_auto_select),GFP_KERNEL);
 
@@ -2748,10 +2748,10 @@ static bool atbm_module_attr_channel_select(struct atbm_common *hw_priv,struct a
 		goto exit;
 	}
 	select = (struct atbm_channel_auto_select *)cmd_private;
-	
+
 	rcu_assign_pointer(cmd_store->cmd_private,cmd_private);
 
-	
+
 	select_info = atbm_skip_space(buf,len);
 
 	/*
@@ -2771,7 +2771,7 @@ static bool atbm_module_attr_channel_select(struct atbm_common *hw_priv,struct a
 		}
 	}
 	/*
-	*get channel list 
+	*get channel list
 	*if set channel list , using the channel setting
 	*if set channel start and end , using the channel between start and end
 	*if not set channel ,using all surported channel
@@ -2797,7 +2797,7 @@ static bool atbm_module_attr_channel_select(struct atbm_common *hw_priv,struct a
 			}
 		}
 	}else if(select->end_channel.n_integers){
-	
+
 		if(select->end_channel.n_integers != 1){
 			atbm_printk_err("%s:end err\n",__func__);
 			res = false;
@@ -2809,7 +2809,7 @@ static bool atbm_module_attr_channel_select(struct atbm_common *hw_priv,struct a
 			res = false;
 			goto exit;
 		}
-		
+
 		if(select->end_channel.integers[0] <= select->start_channel.integers[0]){
 			res = false;
 			goto exit;
@@ -2832,7 +2832,7 @@ static bool atbm_module_attr_channel_select(struct atbm_common *hw_priv,struct a
 				goto exit;
 			}
 			select->channels.channels[i] = select->start_channel.integers[0]+i;
-		}		
+		}
 	}else{
 		select->channels.channels = ieee8011_get_channel_list(hw_priv->hw,(size_t*)&select->channels.n_channels);
 
@@ -2842,9 +2842,9 @@ static bool atbm_module_attr_channel_select(struct atbm_common *hw_priv,struct a
 			goto exit;
 		}
 	}
-		
+
 	list_for_each_entry(sdata_tmp, &local->interfaces, list){
-		
+
 		if (sdata_tmp->vif.type != NL80211_IFTYPE_STATION){
 			continue;
 		}
@@ -2856,16 +2856,16 @@ static bool atbm_module_attr_channel_select(struct atbm_common *hw_priv,struct a
 		sdata = sdata_tmp;
 		break;
 	}
-	
+
 	if(sdata == NULL){
 		atbm_printk_err("%s:no staion running\n",__func__);
 		res = false;
 		goto exit;
 	}
-	
+
 	memset(&req,0,sizeof(struct ieee80211_internal_channel_auto_select_req));
 	memset(&results,0,sizeof(struct ieee80211_internal_channel_auto_select_results));
-	
+
 	results.ignore_channels = NULL;//ignor_channels;
 	results.ignore_n_channels      = 0;//ARRAY_SIZE(ignor_channels);
 	results.channels = select->channels.channels;
@@ -2911,7 +2911,7 @@ exit:
 	#undef CH_VER
 	rtnl_unlock();
 	if(cmd_private){
-		
+
 		if(select->channels.channels)
 			atbm_kfree(select->channels.channels);
 		if(select->start_channel.integers)
@@ -2934,7 +2934,7 @@ static bool atbm_module_attr_chip_version(struct atbm_common *hw_priv,struct atb
 	select_info = atbm_skip_space(buf,len);
 
 	memset(&chip_info,0,sizeof(struct ieee80211_internal_req_chip));
-	
+
 	if(select_info){
 		if(atbm_string_parase(cmd_store,NULL,0,select_info,len-(select_info-buf))==false){
 			atbm_printk_always("%s:chip_version %s err\n",__func__,select_info);
@@ -2944,7 +2944,7 @@ static bool atbm_module_attr_chip_version(struct atbm_common *hw_priv,struct atb
 	}
 
 	chip_info.flags |= IEEE80211_INTERNAL_REQ_CHIP_FLAGS__CHIP_VER;
-	
+
 	if(atbm_internal_request_chip_cap(hw_priv->hw,&chip_info) == false){
 		atbm_printk_always("%s: get chip_version\n",__func__);
 		res = false;
@@ -2971,20 +2971,20 @@ static bool atbm_module_attr_set_ap_config(struct atbm_common *hw_priv,struct at
 	const char* select_info = buf;
 	struct ieee80211_sub_if_data *sdata = NULL;
 	struct ieee80211_internal_ap_conf conf_req;
-	
+
 	rtnl_lock();
-	
+
 	select_info = atbm_skip_space(buf,len);
 	memset(&ap_config,0,sizeof(struct atbm_module_ap_conf));
 	memset(&conf_req,0,sizeof(struct ieee80211_internal_ap_conf));
-	
+
 	if(select_info){
 		#define CONF_IFNAME   "ifname="
 		#define CONF_CHANNEL  "channel="
 		#define CONF_SSID     "ssid="
 		#define CONF_BSSID    "bssid="
 		#define CONF_IES      "ies="
-		
+
 		struct atbm_sting_s req_string[]={
 			ATBM_STRING_TABLE_INIT(CONF_IFNAME,atbm_module_config_ifname,&ap_config.ifname),
 			ATBM_STRING_TABLE_INIT(CONF_CHANNEL,atbm_module_config_channels,&ap_config.channel),
@@ -2992,7 +2992,7 @@ static bool atbm_module_attr_set_ap_config(struct atbm_common *hw_priv,struct at
 			ATBM_STRING_TABLE_INIT(CONF_BSSID,atbm_module_config_macs,&ap_config.bssid),
 			ATBM_STRING_TABLE_INIT(CONF_IES,atbm_module_config_ies,NULL),
 		};
-		
+
 		if(atbm_string_parase(cmd_store,req_string,ARRAY_SIZE(req_string),select_info,len-(select_info-buf))==false){
 			atbm_printk_always("%s:ap config %s err\n",__func__,select_info);
 			res = false;
@@ -3046,10 +3046,10 @@ static bool atbm_module_attr_set_ap_config(struct atbm_common *hw_priv,struct at
 	res = atbm_internal_update_ap_conf(sdata,&conf_req,false);
 exit:
 	rtnl_unlock();
-	#undef CONF_IFNAME   
-	#undef CONF_CHANNEL  
-	#undef CONF_SSID     
-	#undef CONF_BSSID   
+	#undef CONF_IFNAME
+	#undef CONF_CHANNEL
+	#undef CONF_SSID
+	#undef CONF_BSSID
 	if(ap_config.bssid.mac)
 		atbm_kfree(ap_config.bssid.mac);
 	if(ap_config.channel.channels)
@@ -3083,7 +3083,7 @@ static bool atbm_module_attr_set_mode(struct atbm_common *hw_priv,struct atbm_st
 		ATBM_STRING_TABLE_INIT(MODE_TYPE,atbm_module_config_string,&string_hash),
 	};
 	bool res = true;
-	
+
 	rtnl_lock();
 
 	select_info = atbm_skip_space(buf,len);
@@ -3097,7 +3097,7 @@ static bool atbm_module_attr_set_mode(struct atbm_common *hw_priv,struct atbm_st
 	memset(&req,0,sizeof(struct ieee80211_internal_iftype_req));
 	memset(&conf_mode,0,sizeof(struct atbm_module_set_mode_conf));
 	atbm_module_config_mult_string_hash(&string_hash,2,&managed,&monitor);
-	
+
 	if(atbm_string_parase(cmd_store,monitor_string,ARRAY_SIZE(monitor_string),select_info,len-(select_info-buf))==false){
 		atbm_printk_always("%s:ap config %s err\n",__func__,select_info);
 		res = false;
@@ -3121,7 +3121,7 @@ static bool atbm_module_attr_set_mode(struct atbm_common *hw_priv,struct atbm_st
 		res = false;
 		goto exit;
 	}
-	
+
 	sdata = atbm_module_get_sdata_by_name(conf_mode.ifname.if_name);
 
 	if(sdata == NULL){
@@ -3141,8 +3141,8 @@ exit:
 	if(conf_mode.channel.channels)
 		atbm_kfree(conf_mode.channel.channels);
 	rtnl_unlock();
-	#undef MODE_IFNAME   
-	#undef MODE_CHANNEL  
+	#undef MODE_IFNAME
+	#undef MODE_CHANNEL
 	#undef MODE_TYPE
 	return res;
 }
@@ -3212,7 +3212,7 @@ static bool atbm_module_attr_stop_ba(struct atbm_common *hw_priv,struct atbm_sto
 	struct sta_info *sta;
 
 	memset(&ba_parmas,0,sizeof(struct atbm_stop_ba_parmas));
-	
+
 	rtnl_lock();
 
 	select_info = atbm_skip_space(buf,len);
@@ -3255,7 +3255,7 @@ static bool atbm_module_attr_stop_ba(struct atbm_common *hw_priv,struct atbm_sto
 		}
 	}
 	if(index == 0){
-		list_for_each_entry_rcu(sta, &sdata->local->sta_list, list) {					
+		list_for_each_entry_rcu(sta, &sdata->local->sta_list, list) {
 			ieee80211_sta_tear_down_BA_sessions(sta, true);
 	    }
 	}
@@ -3297,15 +3297,15 @@ static bool atbm_module_attr_lmac_debug(struct atbm_common *hw_priv,struct atbm_
 
 
 	return res;
-}											
+}
 
 
 
-											
+
 static bool atbm_store_cmd_is_ready(struct atbm_store_cmd_code *cmd_store)
 {
 	struct atbm_store_cmd_code *ready_cmd;
-	
+
 	list_for_each_entry(ready_cmd, &atbm_cmd_echo_ready_list, lhead){
 		if((ready_cmd->label == cmd_store->label)&&
 		   (ready_cmd->code_cmd == cmd_store->code_cmd))
@@ -3337,16 +3337,16 @@ static void atbm_store_cmd_echo_done(struct atbm_store_cmd_code *cmd_store)
 }
 static void atbm_store_cmd_echo_ready(struct atbm_store_cmd_code *cmd_store)
 {
-	if(cmd_store->echo_ready == true){		
+	if(cmd_store->echo_ready == true){
 		atbm_printk_always( "%s already in ready list\n",cmd_store->label);
 		WARN_ON(atbm_store_cmd_is_ready(cmd_store) == false);
 		return;
 	}
-	
+
 	cmd_store->echo_ready = true;
-	
+
 	if((num_echo == -1) || (num_echo>ready_list_num)){
-		
+
 	}else if((!list_empty(&atbm_cmd_echo_ready_list))){
 		struct atbm_store_cmd_code *cmd_code =
 			list_first_entry(&atbm_cmd_echo_ready_list, struct atbm_store_cmd_code,
@@ -3354,7 +3354,7 @@ static void atbm_store_cmd_echo_ready(struct atbm_store_cmd_code *cmd_store)
 		if(cmd_code->show_cmd)
 			cmd_code->show_cmd(atbm_hw_priv_dereference(),cmd_code,NULL,false);
 		atbm_store_cmd_echo_done(cmd_code);
-		atbm_store_cmd_deinit_show(&cmd_code->echo);		
+		atbm_store_cmd_deinit_show(&cmd_code->echo);
 	}else if(num_echo != 0){
 		WARN_ON(1);
 	}
@@ -3382,7 +3382,7 @@ static ssize_t atbm_module_decode_common_store(const char *buf, size_t n)
 	*find the postion of cmd end,use space between tow string
 	*some cmd not need space ,so find enter or end of line
 	*/
-	code_end = memchr(buf, ATBM_SPACE, len); 
+	code_end = memchr(buf, ATBM_SPACE, len);
 	if(code_end == NULL){
 		code_end  =  memchr(buf, ATBM_ENTER, len);
 		if(code_end == NULL)
@@ -3391,7 +3391,7 @@ static ssize_t atbm_module_decode_common_store(const char *buf, size_t n)
 	if(code_end == NULL){
 		atbm_printk_always("%s:can not fine aline\n",__func__);
 	}
-	code_len = code_end ? code_end - p : len;	
+	code_len = code_end ? code_end - p : len;
 	if(code_len<=0){
 		atbm_printk_always("%s code_len err\n",__func__);
 		return -EINVAL;
@@ -3409,12 +3409,12 @@ static ssize_t atbm_module_decode_common_store(const char *buf, size_t n)
 		return -EINVAL;
 	}
 	BUG_ON(store_code->code_cmd == NULL);
-	
+
 	p = atbm_skip_space(code_end,left_len);
 	if(p == NULL){
 		left_len = 0;
 	}else {
-		left_len -= p-code_end;	
+		left_len -= p-code_end;
 	}
 	if(left_len<0){
 		atbm_printk_always("%s left_len err,params err\n",__func__);
@@ -3428,7 +3428,7 @@ static ssize_t atbm_module_decode_common_store(const char *buf, size_t n)
 	*set default enable_echo
 	*/
 	store_code->echo_enable = enable_echo;
-	
+
 	if(store_code->code_cmd(atbm_hw_priv_dereference(),store_code,p,left_len) == true){
 		if(store_code->echo_enable == true){
 			atbm_module_show_put(&store_code->echo,"%s[%s]\n",store_code->label,"OK");
@@ -3489,7 +3489,7 @@ static ssize_t atbm_module_cmd_show(struct kobject *kobj,
 	u8* show_buff = NULL;
 	ssize_t show_len = 0;
 	atbm_modulefs_lock();
-	atbm_module_muxlock();	
+	atbm_module_muxlock();
 	show_buff = atbm_kzalloc(ATBM_SHOW_MSG_MAX_SIZE, GFP_KERNEL);
 	while (!list_empty(&atbm_cmd_echo_ready_list)) {
 		struct atbm_store_cmd_code *cmd_code =
@@ -3498,7 +3498,7 @@ static ssize_t atbm_module_cmd_show(struct kobject *kobj,
 
 		if(cmd_code->show_cmd)
 			show_len = cmd_code->show_cmd(atbm_hw_priv_dereference(),cmd_code,show_buff,show_buff ? true:false);
-		if(show_buff){			
+		if(show_buff){
 			if((show_len)&&(len+show_len<ATBM_SHOW_MSG_MAX_SIZE)){
 				memcpy(buf+len,show_buff,show_len);
 				len += show_len;
@@ -3553,7 +3553,7 @@ static void atbm_module_cmd_exit(void)
 		if(cmd_code->show_cmd)
 			cmd_code->show_cmd(atbm_hw_priv_dereference(),cmd_code,NULL,false);
 		atbm_store_cmd_echo_done(cmd_code);
-		atbm_store_cmd_deinit_show(&cmd_code->echo);		
+		atbm_store_cmd_deinit_show(&cmd_code->echo);
 	}
 
 	if(backup_show){
@@ -3565,29 +3565,29 @@ static void atbm_module_cmd_exit(void)
 static void atbm_module_firmware_caps_show(struct atbm_module_show *show_buff,struct atbm_common *hw_priv)
 {
 	#define WSM_CAP(cap)  !!(hw_priv->wsm_caps.firmwareCap&cap)
-	
+
 	atbm_module_show_put(show_buff,LIGHT"Firmare Cap:"NORMAL ENTER);
-	atbm_module_show_put(show_buff,"PRIVATE_IE  [%d]\n" ,WSM_CAP(CAPABILITIES_ATBM_PRIVATE_IE)); 
-	atbm_module_show_put(show_buff,"NVR_IPC     [%d]\n" ,WSM_CAP(CAPABILITIES_NVR_IPC));  
+	atbm_module_show_put(show_buff,"PRIVATE_IE  [%d]\n" ,WSM_CAP(CAPABILITIES_ATBM_PRIVATE_IE));
+	atbm_module_show_put(show_buff,"NVR_IPC     [%d]\n" ,WSM_CAP(CAPABILITIES_NVR_IPC));
 	atbm_module_show_put(show_buff,"NO_CONFIRM  [%d]\n" ,WSM_CAP(CAPABILITIES_NO_CONFIRM));
 	atbm_module_show_put(show_buff,"SDIO_PATCH  [%d]\n" ,WSM_CAP(CAPABILITIES_SDIO_PATCH));
 	atbm_module_show_put(show_buff,"NO_BACKOFF  [%d]\n" ,WSM_CAP(CAPABILITIES_NO_BACKOFF));
-	atbm_module_show_put(show_buff,"CFO         [%d]\n" ,WSM_CAP(CAPABILITIES_CFO));  
-	atbm_module_show_put(show_buff,"AGC         [%d]\n" ,WSM_CAP(CAPABILITIES_AGC));  
+	atbm_module_show_put(show_buff,"CFO         [%d]\n" ,WSM_CAP(CAPABILITIES_CFO));
+	atbm_module_show_put(show_buff,"AGC         [%d]\n" ,WSM_CAP(CAPABILITIES_AGC));
 	atbm_module_show_put(show_buff,"TXCAL       [%d]\n" ,WSM_CAP(CAPABILITIES_TXCAL));
 	atbm_module_show_put(show_buff,"CTS_BUG     [%d]\n" ,WSM_CAP(CAPABILITIES_CTS_BUG));
-	atbm_module_show_put(show_buff,"MONITOR     [%d]\n" ,WSM_CAP(CAPABILITIES_MONITOR));  
+	atbm_module_show_put(show_buff,"MONITOR     [%d]\n" ,WSM_CAP(CAPABILITIES_MONITOR));
 	atbm_module_show_put(show_buff,"CUSTOM      [%d]\n" ,WSM_CAP(CAPABILITIES_CUSTOM));
 	atbm_module_show_put(show_buff,"SMARTCONFIG [%d]\n" ,WSM_CAP(CAPABILITIES_SMARTCONFIG));
 	atbm_module_show_put(show_buff,"ETF         [%d]\n" ,WSM_CAP(CAPABILITIES_ETF));
-	atbm_module_show_put(show_buff,"LMAC_RATECTL[%d]\n" ,WSM_CAP(CAPABILITIES_LMAC_RATECTL));  
-	atbm_module_show_put(show_buff,"LMAC_TPC    [%d]\n" ,WSM_CAP(CAPABILITIES_LMAC_TPC));  
-	atbm_module_show_put(show_buff,"LMAC_TEMPC  [%d]\n" ,WSM_CAP(CAPABILITIES_LMAC_TEMPC));  
+	atbm_module_show_put(show_buff,"LMAC_RATECTL[%d]\n" ,WSM_CAP(CAPABILITIES_LMAC_RATECTL));
+	atbm_module_show_put(show_buff,"LMAC_TPC    [%d]\n" ,WSM_CAP(CAPABILITIES_LMAC_TPC));
+	atbm_module_show_put(show_buff,"LMAC_TEMPC  [%d]\n" ,WSM_CAP(CAPABILITIES_LMAC_TEMPC));
 	atbm_module_show_put(show_buff,"USE_IPC     [%d]\n" ,WSM_CAP(CAPABILITIES_USE_IPC));
 	atbm_module_show_put(show_buff,"OUTER_PA    [%d]\n" ,WSM_CAP(CAPABILITIES_OUTER_PA));
 	atbm_module_show_put(show_buff,"HW_CHECKSUM [%d]\n" ,WSM_CAP(CAPABILITIES_HW_CHECKSUM));
 	atbm_module_show_put(show_buff,"MULTI_RX    [%d]\n" ,WSM_CAP(CAPABILITIES_SINGLE_CHANNEL_MULTI_RX));
-	atbm_module_show_put(show_buff,"USB_RECOVERY_BUG      [%d]\n" ,WSM_CAP(CAPABILITIES_USB_RECOVERY_BUG)); 	
+	atbm_module_show_put(show_buff,"USB_RECOVERY_BUG      [%d]\n" ,WSM_CAP(CAPABILITIES_USB_RECOVERY_BUG));
 	atbm_module_show_put(show_buff,"POWER_CONSUMPTION     [%d]\n" ,WSM_CAP(CAPABILITIES_POWER_CONSUMPTION));
 	atbm_module_show_put(show_buff,"RSSI_DECIDE_TXPOWER   [%d]\n" ,WSM_CAP(CAPABILITIES_RSSI_DECIDE_TXPOWER));
 	atbm_module_show_put(show_buff,"RTS_LONG_DUR          [%d]\n" ,WSM_CAP(CAPABILITIES_RTS_LONG_DURATION));
@@ -3603,15 +3603,15 @@ static void atbm_module_driver_caps_show(struct atbm_module_show *show_buff,stru
 #endif
 #ifdef SDIO_BUS
 	atbm_module_show_put(show_buff,"HIF_TYPE    [%s]\n","SDIO");
-#endif 
+#endif
 #ifdef SPI_BUS
 	atbm_module_show_put(show_buff,"HIF_TYPE    [%s]\n","SPI");
-#endif 
+#endif
 #ifdef ATBM_NOT_SUPPORT_40M_CHW
 	atbm_module_show_put(show_buff,"HW_CHW      [%s]\n","20M");
 #else
 	if(hw_priv->chip_version == ARES_6012B ||
-		(hw_priv->chip_version == ARES_LITE && 
+		(hw_priv->chip_version == ARES_LITE &&
 			(hw_priv->chip_flag == 1 || hw_priv->chip_flag == 2)))
 		atbm_module_show_put(show_buff,"HW_CHW      [%s]\n","20M");
 	else
@@ -3629,9 +3629,9 @@ static ssize_t atbm_module_show_system_info(struct kobject *kobj,
 {
 	struct atbm_module_show sys_show;
 	struct atbm_common *hw_priv = NULL;
-	
+
 	atbm_show_init(&sys_show,buf);
-	
+
 	atbm_module_muxlock();
 	if(atbm_hw_priv_dereference() == NULL){
 		atbm_module_show_put(&sys_show,"system info not exit,please plug chip\n");
@@ -3651,7 +3651,7 @@ static ssize_t atbm_module_show_backup_info(struct kobject *kobj,
 			     struct kobj_attribute *attr, char *buf)
 {
 	ssize_t size = 0;
-	
+
 	atbm_modulefs_lock();
 	atbm_module_muxlock();
 	if(backup_show && backup_show_size){
@@ -3673,7 +3673,7 @@ static ssize_t atbm_module_show_backup_info(struct kobject *kobj,
 	 struct atbm_module_show sys_show;
 	 struct atbm_common *hw_priv = NULL;
 	 struct efuse_headr efuse_data;
-	 
+
 	 atbm_show_init(&sys_show,buf);
 	 memset(&efuse_data,0, sizeof(struct efuse_headr));
 	 atbm_module_muxlock();
@@ -3682,7 +3682,7 @@ static ssize_t atbm_module_show_backup_info(struct kobject *kobj,
 		 goto exit;
 	 }
 	 hw_priv = atbm_hw_priv_dereference();
-	 if (wsm_get_efuse_data(hw_priv, &efuse_data, sizeof(efuse_data)) == 0){ 
+	 if (wsm_get_efuse_data(hw_priv, &efuse_data, sizeof(efuse_data)) == 0){
 		 if(memcmp(&hw_priv->efuse,&efuse_data,sizeof(efuse_data)) != 0){
 			 atbm_printk_err("atbm_module_show_get_efuse:efsue not same ! \n");
 		 }
@@ -3697,19 +3697,19 @@ static ssize_t atbm_module_show_backup_info(struct kobject *kobj,
 	 atbm_module_show_put(&sys_show,"mac[%02x:%02x:%02x:%02x:%02x:%02x]\n",
 							  efuse_data.mac[0],efuse_data.mac[1],efuse_data.mac[2]
 							 ,efuse_data.mac[3],efuse_data.mac[4],efuse_data.mac[5]);
-	 
+
  exit:
 	 atbm_module_muxunlock();
 	 return sys_show.show_count;
  }
- 
+
  static ssize_t atbm_module_show_first_efuse(struct kobject *kobj,
 			   struct kobj_attribute *attr, char *buf)
  {
 	  struct atbm_module_show sys_show;
 	  struct atbm_common *hw_priv = NULL;
 	  struct efuse_headr efuse_data;
-	  
+
 	  atbm_show_init(&sys_show,buf);
 	  memset(&efuse_data,0, sizeof(struct efuse_headr));
 	  atbm_module_muxlock();
@@ -3718,7 +3718,7 @@ static ssize_t atbm_module_show_backup_info(struct kobject *kobj,
 		  goto exit;
 	  }
 	  hw_priv = atbm_hw_priv_dereference();
-	  if (wsm_get_efuse_first_data(hw_priv, &efuse_data, sizeof(efuse_data)) != 0){ 
+	  if (wsm_get_efuse_first_data(hw_priv, &efuse_data, sizeof(efuse_data)) != 0){
 		  atbm_printk_err("get first efsue error! \n");
 		  goto exit;
 	  }
@@ -3729,22 +3729,22 @@ static ssize_t atbm_module_show_backup_info(struct kobject *kobj,
 	  atbm_module_show_put(&sys_show,"mac[%02x:%02x:%02x:%02x:%02x:%02x]\n",
 							   efuse_data.mac[0],efuse_data.mac[1],efuse_data.mac[2]
 							  ,efuse_data.mac[3],efuse_data.mac[4],efuse_data.mac[5]);
-	  
+
  exit:
 	  atbm_module_muxunlock();
 	  return sys_show.show_count;
  }
- 
- 
+
+
  static ssize_t atbm_module_show_remain_efuse(struct kobject *kobj,
 			 struct kobj_attribute *attr, char *buf)
  {
 	 struct atbm_module_show sys_show;
 	 struct atbm_common *hw_priv = NULL;
 	 int remainBit = 0;
- 
+
 	 atbm_show_init(&sys_show,buf);
-	 
+
 	 atbm_module_muxlock();
 	 if(atbm_hw_priv_dereference() == NULL){
 		atbm_module_show_put(&sys_show,"atbm_module_show_get_efuse:system info not exit,please plug chip\n");
@@ -3755,15 +3755,15 @@ static ssize_t atbm_module_show_backup_info(struct kobject *kobj,
 		 atbm_printk_err("get  efsue reamin space error! \n");
 		  goto exit;
 	 }
-	 
+
 	 atbm_module_show_put(&sys_show,"reamin Efuse[%d bit]\n" ,remainBit);
- 
- 
+
+
  exit:
 	 atbm_module_muxunlock();
 	 return sys_show.show_count;
  }
- 
+
  static ssize_t atbm_module_show_cfg_power(struct kobject *kobj,
 			 struct kobj_attribute *attr, char *buf)
  {
@@ -3782,11 +3782,11 @@ static ssize_t atbm_module_show_backup_info(struct kobject *kobj,
 							 "g_48M_n_52M",
 							 "g_54M_n_58_5M",
 							 "n_65M"};
- 
+
 	 memset(&configured_txpower,0, sizeof(configured_txpower));
- 
+
 	 atbm_show_init(&sys_show,buf);
-	 
+
 	 atbm_module_muxlock();
 	 if(atbm_hw_priv_dereference() == NULL){
 		atbm_module_show_put(&sys_show,"atbm_module_show_get_efuse:system info not exit,please plug chip\n");
@@ -3794,13 +3794,13 @@ static ssize_t atbm_module_show_backup_info(struct kobject *kobj,
 	 }
 	 hw_priv = atbm_hw_priv_dereference();
 #if defined CONFIG_TXPOWER_DCXO_VALUE || defined CONFIG_RATE_TXPOWER
-	 if ((ret = wsm_get_cfg_txpower(hw_priv, (void *)&configured_txpower, sizeof(configured_txpower))) == 0){	 
+	 if ((ret = wsm_get_cfg_txpower(hw_priv, (void *)&configured_txpower, sizeof(configured_txpower))) == 0){
 		 for(i=0;i<sizeof(configured_txpower.set_txpwr_delta_gain);i++)
 			 atbm_module_show_put(&sys_show,"delta_gain%d:%d\n",i+1,configured_txpower.set_txpwr_delta_gain[i]);
 		 for(i=0;i<sizeof(configured_txpower.set_b_txpwr_delta_gain);i++)
 			 atbm_module_show_put(&sys_show,"b_gain%d:%d\n",i+1,configured_txpower.set_b_txpwr_delta_gain[i]);
 		 for(i=0;i<sizeof(configured_txpower.set_gn_txpwr_delta_gain);i++)
-			 atbm_module_show_put(&sys_show,"gn_gain%d:%d\n",i+1,configured_txpower.set_gn_txpwr_delta_gain[i]);  
+			 atbm_module_show_put(&sys_show,"gn_gain%d:%d\n",i+1,configured_txpower.set_gn_txpwr_delta_gain[i]);
 		 atbm_module_show_put(&sys_show,"\n\n");
 		 for(i=0;i<sizeof(configured_txpower.different_rate_txpower_mode);i++)
 			 atbm_module_show_put(&sys_show,"%s:%d\n",ratebuf[i],configured_txpower.different_rate_txpower_mode[i]);
@@ -3813,7 +3813,7 @@ static ssize_t atbm_module_show_backup_info(struct kobject *kobj,
 #else
 	 atbm_printk_err("undefine CONFIG_RATE_TXPOWER or CONFIG_TXPOWER_DCXO_VALUE,so Not support\n");
 #endif
- 
+
  exit:
 	 atbm_module_muxunlock();
 	 return sys_show.show_count;
@@ -3836,7 +3836,7 @@ static struct atbm_printk_mask_table_s *atbm_printk_find_mask_table(const char *
 		atbm_printk_always("%s:[%d] pos_len err\n",__func__,pos_len);
 		return NULL;
 	}
-	
+
 	string_len = atbm_hash_string_len(pos,pos_len);
 	if(string_len == 0){
 		atbm_printk_always("%s:[%s] string_len err\n",__func__,pos);
@@ -3861,7 +3861,7 @@ static ssize_t atbm_module_printk_mask_show(struct kobject *kobj,
 	struct atbm_module_show sys_show;
 	u8 log_index = 0;
 	atbm_show_init(&sys_show,buf);
-	
+
 	atbm_module_show_put(&sys_show,LIGHT"Debug Level Help--->"NORMAL ENTER);
 	for(log_index = 0;log_index<ARRAY_SIZE(printk_mask_table);log_index++){
 		atbm_module_show_put(&sys_show,LIGHT"[%s]"NORMAL":%s\n",
@@ -3878,7 +3878,7 @@ static ssize_t atbm_module_printk_mask_show(struct kobject *kobj,
 }
 static bool atbm_str_usefull(const char *target)
 {
-	return (target[0] == ATBM_UNUSED ? false:true); 
+	return (target[0] == ATBM_UNUSED ? false:true);
 }
 static bool atbm_module_printk_mask_parase(const char *mask_str,ssize_t msg_len)
 {
@@ -3889,19 +3889,19 @@ static bool atbm_module_printk_mask_parase(const char *mask_str,ssize_t msg_len)
 	ssize_t usefull_len = msg_len;
 	ssize_t skip_len = 0;
 	const struct atbm_printk_mask_table_s *table = NULL;
-	
+
 	while(pos<pos_end){
-		
+
 		nospace_pos = atbm_skip_space(pos,pos_end-pos);
-		
+
 		if(nospace_pos == NULL){
 			atbm_printk_always("%s nospace_pos == NULL\n",__func__);
 			return pos == mask_str ? false: true;
 		}
-		
+
 		pos = nospace_pos;
 		usefull_len = pos_end-pos;
-		
+
 		if(pos[0] == ATBM_TAIL){
 			return pos == mask_str ? false: true;
 		}else if((pos[0] == ATBM_LINEF)||(pos[0] == ATBM_ENTER)){
@@ -3926,7 +3926,7 @@ static bool atbm_module_printk_mask_parase(const char *mask_str,ssize_t msg_len)
 			val_pos = memchr(pos, ATBM_EQUAL, pos_end - pos);
 			if((val_pos == NULL) || (pos == val_pos) || (pos_end == val_pos)){
 				atbm_printk_always("can not find = %s:%s\n",pos,val_pos);
-				return false;	
+				return false;
 			}
 
 			table = atbm_printk_find_mask_table(pos,val_pos - pos);
@@ -3935,7 +3935,7 @@ static bool atbm_module_printk_mask_parase(const char *mask_str,ssize_t msg_len)
 				atbm_printk_always("can not find hash tabel:%s\n",pos);
 				return false;
 			}
-			
+
 			val_pos++;
 			val_pos = atbm_skip_space(val_pos,usefull_len-(val_pos-pos));
 			if(val_pos == NULL){
@@ -4006,7 +4006,7 @@ static ssize_t atbm_module_printk_mask_store(struct kobject *kobj, struct kobj_a
 	ssize_t line_len = 0;
 	ssize_t msg_len;
 	ssize_t len_left = n;
-	
+
 	atbm_printk_always("[%s]:%s\n",__func__,buf);
 	do {
 		if(pos>=pos_end){
@@ -4035,12 +4035,12 @@ static ssize_t atbm_module_printk_mask_store(struct kobject *kobj, struct kobj_a
 			atbm_printk_always("%s:can not fine aline\n",__func__);
 		}
 		line_len =  p_enter ? p_enter - pos : len_left;
-		
+
 		if(line_len<=0){
 			atbm_printk_always("%s end 2\n",__func__);
 			break;
 		}
-		
+
 		p = pos;
 		/*
 		*pos pointer next line
@@ -4050,25 +4050,25 @@ static ssize_t atbm_module_printk_mask_store(struct kobject *kobj, struct kobj_a
 		}else {
 			pos  += (line_len+1);
 		}
-		
+
 		if(pos > pos_end){
 			atbm_printk_always("%s pos > pos_end\n",__func__);
 			break;
 		}
-		
+
 		len_left = pos_end-pos;
-		
+
 		msg_len = line_len;
 		/*
 		*skip header space
 		*/
 		nospace_pos = atbm_skip_space(p,msg_len);
-		
+
 		if(nospace_pos == NULL){
 			atbm_printk_always("%s nospace_pos == NULL\n",__func__);
 			continue;
 		}
-		
+
 		msg_len -= nospace_pos-p;
 
 		p = nospace_pos;
@@ -4132,7 +4132,7 @@ int atbm_module_attribute_init(void)
 {
 	int error;
 	struct kobject *parent = atbm_module_parent;
-	
+
 	atbm_module_kobj = kobject_create_and_add("atbmfs",parent);
 	if (!atbm_module_kobj){
 		return -EINVAL;

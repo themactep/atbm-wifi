@@ -45,5 +45,5 @@ typedef unsigned long long u64;
 #define u8 unsigned char
 #define atbm_kmalloc(__size,__a) malloc(__size)
 #define atbm_kfree(__p) free(__p)
-#define atbm_kzalloc(x,y)   calloc(1,x)  
+#define atbm_kzalloc(x,y)   calloc(1,x)
 #endif  //__ATBM_HAL__H__

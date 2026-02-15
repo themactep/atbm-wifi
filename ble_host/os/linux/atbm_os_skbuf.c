@@ -186,7 +186,7 @@ static int atbm_open(struct net_device *dev)
 	struct atbm_net_device *netdev = netdev_priv(dev);
 	struct atbmwifi_vif *priv = (struct atbmwifi_vif *)netdev_drv_priv(netdev);
 	atomic_set((atbm_atomic_t *)&priv->enabled,1);
-	
+
 	//atbm_get_connectconfig(sdata->hw_priv);
 	//atbm_set_tcp_port_filter(sdata->hw_priv);
 
@@ -205,14 +205,14 @@ static int atbm_stop(struct net_device *dev)
 {
 	struct atbm_net_device *netdev = netdev_priv(dev);
 	struct atbmwifi_vif *priv = (struct atbmwifi_vif *)netdev_drv_priv(netdev);
-	
+
 	atomic_set((atbm_atomic_t *)&priv->enabled,0);
 	netif_tx_stop_all_queues(dev);
 	//sta_info_flush(vif->hw_priv,vif);
 	//flush_work(&vif->work);
 
 	//synchronize_rcu();
-	//atbm_skb_queue_purge(&vif->skb_queue);	
+	//atbm_skb_queue_purge(&vif->skb_queue);
 	wifi_printk(WIFI_ALWAYS,"%s()\n", __func__);
 	return 0;
 }
@@ -300,7 +300,7 @@ static u16 atbm_netdev_select_queue(struct net_device *dev,
 }
 
 int atbm_netdev_ioctrl(struct net_device *dev, struct ifreq *rq, int cmd)
-{	
+{
 	int ret = 0;
 	return ret;
 }
@@ -412,7 +412,7 @@ static int atbm_wext_giwrange(struct net_device *dev,
 	range->max_qual.updated |= IW_QUAL_DBM;
 	range->max_qual.updated |= IW_QUAL_QUAL_UPDATED;
 	range->max_qual.updated |= IW_QUAL_LEVEL_UPDATED;
-		
+
 	range->avg_qual.level = range->max_qual.level / 2;
 	range->avg_qual.noise = range->max_qual.noise / 2;
 	range->avg_qual.updated = range->max_qual.updated;
@@ -836,7 +836,7 @@ static char *translate_scan_result(struct iw_request_info* info, struct atbmwifi
 
 	/* Add the ESSID */
 	iwe.cmd = SIOCGIWESSID;
-	iwe.u.data.flags = 1;	
+	iwe.u.data.flags = 1;
 	iwe.u.data.length = min((u16)pscan_rssult->ssidlen, (u16)32);
 	start = iwe_stream_add_point(info, start, stop, &iwe, pscan_rssult->ssid);
 
@@ -873,7 +873,7 @@ static char *translate_scan_result(struct iw_request_info* info, struct atbmwifi
 	iwe.u.qual.qual = sig + 110;
 	start = iwe_stream_add_event(info, start, stop, &iwe, IW_EV_QUAL_LEN);
 
-	return start;	
+	return start;
 }
 
 
@@ -1141,69 +1141,69 @@ static int trans_rate_enum(int rate_value)
 	int rate = -1;
 
 	switch(rate_value){
-		case 10: 
+		case 10:
 			rate = WSM_TRANSMIT_RATE_1;
 			break;
-		case 20: 
+		case 20:
 			rate = WSM_TRANSMIT_RATE_2;
 			break;
-		case 55: 
+		case 55:
 			rate = WSM_TRANSMIT_RATE_5;
 			break;
-		case 110: 
+		case 110:
 			rate = WSM_TRANSMIT_RATE_11;
 			break;
-		case 60: 
+		case 60:
 			rate = WSM_TRANSMIT_RATE_6;
 			break;
 		case 90:
 			rate = WSM_TRANSMIT_RATE_9;
 			break;
-		case 120: 
+		case 120:
 			rate = WSM_TRANSMIT_RATE_12;
 			break;
-		case 180: 
+		case 180:
 			rate = WSM_TRANSMIT_RATE_18;
 			break;
-		case 240: 
+		case 240:
 			rate = WSM_TRANSMIT_RATE_24;
 			break;
-		case 360: 
+		case 360:
 			rate = WSM_TRANSMIT_RATE_36;
 			break;
-		case 480: 
+		case 480:
 			rate = WSM_TRANSMIT_RATE_48;
 			break;
-		case 540: 
+		case 540:
 			rate = WSM_TRANSMIT_RATE_54;
 			break;
-		case 65: 
+		case 65:
 			rate = WSM_TRANSMIT_RATE_HT_6;
 			break;
-		case 130: 
+		case 130:
 			rate = WSM_TRANSMIT_RATE_HT_13;
 			break;
-		case 195: 
+		case 195:
 			rate = WSM_TRANSMIT_RATE_HT_19;
 			break;
-		case 260: 
+		case 260:
 			rate = WSM_TRANSMIT_RATE_HT_26;
 			break;
-		case 390: 
+		case 390:
 			rate = WSM_TRANSMIT_RATE_HT_39;
 			break;
-		case 520: 
+		case 520:
 			rate = WSM_TRANSMIT_RATE_HT_52;
 			break;
-		case 585: 
+		case 585:
 			rate = WSM_TRANSMIT_RATE_HT_58;
 			break;
-		case 650: 
+		case 650:
 			rate = WSM_TRANSMIT_RATE_HT_65;
 			break;
 		default:
 			wifi_printk(WIFI_DBG_ERROR, "invalid rate!\n");
-			return -ATBM_EINVAL;			
+			return -ATBM_EINVAL;
 	}
 
 	return rate;
@@ -1299,7 +1299,7 @@ static int get_connect_status(atbm_uint8 if_id, struct iw_point *data, char *ext
 		wifi_printk(WIFI_DBG_ERROR,"only if_id 0 support STA mode\n");
 		return -1;
 	}
-	
+
 	if (atbm_wifi_isconnected(if_id)){
 		strcpy(extra, "connected");
 	}
@@ -1584,7 +1584,7 @@ static int atbm_iwpriv_set_join_param(struct net_device *dev, struct iw_request_
 		strcpy(join_struct.ssid, extra+5);
 	}
 	else if (!atbm_memcmp(extra, "auth=", 5)){
-		
+
 		int auth = trans_auth(extra+5);
 		if (auth == -1){
 			wifi_printk(WIFI_DBG_ERROR,"invalid auth: %s\n", extra+5);
@@ -1669,7 +1669,7 @@ static int atbm_iwpriv_set_ap_param(struct net_device *dev, struct iw_request_in
 		strcpy(ap_struct.ssid, extra+5);
 	}
 	else if (!atbm_memcmp(extra, "auth=", 5)){
-		
+
 		int auth = trans_auth(extra+5);
 		if (auth == -1){
 			wifi_printk(WIFI_DBG_ERROR,"invalid auth: %s\n", extra+5);
@@ -1735,7 +1735,7 @@ static int atbm_iwpriv_ap(struct net_device *dev, struct iw_request_info *info,
 	}
 
 	wifi_printk(WIFI_ALWAYS,"start create ap\n"
-		"ssid[%s] key[%s] auth[%x] enc[%d] ch[%d] bcst[%d]\n", ap_struct.ssid, ap_struct.key, 
+		"ssid[%s] key[%s] auth[%x] enc[%d] ch[%d] bcst[%d]\n", ap_struct.ssid, ap_struct.key,
 		ap_struct.authMode, ap_struct.encryption, ap_struct.channel, ap_struct.bcst);
 
 	if (priv->iftype != ATBM_NL80211_IFTYPE_AP){
@@ -1977,7 +1977,7 @@ static int atbm_iwpriv_mfg(struct net_device *dev, struct iw_request_info *info,
 		return -1;
 	}
 
-	wifi_printk(WIFI_ALWAYS, "ch[%d] rate[%d] power[%d] isWriteEfuse[%d]\n", 
+	wifi_printk(WIFI_ALWAYS, "ch[%d] rate[%d] power[%d] isWriteEfuse[%d]\n",
 		mfg_struct.channel, mfg_struct.rate, mfg_struct.power, mfg_struct.isWriteEfuse);
 
 	if (priv->iftype != ATBM_NL80211_IFTYPE_STATION){
@@ -2072,7 +2072,7 @@ static int atbm_iwpriv_etf(struct net_device *dev, struct iw_request_info *info,
 		return -1;
 	}
 
-	wifi_printk(WIFI_ALWAYS, "ch[%d] rate[%d] 40M[%d] greenfield[%d]\n", 
+	wifi_printk(WIFI_ALWAYS, "ch[%d] rate[%d] 40M[%d] greenfield[%d]\n",
 		etf_struct.channel, etf_struct.rate, etf_struct.is40m, etf_struct.greenfield);
 
 	if (priv->iftype != ATBM_NL80211_IFTYPE_STATION){
@@ -2109,7 +2109,7 @@ static int atbm_iwpriv_etf(struct net_device *dev, struct iw_request_info *info,
 	}
 
 	return ret;
-}	
+}
 
 static int atbm_iwpriv_smartconfig(struct net_device *dev, struct iw_request_info *info,
 				struct iw_point *data, char *extra)
@@ -2137,7 +2137,7 @@ static int atbm_iwpriv_smartconfig(struct net_device *dev, struct iw_request_inf
 	if (priv->iftype != ATBM_NL80211_IFTYPE_STATION){
 		atbmwifi_start_sta(priv);
 	}
-	
+
 	if (!strcmp(param, "start")){
 		ret = atbm_smartconfig_start();
 		if (ret){
@@ -2156,7 +2156,7 @@ static int atbm_iwpriv_smartconfig(struct net_device *dev, struct iw_request_inf
 	}
 
 	return ret;
-}	
+}
 
 static int atbm_iwpriv_wps_wifi_mode(struct net_device *dev, struct iw_request_info *info,
 				struct iw_point *data, char *extra)
@@ -2215,7 +2215,7 @@ static int atbm_iwpriv_wpspin_start(struct net_device *dev, struct iw_request_in
 		pin[i] = extra[i];
 	}
 	pin[PIN_CODE_LENGTH] = '\0';
-	
+
 	wifi_printk(WIFI_ALWAYS, "wps wifi mode[%d]\n", AP_sta_mode);
 
 	if (atbm_wpspin_start(AP_sta_mode, pin)){
@@ -2431,7 +2431,7 @@ struct atbm_net_device * atbm_alloc_netdev(atbm_int32 size)
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,18,00))
 		nif = alloc_netdev_mqs(size + sizeof(*netdev),
 					wifi_name[index],NET_NAME_UNKNOWN, atbm_if_setup, 4, 1);
-#else	
+#else
 		nif = alloc_netdev_mqs(size + sizeof(*netdev),
 					wifi_name[index], atbm_if_setup, 4, 1);
 #endif
@@ -2449,7 +2449,7 @@ struct atbm_net_device * atbm_alloc_netdev(atbm_int32 size)
 #endif
 
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,26))
-	nif->needed_headroom =  EXTRA_TX_HEADROOM 
+	nif->needed_headroom =  EXTRA_TX_HEADROOM
 							+ 4*6 /* four MAC addresses */
 							+ 2 + 2 + 2 + 2 /* ctl, dur, seq, qos */
 							+ 6 /* mesh */
@@ -2460,7 +2460,7 @@ struct atbm_net_device * atbm_alloc_netdev(atbm_int32 size)
 #endif
 
 	ret = dev_alloc_name(nif, nif->name);
-	
+
 	if(ret<0){
 		goto fail;
 	}

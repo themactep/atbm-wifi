@@ -117,7 +117,7 @@ struct prov_link {
 #endif
 	u8_t  dhkey[32];         /* Calculated DHKey */
 	u8_t  expect;            /* Next expected PDU */
-	
+
 	bool  oob_pk_flag;		 /* Flag indicates whether using OOB public key */
 
 	u8_t  oob_method;
@@ -237,7 +237,7 @@ static void prov_clear_tx(void)
 static void reset_link(void)
 {
 	bool pub_key;
-	
+
 	atomic_clear_bit(link.flags, LINK_ACTIVE);
 
 	prov_clear_tx();
@@ -928,7 +928,7 @@ static void send_pub_key(void)
 	BT_DBG("Local Public Key: %s", bt_hex(&buf->om_data[1], 64));
 
 	prov_send(buf);
-	
+
 	atomic_clear_bit(link.flags, LOCAL_PUB_KEY);
 
 	link.expect = PROV_CONFIRM;
@@ -980,7 +980,7 @@ int bt_mesh_set_oob_pub_key(const u8_t pub_key_x[32], const u8_t pub_key_y[32],
 
 	//memcpy(&link.conf_inputs[81], pub_key_x, 32);
     //memcpy(&link.conf_inputs[81] + 32, pub_key_y, 32);
-	
+
     memcpy(bt_mesh_private_key, pri_key, 32);
 
     atomic_set_bit(link.flags, OOB_PUB_KEY);
@@ -1031,7 +1031,7 @@ static void prov_pub_key(const u8_t *data)
 
 			if (bt_pub_key_gen(&pub_key_cb)) {
 				BT_ERR("Failed to generate public key");
-			}					
+			}
 			return;
 		}
         send_pub_key();
@@ -1403,13 +1403,13 @@ static void prov_msg_recv(void)
 	link.rx.id = 0;
 
 	printf("prov recv type:0x%02x\n", type);
-	
+
     if (atomic_test_bit(link.flags, LINK_INVALID)) {
         BT_WARN("Unexpected msg 0x%02x on invalidated link", type);
         prov_send_fail_msg(PROV_ERR_UNEXP_PDU);
         return;
     }
-	
+
 	if (type >= ARRAY_SIZE(prov_handlers)) {
 		BT_ERR("Unknown provisioning PDU type 0x%02x", type);
 		prov_send_fail_msg(PROV_ERR_NVAL_PDU);
@@ -1507,7 +1507,7 @@ static void gen_prov_start(struct prov_rx *rx, struct os_mbuf *buf)
 		gen_prov_ack_send(rx->xact_id);
 		return;
 	}
-	
+
 	trailing_space = OS_MBUF_TRAILINGSPACE(link.rx.buf);
 
 	link.rx.buf->om_len = net_buf_simple_pull_be16(buf);
@@ -1756,10 +1756,10 @@ void bt_mesh_prov_deinit(void)
 		return;
 	}
 #if !(MYNEWT_VAL(BLE_MESH_PB_GATT))
-	os_mbuf_free_chain(rx_buf);	
+	os_mbuf_free_chain(rx_buf);
 #endif
 	k_delayed_work_free(&link.tx.retransmit);
-	
+
 	bt_mesh_prov_inited = false;
 }
 

@@ -97,7 +97,7 @@ static inline struct msi_desc *irq_desc_get_msi_desc(struct irq_desc *desc)
 }
 #endif /* (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,29)) */
 
-/* 
+/*
  * kstrto* was included in kernel 2.6.38.4 and causes conflicts with the
  * version included in compat-wireless. We use strict_strtol to check if
  * kstrto* is already available.

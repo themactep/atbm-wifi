@@ -388,7 +388,7 @@ int bt_mesh_prov_disable(bt_mesh_prov_bearer_t bearers);
  *  @return Zero on success or (negative) error code otherwise.
  */
 int bt_mesh_init(uint8_t own_addr_type, const struct bt_mesh_prov *prov,
-				const struct bt_mesh_comp *comp, 
+				const struct bt_mesh_comp *comp,
 				const struct bt_mesh_provisioner *provisioner);
 
 

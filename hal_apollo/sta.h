@@ -142,7 +142,7 @@ int atbm_testmode_event(struct wiphy *wiphy, const u32 msg_id,
 int atbm_set_na(struct ieee80211_hw *hw,
 			struct ieee80211_vif *vif);
 #endif /*IPV6_FILTERING*/
-#if defined(CONFIG_NL80211_TESTMODE) && defined(CONFIG_ATBM_TEST_TOOL) 
+#if defined(CONFIG_NL80211_TESTMODE) && defined(CONFIG_ATBM_TEST_TOOL)
 
 int atbm_altmtest_cmd(struct ieee80211_hw *hw, void *data, int len);
 #endif

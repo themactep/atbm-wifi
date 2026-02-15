@@ -61,7 +61,7 @@ struct ATBM_TEST_IE {
 	u8 oui[3]; //ATBM_OUI
 	u8 oui_type; //WIFI_ATBM_IE_OUI_TYPE
 	u8 test_type;
-	u8 resverd;	
+	u8 resverd;
 #ifdef ATBM_PRODUCT_TEST_USE_FEATURE_ID
 	u32 featureid;
 #endif
@@ -122,7 +122,7 @@ struct Tjroom_temperature_t{
 #define WIFI_P2P_IE_OUI_TYPE	    0x09
 #define WIFI_ATBM_IE_OUI_TYPE	    0x0a
 
-#define D11_WIFI_ELT_ID		0xDD 
+#define D11_WIFI_ELT_ID		0xDD
 
 #define wdev_to_ndev(w) ((w)->netdev)
 struct ieee80211_local;
@@ -254,7 +254,7 @@ struct ieee802_atbm_11_elems {
 	u8 num_of_quiet_elem;	/* can be more the one */
 	u8 timeout_int_len;
 	u8 wfd_len;
-	u8 wps_ie_len;	
+	u8 wps_ie_len;
 	u8 extended_ch_switch_elem_len;
 	u8 secondary_ch_elem_len;
 	u8 atbm_special_len;
@@ -527,7 +527,7 @@ enum ieee80211_if_frame_type {
 	IEEE80211_IF_FRAME_TYPE_NONE,
 	IEEE80211_IF_FRAME_TYPE_PAE,
 	IEEE80211_IF_FRAME_TYPE_DHCP,
-	
+
 	IEEE80211_IF_FRAME_TYPE_MAX,
 };
 
@@ -617,7 +617,7 @@ struct ieee80211_work {
 	struct list_head list;
 
 	struct rcu_head rcu_head;
-	
+
 	struct ieee80211_sub_if_data *sdata;
 
 	enum work_done_result (*done)(struct ieee80211_work *wk,
@@ -732,7 +732,7 @@ enum ieee80211_sae_authen_state{
 #define SAE_PEAR_FINISHED (IEEE80211_PEAR_COMMIT | IEEE80211_PEAR_CONFIRM)
 #define SAE_ALL_FINISHED  (IEEE80211_LOCAL_COMMIT | IEEE80211_LOCAL_CONFIRM | IEEE80211_PEAR_COMMIT | IEEE80211_PEAR_CONFIRM)
 struct ieee80211_if_managed {
-#ifdef CONFIG_ATBM_MAC80211_NO_USE		
+#ifdef CONFIG_ATBM_MAC80211_NO_USE
 	struct atbm_timer_list timer;
 	struct atbm_timer_list conn_mon_timer;
 	struct atbm_timer_list bcn_mon_timer;
@@ -1382,7 +1382,7 @@ struct atbm_internal_scan_sta_node{
 	struct ieee80211_internal_scan_sta sta;
 	struct hlist_node hnode;
 };
-struct atbm_internal_scan_results_req{	
+struct atbm_internal_scan_results_req{
 	bool (__rcu *result_handle)(struct ieee80211_hw *hw,struct atbm_internal_scan_results_req *req,struct ieee80211_internal_scan_sta *sta);
 	bool flush;
 	size_t n_stas;
@@ -1432,7 +1432,7 @@ struct ieee80211_special_freq{
 	int freq;
 	struct hlist_node hnode;
 };
-struct ieee80211_internal_channel_auto_select_req{	
+struct ieee80211_internal_channel_auto_select_req{
 	struct ieee80211_internal_mac *macs;
 	u8 n_macs;
 	u8 *channels;
@@ -1482,7 +1482,7 @@ struct ieee80211_internal_sta_req{
 	bool (__rcu *sta_handle)(struct ieee80211_internal_sta_info *stainfo,void *priv);
 	u8 n_macs;
 	struct ieee80211_internal_mac *macs;
-	
+
 };
 
 struct ieee80211_internal_monitor_req{
@@ -1498,8 +1498,8 @@ struct ieee80211_internal_monitor{
 };
 
 struct ieee80211_internal_wsm_txpwr_dcxo{
-	int txpwr_L; 
-	int txpwr_M; 
+	int txpwr_L;
+	int txpwr_M;
 	int txpwr_H;
 	int dcxo;
 };
@@ -1754,7 +1754,7 @@ struct ieee80211_local {
 #else
 	struct crypto_skcipher *wep_tx_tfm;
 	struct crypto_skcipher *wep_rx_tfm;
-	
+
 #endif
 	u32 wep_iv;
 #endif
@@ -1803,7 +1803,7 @@ struct ieee80211_local {
 	u32 internal_scan_n_results;
 	u8 __rcu *internal_scan_ie;
 	u32 internal_scan_ie_len;
-#ifdef CONFIG_ATBM_SUPPORT_SCHED_SCAN	
+#ifdef CONFIG_ATBM_SUPPORT_SCHED_SCAN
 	bool sched_scanning;
 	struct ieee80211_sched_scan_ies sched_scan_ies;
 	struct atbm_work_struct sched_scan_stopped_work;
@@ -1928,7 +1928,7 @@ struct ieee80211_local {
 	unsigned long hw_roc_start_time;
 	unsigned long hw_roc_extend_time;
 	u64 roc_cookie_counter;
-	struct ieee80211_channel *hw_roc_channel;	
+	struct ieee80211_channel *hw_roc_channel;
 	u64 roc_cookie;
 #endif
 	/* Temporary remain-on-channel for off-channel operations */
@@ -1942,7 +1942,7 @@ struct ieee80211_local {
 	struct ieee80211_sub_if_data *listen_sdata;
 	bool listen_started;
 #endif
-	
+
 #ifdef IEEE80211_SUPPORT_NAPI
 	/* dummy netdev for use w/ NAPI */
 	struct net_device napi_dev;
@@ -1956,7 +1956,7 @@ struct ieee80211_local {
 	atomic_t connectting;
 	struct list_head channel_req;
 
-#ifdef ATBM_USE_FASTLINK	
+#ifdef ATBM_USE_FASTLINK
 	struct work_struct save_bss_work;
 	u8 write_all[512];
 	bool is_associated;
@@ -2097,7 +2097,7 @@ static inline int ieee80211_bssid_match(const u8 *raddr, const u8 *addr)
 #else
 #define LOCAL_IS_CONNECTTING(local)		(atomic_read(&(local)->connectting))
 #endif
-#define SDATA_IS_CONNECTTING(sdata)		(atomic_read(&(sdata)->connectting))	
+#define SDATA_IS_CONNECTTING(sdata)		(atomic_read(&(sdata)->connectting))
 #ifdef CONFIG_ATBM_MAC80211_NO_USE
 void ieee80211_notify_channel_change(struct ieee80211_local *local,
 				     struct ieee80211_sub_if_data *sdata);
@@ -2258,7 +2258,7 @@ static inline u8 *ieee8011_get_channel_list(struct ieee80211_hw *hw,size_t *n_ch
 	if(n_channels == NULL){
 		goto exit;
 	}
-	
+
 	/* all channels */
 	for (band = 0; band < IEEE80211_NUM_BANDS; band++) {
 		int j;
@@ -2268,20 +2268,20 @@ static inline u8 *ieee8011_get_channel_list(struct ieee80211_hw *hw,size_t *n_ch
 			i++;
 		}
 	}
-	
+
 	*n_channels = i;
-	
+
 	if(i == 0){
 		goto exit;
 	}
-	
+
 	channels = atbm_kzalloc(i, GFP_ATOMIC);
 
 	if(channels == NULL){
 		*n_channels = 0;
 		goto exit;
 	}
-	
+
 	i = 0;
 	/* all channels */
 	for (band = 0; band < IEEE80211_NUM_BANDS; band++) {

@@ -12,7 +12,7 @@
  * published by the Free Software Foundation.
  */
  #define DEBUG 1
-//#undef CONFIG_ATBM_APOLLO_USE_GPIO_IRQ 
+//#undef CONFIG_ATBM_APOLLO_USE_GPIO_IRQ
 #include <linux/version.h>
 #include <linux/module.h>
 #include <linux/gpio.h>
@@ -157,7 +157,7 @@ struct sbus_priv {
 	int 			oob_irq_enabled;
 	void			*irq_priv;
 	void            *irq_priv_suspend;
-	
+
 	struct sbus_wtd         * wtd;
 };
 struct sbus_wtd {
@@ -191,7 +191,7 @@ static struct sbus_wtd         g_wtd={
 static struct task_struct *atbm_kthread_get(struct atbm_sdio_thread *thread)
 {
 	struct task_struct *bh = NULL;
-	
+
 	rcu_read_lock();
 	bh = rcu_dereference(thread->thread);
 	if(bh){
@@ -207,19 +207,19 @@ static void atbm_kthread_put(struct task_struct *bh)
 	put_task_struct(bh);
 }
 static int atbm_kthread_try_suspend(struct atbm_sdio_thread *thread)
-{	
+{
 	struct task_struct *bh = atbm_kthread_get(thread);
-	
+
 	if(bh == NULL)
 		goto exit;
-	
+
 	if(test_bit(THREAD_SHOULD_STOP,&thread->flags))
 		goto exit;
-	
+
 	if (!test_bit(THREAD_SUSPENED, &thread->flags)) {
-		
+
 		set_bit(THREAD_SHOULD_SUSPEND, &thread->flags);
-		
+
 		if(bh != current){
 			wake_up_process(bh);
 			/*
@@ -228,7 +228,7 @@ static int atbm_kthread_try_suspend(struct atbm_sdio_thread *thread)
 			wait_for_completion_timeout(&thread->suspended,msecs_to_jiffies(1000));
 		}
 	}
-exit:	
+exit:
 	if(bh)
 		atbm_kthread_put(bh);
 	return 0;
@@ -236,16 +236,16 @@ exit:
 static void atbm_kthread_resume(struct atbm_sdio_thread *thread)
 {
 	struct task_struct *bh = atbm_kthread_get(thread);
-	
+
 	if(bh == NULL){
 		return;
 	}
-	
+
 	clear_bit(THREAD_SHOULD_SUSPEND, &thread->flags);
-	if (test_and_clear_bit(THREAD_SUSPENED, &thread->flags)) {		
+	if (test_and_clear_bit(THREAD_SUSPENED, &thread->flags)) {
 		wake_up_process(bh);
 	}
-	
+
 	atbm_kthread_put(bh);
 }
 
@@ -268,7 +268,7 @@ static void atbm_kthread_into_suspend(struct atbm_sdio_thread *thread)
 	__set_current_state(TASK_INTERRUPTIBLE);
 	while (test_bit(THREAD_SHOULD_SUSPEND, &thread->flags)) {
 		if (!test_and_set_bit(THREAD_SUSPENED, &thread->flags))
-			complete(&thread->suspended);	
+			complete(&thread->suspended);
 		if(kthread_should_stop()){
 			set_bit(THREAD_SHOULD_STOP,&thread->flags);
 			clear_bit(THREAD_SHOULD_SUSPEND, &thread->flags);
@@ -288,7 +288,7 @@ static int atbm_sdio_wait_action(struct atbm_sdio_thread *thread)
 	unsigned long period = idle_period;
 wake:
 	period = idle_period;
-	set_current_state(TASK_INTERRUPTIBLE);	
+	set_current_state(TASK_INTERRUPTIBLE);
 	while (!atbm_kthread_should_stop(thread)) {
 		if (test_and_clear_bit(THREAD_WAKEUP,
 				       &thread->flags)) {
@@ -296,7 +296,7 @@ wake:
 			__set_current_state(TASK_RUNNING);
 			return 0;
 		}else if(test_bit(THREAD_SHOULD_SUSPEND,&thread->flags)){
-			
+
 			atbm_printk_pm("%s: go to suspend...\n",__func__);
 			atbm_kthread_into_suspend(thread);
 			atbm_printk_pm("%s: exit from suspend...\n",__func__);
@@ -313,7 +313,7 @@ wake:
 		if (!atbm_kthread_should_stop(thread))
 			period = schedule_timeout(idle_period);
 		set_current_state(TASK_INTERRUPTIBLE);
-		
+
 	}
 	__set_current_state(TASK_RUNNING);
 	return -1;
@@ -326,9 +326,9 @@ static int atbm_sdio_irq_period(struct atbm_sdio_thread *thread)
 	struct atbm_common *hw_priv = self->core;
 
 	printk_once("[atbm_log]:rx timeout\n");
-	
+
 	hw_priv->sbus_ops->lock(hw_priv->sbus_priv);
-	
+
 	if(atbm_bh_is_term(hw_priv)){
 		goto exit;
 	}
@@ -339,7 +339,7 @@ static int atbm_sdio_irq_period(struct atbm_sdio_thread *thread)
 		ret = 1;
 		goto exit;
 	}
-	atbm_bh_read_ctrl_reg_unlock(hw_priv, &ctrl_reg);	
+	atbm_bh_read_ctrl_reg_unlock(hw_priv, &ctrl_reg);
 	if(ctrl_reg & ATBM_HIFREG_CONT_NEXT_LEN_MASK){
 		__set_current_state(TASK_RUNNING);
 		atbm_printk_err("%s:Miss\n",__func__);
@@ -359,23 +359,23 @@ static int atbm_sdio_rx_pre_sched(struct atbm_sdio_thread *thread)
 	struct atbm_common *hw_priv = self->core;
 
 	hw_priv->sbus_ops->lock(hw_priv->sbus_priv);
-	
+
 	if(atbm_bh_is_term(hw_priv)){
 		goto exit;
 	}
-	
+
 	atbm_bh_read_ctrl_reg_unlock(hw_priv, &ctrl_reg);
-	
+
 	if(ctrl_reg & ATBM_HIFREG_CONT_NEXT_LEN_MASK){
 		__set_current_state(TASK_RUNNING);
 		atbm_sdio_miss_irq(hw_priv->sbus_priv);
 		ret = 1;
 		goto exit;
 	}
-	
+
 #ifdef CONFIG_ATBM_APOLLO_USE_GPIO_IRQ
 	atbm_oob_intr_set(hw_priv->sbus_priv,true);
-#endif		
+#endif
 	__atbm_irq_enable(hw_priv,1);
 exit:
 	hw_priv->sbus_ops->unlock(hw_priv->sbus_priv);
@@ -390,7 +390,7 @@ static int atbm_sdio_rx_thread(void *priv)
 {
 	struct sbus_priv *self = (struct sbus_priv *)priv;
 	struct sched_param param = { .sched_priority = 1 };
-	
+
 	atbm_printk_init("%s\n",__func__);
 	/*
 	*the policy of the sheduler is same with the sdio irq thread
@@ -400,7 +400,7 @@ static int atbm_sdio_rx_thread(void *priv)
 #else
         sched_setscheduler(current, SCHED_FIFO, &param);
 #endif
-	
+
 	while(!atbm_sdio_wait_action(&self->rx_thread)){
 		atbm_sdio_rx_bh(self->core);
 	};
@@ -430,11 +430,11 @@ static int atbm_sdio_tx_thread(void *priv)
 #endif
 #endif
 	while(!atbm_sdio_wait_action(&self->tx_thread)){
-#ifdef CONFIG_ATBM_SDIO_TX_HOLD	
+#ifdef CONFIG_ATBM_SDIO_TX_HOLD
 		atbm_sdio_lock(self);
 #endif
 		atbm_sdio_tx_bh(self->core);
-#ifdef CONFIG_ATBM_SDIO_TX_HOLD	
+#ifdef CONFIG_ATBM_SDIO_TX_HOLD
 		atbm_sdio_unlock(self);
 #endif
 	}
@@ -446,7 +446,7 @@ static int atbm_sdio_thread_init(struct atbm_sdio_thread *thread)
 {
 	void *bh;
 	struct sbus_priv *self = thread->self;
-	
+
 	bh = kthread_create(thread->thread_fn,self, thread->name);
 	if (IS_ERR(bh)){
 		thread->thread = NULL;
@@ -483,7 +483,7 @@ static int atbm_sdio_thread_deinit(struct atbm_sdio_thread *thread)
 static int atbm_sdio_thread_wakeup(struct atbm_sdio_thread *thread)
 {
 	void *bh;
-	
+
 	rcu_read_lock();
 	if(test_and_set_bit(THREAD_WAKEUP, &thread->flags) == 0){
 		bh = rcu_dereference(thread->thread);
@@ -495,10 +495,10 @@ static int atbm_sdio_thread_wakeup(struct atbm_sdio_thread *thread)
 }
 static int atbm_sdio_xmit_init(struct sbus_priv *self)
 {
-	struct atbm_common *hw_priv = self->core;	
+	struct atbm_common *hw_priv = self->core;
 	struct atbm_sdio_thread *thread = &self->tx_thread;
 	atbm_printk_init("atbmwifi INIT_WORK enable\n");
-	
+
 	thread->flags = 0;
 	thread->name  = ieee80211_alloc_name(hw_priv->hw,"sdio_tx");
 	thread->pre_sched = NULL;
@@ -512,13 +512,13 @@ static int atbm_sdio_xmit_init(struct sbus_priv *self)
 	if(atbm_sdio_thread_init(thread)){
 		return -1;
 	}
-	
+
 	hw_priv->xmit_buff = atbm_kzalloc(SDIO_TX_MAXLEN, GFP_KERNEL);
 
 	if(hw_priv->xmit_buff == NULL){
 		return -1;
 	}
-	
+
 	return 0;
 }
 
@@ -527,20 +527,20 @@ static int atbm_sdio_xmit_deinit(struct sbus_priv *self)
 	atbm_printk_exit("atbm_sdio_xmit_deinit\n");
 
 	atbm_sdio_thread_deinit(&self->tx_thread);
-	
+
 	if(self->core->xmit_buff){
 		atbm_kfree(self->core->xmit_buff);
 		self->core->xmit_buff = NULL;
-	}	
+	}
 	return 0;
 }
 static int atbm_sdio_rev_init(struct sbus_priv *self)
 {
 	struct atbm_common *hw_priv = self->core;
 	struct atbm_sdio_thread *thread = &self->rx_thread;
-	
+
 	atbm_printk_init("atbmwifi INIT_WORK enable\n");
-	
+
 	thread->flags = 0;
 	thread->name  = ieee80211_alloc_name(hw_priv->hw,"sdio_rx");
 	thread->period_handle = atbm_sdio_irq_period;
@@ -558,7 +558,7 @@ static int atbm_sdio_rev_init(struct sbus_priv *self)
 static int atbm_sdio_rev_deinit(struct sbus_priv *self)
 {
 	atbm_printk_exit("atbm_sdio_rev_deinit\n");
-	
+
 	return atbm_sdio_thread_deinit(&self->rx_thread);
 }
 
@@ -592,7 +592,7 @@ static int atbm_sdio_rev_giveback(struct sbus_priv *self,void *giveback)
 	struct wsm_rx *rx = (struct wsm_rx *)giveback;
 	u32 hw_xmited = rx->channel_type;
 	int hw_free;
-	
+
 	spin_lock_bh(&hw_priv->tx_com_lock);
 	BUG_ON((int)hw_xmited > (int)hw_priv->n_xmits);
 	if(hw_priv->n_xmits - hw_xmited <= hw_priv->wsm_caps.numInpChBufs){
@@ -626,10 +626,10 @@ static int atbm_sdio_read_sync(struct sbus_priv *self,
 				     void *dst, int count)
 {
 	int ret = -EINVAL;
-	
+
 	switch(count){
 	case sizeof(u16):
-		*(u16 *)dst = sdio_readw(self->func, addr, &ret);		
+		*(u16 *)dst = sdio_readw(self->func, addr, &ret);
 		break;
 	case sizeof(u32):
 		*(u32 *)dst = sdio_readl(self->func, addr, &ret);
@@ -638,7 +638,7 @@ static int atbm_sdio_read_sync(struct sbus_priv *self,
 		WARN_ON(count == 8);
 		ret = atbm_sdio_memcpy_fromio(self,addr,dst,count);
 	}
-	
+
 	return ret;
 }
 
@@ -737,9 +737,9 @@ irqreturn_t atbm_gpio_irq(int irq, void *dev_id)
 		if(!in_interrupt()){
 			sdio_hold = true;
 			atbm_sdio_lock(self);
-		}		
+		}
 		atbm_oob_intr_set(self, 0);
-		self->irq_handler(self->irq_priv);		
+		self->irq_handler(self->irq_priv);
 		if(sdio_hold == true){
 			WARN_ON(in_interrupt());
 			sdio_hold = false;
@@ -757,7 +757,7 @@ static int atbm_request_irq(struct sbus_priv *self)
 	int func_num;
 	u8 cccr;
 //	int bgf_irq;
-	
+
 	/* Hack to access Fuction-0 */
 	func_num = self->func->num;
 	self->func->num = 0;
@@ -794,7 +794,7 @@ err:
 	return ret;
 }
 #endif
-static void atbm_sdio_miss_irq(struct sbus_priv *self) 
+static void atbm_sdio_miss_irq(struct sbus_priv *self)
 {
 #ifdef CONFIG_ATBM_APOLLO_USE_GPIO_IRQ
 	atbm_oob_intr_set(self, 0);
@@ -881,7 +881,7 @@ static int atbm_detect_card(const struct atbm_platform_data *pdata)
 	struct device *dev;
 	static struct platform_device *sdio_platform_dev = NULL;
 	int status = 0;
-	
+
 	sdio_platform_dev = platform_device_alloc(WIFI_PLFDEVNAME,0);
 	if(sdio_platform_dev == NULL){
 		status = -ENOMEM;
@@ -892,9 +892,9 @@ static int atbm_detect_card(const struct atbm_platform_data *pdata)
 		status = -ENOMEM;
 		goto platform_dev_err;
 	}
-	
+
 	mmc = mmc_alloc_host(0, &sdio_platform_dev->dev);
-	
+
 	if (!mmc){
 		status = -ENOMEM;
 		goto exit;
@@ -1081,7 +1081,7 @@ int atbm_sdio_set_block_size(struct sbus_priv *self, u32 size)
 
 		  atbm_printk_err("%s: set block size err(%d)\n",__func__,retries);
 	 }while(retries <= 10);
-	 
+
  	return ret;
 }
 
@@ -1120,11 +1120,11 @@ static int atbm_wtd_process(void *arg)
 			goto __stop;
 		}
 		atomic_set(&g_wtd.wtd_run, 0);
-		
+
 	}
 __stop:
 	while(term){
-		
+
 		atbm_printk_exit("[atbm_wtd]:kthread_should_stop\n");
 		if(kthread_should_stop()){
 			break;
@@ -1206,8 +1206,8 @@ int atbm_reset_lmc_cpu(struct atbm_common *hw_priv)
 		}
 	}
 	val32 |= ATBM_HIFREG_CONFIG_CPU_RESET_BIT_2;
-	val32 |= ATBM_HIFREG_CONFIG_CPU_RESET_BIT;	
-	
+	val32 |= ATBM_HIFREG_CONFIG_CPU_RESET_BIT;
+
 	while (retry <= MAX_RETRY) {
 		ret = atbm_reg_write_32(hw_priv, ATBM_HIFREG_CONFIG_REG_ID,val32);
 		if(!ret){
@@ -1295,9 +1295,9 @@ static void atbm_sdio_release_err_cmd(struct atbm_common	*hw_priv)
 		hw_priv->wsm_cmd.cmd = 0xFFFF;
 		hw_priv->wsm_cmd.ptr = NULL;
 		hw_priv->wsm_cmd.arg = NULL;
-		printk_once(KERN_ERR "%s:release wsm_cmd.lock\n",__func__);		
-		wake_up(&hw_priv->wsm_cmd_wq);		
-	}	
+		printk_once(KERN_ERR "%s:release wsm_cmd.lock\n",__func__);
+		wake_up(&hw_priv->wsm_cmd_wq);
+	}
 	spin_unlock_bh(&hw_priv->wsm_cmd.lock);
 }
 
@@ -1319,7 +1319,7 @@ static int __atbm_sdio_lmac_restart(struct sbus_priv *self)
 	hw_priv->sbus_ops->irq_unsubscribe(hw_priv->sbus_priv);
 	if(hw_priv->sbus_ops->sbus_xmit_func_deinit)
 		hw_priv->sbus_ops->sbus_xmit_func_deinit(hw_priv->sbus_priv);
-	if(hw_priv->sbus_ops->sbus_rev_func_deinit)	
+	if(hw_priv->sbus_ops->sbus_rev_func_deinit)
 		hw_priv->sbus_ops->sbus_rev_func_deinit(hw_priv->sbus_priv);
 	/*
 	*clear cmd
@@ -1332,13 +1332,13 @@ static int __atbm_sdio_lmac_restart(struct sbus_priv *self)
 	for (i = 0; i < 4; i++)
 		atbm_queue_clear(&hw_priv->tx_queue[i], ATBM_WIFI_ALL_IFS);
 	/*
-	*hold rtnl_lock,make sure that when down load fw,network layer cant not 
+	*hold rtnl_lock,make sure that when down load fw,network layer cant not
 	*send pkg and cmd
 	*/
 	rtnl_lock();
-	
+
 	ieee80211_pre_restart_hw_sync(hw_priv->hw);
-	
+
 	hw_priv->init_done = 0;
 
 	ret = atbm_reset_lmc_cpu(hw_priv);
@@ -1347,7 +1347,7 @@ static int __atbm_sdio_lmac_restart(struct sbus_priv *self)
 		atbm_printk_err("%s:reset cpu err\n",__func__);
 		goto exit;
 	}
-	
+
 	atbm_printk_init("%s: Flush Rx\n",__func__);
 	atbm_rx_bh_flush(hw_priv);
 	atbm_printk_init("%s: Flush Running cmd\n",__func__);
@@ -1374,7 +1374,7 @@ static int __atbm_sdio_lmac_restart(struct sbus_priv *self)
 	hw_priv->hw_bufs_free_init = 0;
 	for (i = 0; i < ATBM_WIFI_MAX_VIFS; i++)
 		hw_priv->hw_bufs_used_vif[i] = 0;
-	
+
 	atomic_set(&hw_priv->atbm_pluged,1);
 
 	/*
@@ -1394,7 +1394,7 @@ static int __atbm_sdio_lmac_restart(struct sbus_priv *self)
 	*load firmware
 	*/
 	ret = atbm_reinit_firmware(hw_priv);
-	
+
 	if(ret){
 		atbm_printk_init("%s:reload fw err\n",__func__);
 		goto exit;
@@ -1432,7 +1432,7 @@ static int atbm_sdio_adjust_wsm(struct sbus_priv *self,void *wsm)
 	struct wsm_hdr_tx *wsm_tx = (struct wsm_hdr_tx *)wsm;
 	struct atbm_common *hw_priv = self->core;
 	size_t tx_len = wsm_tx->len;
-	
+
 	if(hw_priv->chip_version >= ARES_A){
 		u32 wsm_flag_u32 = 0;
 		u16 wsm_len_u16[2];
@@ -1491,7 +1491,7 @@ static struct sbus_ops atbm_sdio_sbus_ops = {
 #endif
 };
 extern void atbm_wifi_chip_probe_set(u16 idProduct);
-extern int atbm_wifi_chip_probe_get(void);	
+extern int atbm_wifi_chip_probe_get(void);
 
 /* Probe Function to be called by SDIO stack when device is discovered */
 static int atbm_sdio_probe(struct sdio_func *func,
@@ -1499,16 +1499,16 @@ static int atbm_sdio_probe(struct sdio_func *func,
 {
 	struct sbus_priv *self;
 	int status;
-	
+
 	atbm_dbg(ATBM_APOLLO_DBG_INIT, "Probe called\n");
 	atbm_printk_err("atbm_sdio_probe : idVendor[%x] idProduct[%x] \n",id->vendor,id->device);
 	if(atbm_wifi_chip_probe_get() != 0){
 		atbm_printk_err("current wifi is running! \n");
 		return -1;
 	}
-	
-//	
-	
+
+//
+
 	atomic_set(&g_wtd.wtd_probe, 0);
 	func->card->quirks|=MMC_QUIRK_LENIENT_FN0;
 	func->card->quirks |= MMC_QUIRK_BLKSZ_FOR_BYTE_MODE;
@@ -1652,7 +1652,7 @@ static int atbm_resume(struct device *dev)
 	struct sdio_func *func = dev_to_sdio_func(dev);
 	struct sbus_priv *self = sdio_get_drvdata(func);
 	int ret = 0;
-	
+
 	atbm_printk_err("sdio resume\n");
 	atbm_sdio_lock(self);
 	atbm_printk_err("%s:disable irq\n",__func__);
@@ -1667,7 +1667,7 @@ static int atbm_resume(struct device *dev)
 	atbm_printk_err("%s:enable irq\n",__func__);
 	__atbm_irq_enable(self->core,1);
 	atbm_sdio_unlock(self);
-	
+
 	if(hw_to_local(self->core->hw)->wowlan == false){
 		atbm_printk_err("sdio no wowlan resume\n");
 		ret = atbm_bh_resume(self->core);
@@ -1792,7 +1792,7 @@ static int __init apollo_sdio_module_init(void)
 		return -1;
 	}
 #endif
-#endif	
+#endif
 	ieee80211_atbm_mem_int();
 	ieee80211_atbm_skb_int();
 	atbm_wq_init();
@@ -1805,7 +1805,7 @@ static int __init apollo_sdio_module_init(void)
 	return atbm_sdio_init();
 }
 static void  apollo_sdio_module_exit(void)
-{	
+{
 	atomic_set(&g_wtd.wtd_term, 1);
 	atomic_set(&g_wtd.wtd_run, 0);
 	atbm_sdio_exit();

@@ -67,32 +67,32 @@ u8 *atbm_get_p2p_attr(u8 *p2p_ie, u32 p2p_ielen, u8 target_attr_id ,u8 *buf_attr
 
 	// 6 = 1(Element ID) + 1(Length) + 3 (OUI) + 1(OUI Type)
 	attr_ptr = p2p_ie + 6; //goto first attr
-	
+
 	while(attr_ptr - p2p_ie < p2p_ielen)
 	{
 		// 3 = 1(Attribute ID) + 2(Length)
 		u8 attr_id = *attr_ptr;
 		u16 attr_data_len = P2P_GET_LE16(attr_ptr + 1);
 		u16 attr_len = attr_data_len + 3;
-		
+
 		if( attr_id == target_attr_id )
 		{
 			target_attr_ptr = attr_ptr;
-		
+
 			if(buf_attr)
 				memcpy(buf_attr, attr_ptr, attr_len);
-			
+
 			if(len_attr)
 				*len_attr = attr_len;
-			
+
 			break;
 		}
 		else
 		{
 			attr_ptr += attr_len; //goto next
-		}		
-		
-	}	
+		}
+
+	}
 
 	return target_attr_ptr;
 }
@@ -105,7 +105,7 @@ u8 *atbm_get_p2p_attr_content(u8 *p2p_ie, u32 p2p_ielen, u8 target_attr_id ,u8 *
 
 	if(len_content)
 		*len_content = 0;
-	
+
 	attr_ptr = atbm_get_p2p_attr(p2p_ie, p2p_ielen, target_attr_id, NULL, &attr_len);
 
 	if(attr_ptr && attr_len)
@@ -137,11 +137,11 @@ u8 *atbm_get_p2p_ie(u8 *in_ie, int in_len, u8 *p2p_ie, u32 *p2p_ielen)
 		eid = in_ie[cnt];
 		if ((in_len < 0) || (cnt > MAX_IE_SZ)) {
 			return NULL;
-		}		
+		}
 		if( ( eid == _VENDOR_SPECIFIC_IE_ ) && ( memcmp( &in_ie[cnt+2], p2p_oui, 4) == 0 ) )
 		{
 			p2p_ie_ptr = in_ie + cnt;
-		
+
 			if ( p2p_ie != NULL )
 			{
 				memcpy( p2p_ie, &in_ie[ cnt ], in_ie[ cnt + 1 ] + 2 );
@@ -151,17 +151,17 @@ u8 *atbm_get_p2p_ie(u8 *in_ie, int in_len, u8 *p2p_ie, u32 *p2p_ielen)
 			{
 				*p2p_ielen = in_ie[ cnt + 1 ] + 2;
 			}
-			
+
 			return p2p_ie_ptr;
 
 			break;
 		}
 		else
 		{
-			cnt += in_ie[ cnt + 1 ] +2; //goto next	
-		}		
-		
-	}	
+			cnt += in_ie[ cnt + 1 ] +2; //goto next
+		}
+
+	}
 
 	return NULL;
 
@@ -177,12 +177,12 @@ u8 P2P_change_negotation_intent(u8 *pframe, u32 len ,int intent)
 
 	ies = pframe + _PUBLIC_ACTION_IE_OFFSET_;
 	ies_len = len - _PUBLIC_ACTION_IE_OFFSET_;
-					
+
 	p2p_ie = atbm_get_p2p_ie( ies, ies_len, NULL, &p2p_ielen );
 
 	if ( !p2p_ie ) 	{
 		return 0;
-	}	
+	}
 	else  	{
 		u8	attr_content = 0x00;
 		u8 *pAttr_content = 0x00;
@@ -193,7 +193,7 @@ u8 P2P_change_negotation_intent(u8 *pframe, u32 len ,int intent)
 			atbm_printk_p2p( "change intent %d %x %x\n", intent,*pAttr_content,pAttr_content[1] );
 			*pAttr_content = ((u8)intent<<1)|(pAttr_content[0] & 1);	//	include both intent and tie breaker values.
 			atbm_printk_p2p( "change2 intent %x %x\n", *pAttr_content,pAttr_content[1] );
-		}		
+		}
 	}
 	return 1;
 }
@@ -203,29 +203,29 @@ int TxRxPublicActionFrame(u8 *pframe ,u32 len,int bTx)
 {
 #ifdef P2P_ALWAYS_CLIENT
 	unsigned char		*frame_body;
-	unsigned char		 action;	
+	unsigned char		 action;
 
 	frame_body = (unsigned char *)(pframe + MAC_HDR_LEN_ADD3);
 	len -= MAC_HDR_LEN_ADD3;
-	
+
 
 	if(frame_body[0] != ATBM_WLAN_CATEGORY_PUBLIC)
 		return 0;
 	action = frame_body[ 1 ];
 
 	if (action == ACT_PUBLIC_P2P )	//	IEEE 802.11 P2P Public Action usage.
-	{		
+	{
 		if ( cpu_to_be32( *( ( u32* ) ( frame_body + 2 ) ) ) == P2POUI )
 		{
 			atbm_printk_p2p("TxRxPublicActionFrame %d\n",frame_body[ 6 ] );
-			if(( frame_body[ 6 ] == P2P_GO_NEGO_REQ)//OUI Subtype 
+			if(( frame_body[ 6 ] == P2P_GO_NEGO_REQ)//OUI Subtype
 				||( frame_body[ 6 ] == P2P_GO_NEGO_RESP))
 			{
 				if(bTx)
 					P2P_change_negotation_intent( frame_body, len ,1);
 				else
 					P2P_change_negotation_intent( frame_body, len ,14);
-					
+
 			}
 		}
 	}
@@ -283,7 +283,7 @@ static bool  ieee80211_parase_p2p_action_attrs(u8* ie_start,ssize_t ie_len,struc
 		return false;
 
 	return true;
-	
+
 }
 static void ieee80211_change_p2p_channel_list_to_special_channel(u8* channel_list,u8 channel_num,ssize_t ie_len)
 {
@@ -294,7 +294,7 @@ static void ieee80211_change_p2p_channel_list_to_special_channel(u8* channel_lis
 	// channel_list:operating_class(1)+number_channel(1)+channel_list(x)
 	pos = channel_list+6;
 	end = pos+ATBM_WPA_GET_LE16((const u8*)(&channel_list[1]))-3;
-	
+
 	if(ATBM_WPA_GET_LE16((const u8*)(&channel_list[1]))>=ie_len){
 //		printk(KERN_ERR "%s:len err(%d),ie_len(%d)\n",__func__,ATBM_WPA_GET_LE16((const u8*)(&channel_list[1])),ie_len);
 		return;
@@ -328,7 +328,7 @@ void atbm_parase_p2p_scan_resp(struct atbm_vif *priv,struct sk_buff *skb)
 	/*
 	*only parase beacon and probe_resp frame
 	*/
-	if(!(ieee80211_is_beacon(mgmt->frame_control) || 
+	if(!(ieee80211_is_beacon(mgmt->frame_control) ||
 		ieee80211_is_probe_resp(mgmt->frame_control))){
 		return;
 	}
@@ -371,7 +371,7 @@ static void atbm_parase_p2p_capability(u8 *capability_pos)
 		#define ATBM_P2P_GROUP_CAPAB_PERSISTENT_GROUP BIT(1)
 		#define ATBM_P2P_GROUP_CAPAB_PERSISTENT_RECONN BIT(5)
 		#define ATBM_P2P_DEV_CAPAB_INVITATION_PROCEDURE BIT(5)
-		
+
 		u8 *pos_group_cap = capability_pos+4; // 4 = 1(Attribute ID) + 2(Length) + 1(dev_cap)
 		u8 group_cap = *pos_group_cap;
 		u8 *pos_dev_cap = capability_pos+3;
@@ -399,7 +399,7 @@ bool atbm_parase_p2p_mgmt_frame(struct atbm_vif *priv,struct sk_buff *skb,bool t
 	u8 *ie = NULL;
 	int ie_len = 0;
 	struct atbm_p2p_message p2p_msg;
-	
+
 	if(priv->if_id == 0){
 		return false;
 	}
@@ -442,7 +442,7 @@ bool atbm_parase_p2p_action_frame(struct atbm_vif *priv,struct sk_buff *skb,bool
 	ssize_t p2p_data_len = 0;
 	ssize_t p2p_check_offs = 0;
 	struct atbm_p2p_message p2p_msg;
-	
+
 	if(priv->if_id == 0){
 		return false;
 	}
@@ -470,16 +470,16 @@ bool atbm_parase_p2p_action_frame(struct atbm_vif *priv,struct sk_buff *skb,bool
 	}
 	p2p_data_len -= p2p_check_offs;
 	p2p_data += p2p_check_offs;
-	
+
 	memset(&p2p_msg,0,sizeof(struct atbm_p2p_message));
-	
+
 
 	if(ieee80211_parase_p2p_action_attrs(&p2p_data[2],p2p_data_len-2,&p2p_msg)==false)
 		return false;
-	
+
 	p2p_msg.dialog_token = p2p_data[1];
 	atbm_printk_p2p("%s:operating_channel(%p),txrx(%d)\n",__func__,p2p_msg.operating_channel,(int)tx);
-	
+
 	if(p2p_data[0] == ATBM_P2P_INVITATION_REQ){
 		if(p2p_msg.operating_channel)
 			atomic_set(&hw_priv->operating_channel_combination,1);
@@ -495,7 +495,7 @@ bool atbm_parase_p2p_action_frame(struct atbm_vif *priv,struct sk_buff *skb,bool
 		atbm_printk_p2p("%s:status(%d),action(%d)\n",__func__,*(p2p_msg.status+3),p2p_data[0]);
 		break;
 	}
-#ifdef ATBM_CHANGE_LOCAL_REMOUT_ROLE	
+#ifdef ATBM_CHANGE_LOCAL_REMOUT_ROLE
 	/*
 	*change go intend and tie breaker
 	*/
@@ -518,19 +518,19 @@ bool atbm_parase_p2p_action_frame(struct atbm_vif *priv,struct sk_buff *skb,bool
 	}
 #endif
 	while(p2p_msg.operating_channel){
-		
+
 		u8 operating_channel_num = 0;
 		u8 local_channel = 0;
 		bool combination = false;
-		
-		combination = atbm_check_channel_combination(hw_priv,priv);		
+
+		combination = atbm_check_channel_combination(hw_priv,priv);
 		atbm_printk_p2p("%s:chan_mode(%x),operating_channel_combination(%d)\n",__func__,(int)combination,
 			atomic_read(&hw_priv->operating_channel_combination));
 		// attr_id(1)+len(2)+contry_string(3)+operating_class(1)+channel_num(1)
 		operating_channel_num = p2p_msg.operating_channel[7];
 		local_channel = operating_channel_num>14?6:operating_channel_num;
 		if(combination == true)
-			local_channel = channel_hw_value(hw_priv->channel);		
+			local_channel = channel_hw_value(hw_priv->channel);
 		atbm_printk_p2p("%s:operating_channel_num(%d),local_channel(%d),action(%d),tx(%d)\n",__func__,
 			operating_channel_num,local_channel,p2p_data[0],(int)tx);
 		/*
@@ -551,7 +551,7 @@ bool atbm_parase_p2p_action_frame(struct atbm_vif *priv,struct sk_buff *skb,bool
 				atbm_printk_p2p("%s:change_channel_and_list,local_channel(%d)\n",__func__,local_channel);
 				goto change_channel_and_list;
 			}
-				
+
 		}
 		/*
 		*process the invitation req and invitation reps
@@ -573,8 +573,8 @@ bool atbm_parase_p2p_action_frame(struct atbm_vif *priv,struct sk_buff *skb,bool
 		else {
 			break;
 		}
-		
-change_channel_and_list:		
+
+change_channel_and_list:
 		p2p_msg.operating_channel[7] = local_channel;
 		if(p2p_msg.channel_list)
 		{
@@ -616,7 +616,7 @@ set_oper_channel:
 		if(ATBM_WPA_GET_LE16((const u8*)(p2p_msg.intended_addr+1)) != 6){
 			break;
 		}
-		
+
 		atomic_set(&hw_priv->go_bssid_set,1);
 		memcpy(hw_priv->go_bssid,p2p_msg.intended_addr+3,6);
 		break;

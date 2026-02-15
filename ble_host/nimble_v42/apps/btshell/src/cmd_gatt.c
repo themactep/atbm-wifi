@@ -593,7 +593,7 @@ cmd_gatt_exe_write(int argc, char **argv){
     int rc;
 	uint8_t flags;
 	uint16_t conn_handle;
-	
+
 
 	rc = parse_arg_all(argc - 1, argv + 1);
     if (rc != 0) {

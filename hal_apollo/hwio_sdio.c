@@ -27,10 +27,10 @@
 #include "wsm.h"
  /*config dcxo value*/
  char *dcxo_value="default";
- 
+
  module_param(dcxo_value,charp,0644);
  MODULE_PARM_DESC(dcxo_value,"Need to config dcxo reg");
- 
+
  /*config dpll value*/
  char *dpll_value="default";
  module_param(dpll_value,charp,0644);
@@ -275,7 +275,7 @@ int atbm_data_read_unlock(struct atbm_common *hw_priv, void *buf, u32 buf_len)
 {
 	int ret = -1, retry = 1;
 	int buf_id_rx = hw_priv->buf_id_rx;
-	
+
 	while (retry <= MAX_RETRY) {
 		ret = __atbm_data_read(hw_priv,
 				ATBM_HIFREG_IN_OUT_QUEUE_REG_ID, buf,
@@ -517,7 +517,7 @@ int atbm_indirect_read_unlock(struct atbm_common *hw_priv, u32 addr, void *buf,
 		goto out;
 	}
 	/* Write address */
-	
+
 	while(retry<=3){
 		ret = __atbm_reg_write_32(hw_priv, ATBM_HIFREG_SRAM_BASE_ADDR_REG_ID,
 					    addr);
@@ -636,7 +636,7 @@ out:
 int atbm_fw_write(struct atbm_common *priv, u32 addr, const void *buf,
                         u32 buf_len)
 {
-	return atbm_ahb_write(priv,  addr, buf, buf_len);		
+	return atbm_ahb_write(priv,  addr, buf, buf_len);
 }
 
 
@@ -960,10 +960,10 @@ int atbm_before_load_firmware(struct atbm_common *hw_priv)
 	int major_revision;
 
 	u32 config_reg;
-	
+
 	FUNC_ENTER();
 
-	BUG_ON(!hw_priv);	
+	BUG_ON(!hw_priv);
 #if (ATBM_VOL_L == 10)
 	#pragma message ("1.0v")
 	atbm_printk_init("+++++++++++++++++1.0v+++++++++++++++++++\n");
@@ -984,7 +984,7 @@ int atbm_before_load_firmware(struct atbm_common *hw_priv)
 	ret = atbm_direct_write_reg_32(hw_priv,0xab0016c,val32);
 	if(ret<0)
 		atbm_printk_err("write 0xab0016c err\n");
-	
+
 	ret = atbm_direct_read_reg_32(hw_priv,0xab0016c,&val32);
 	if(ret<0)
 		atbm_printk_err("read 0xab0016c err\n");
@@ -994,7 +994,7 @@ int atbm_before_load_firmware(struct atbm_common *hw_priv)
 	if(ret<0)
 		atbm_printk_err("write 0xab0016c err\n");
 
-		
+
 	/*reset mac*/
 	ret = atbm_direct_read_reg_32(hw_priv,0x16100074,&val32);
 	if(ret<0)
@@ -1003,7 +1003,7 @@ int atbm_before_load_firmware(struct atbm_common *hw_priv)
 	ret = atbm_direct_write_reg_32(hw_priv,0x16100074,val32);
 	if(ret<0)
 		atbm_printk_err("write 0xab0016c err\n");
-	
+
 	ret = atbm_direct_read_reg_32(hw_priv,0x16100074,&val32);
 	atbm_printk_init("reset val(%x)\n",val32);
 	val32 &= ~BIT(1);
@@ -1078,7 +1078,7 @@ retry:
 			if (ret<0){
 				atbm_dbg(ATBM_APOLLO_DBG_MSG, "atbm_system_done error.\n");
 			}
-#else		
+#else
 			atbm_printk_err("%s:do not set config to smu\n",__func__);
 #endif
 
@@ -1129,8 +1129,8 @@ retry:
 		goto out;
 	}
 
-		
-	
+
+
 	atbm_reg_read_32(hw_priv, ATBM_HIFREG_CONFIG_REG_ID, &config_reg);
 	if(config_reg & ATBM_HIFREG_PS_SYNC_SDIO_FLAG)
 	{
@@ -1198,14 +1198,14 @@ out:
 		ret = atbm_direct_read_reg_32(hw_priv,0x16100074,&reset_reg);
 		atbm_printk_err("%s:read [0x16100074]=[%x],ret(%d)\n",__func__,reset_reg,ret);
 		reset_reg |= BIT(0);
-		ret = atbm_direct_write_reg_32(hw_priv,0x16100074,reset_reg);		
+		ret = atbm_direct_write_reg_32(hw_priv,0x16100074,reset_reg);
 		atbm_printk_err("%s:write [0x16100074]=[%x],ret(%d)\n",__func__,reset_reg,ret);
 		mdelay(100);
-		ret = atbm_direct_write_reg_32(hw_priv,0x16100074,reset_reg);		
+		ret = atbm_direct_write_reg_32(hw_priv,0x16100074,reset_reg);
 		atbm_printk_err("%s:write [0x16100074]=[%x],ret(%d)\n",__func__,reset_reg,ret);
 		mdelay(100);
 	}
-#endif 
+#endif
 #endif
 	return ret;
 }
@@ -1332,8 +1332,8 @@ int atbm_after_load_firmware(struct atbm_common *hw_priv)
 				"%s: set_mode: can't write config register.\n",
 				__func__);
 			goto unsubscribe;
-		}	
-		hw_priv->init_done = 1;	
+		}
+		hw_priv->init_done = 1;
 		/* Unless we read the CONFIG Register we are
 		 * not able to get an interrupt */
 		mdelay(10);

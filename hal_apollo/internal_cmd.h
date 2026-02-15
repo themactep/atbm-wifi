@@ -114,7 +114,7 @@ typedef struct{
 
 
 int atbm_internal_start_tx(struct ieee80211_sub_if_data *sdata,struct ieee80211_internal_etf_request  *tx_param);
-	
+
 int atbm_internal_stop_tx(struct ieee80211_sub_if_data *sdata);
 
 int atbm_internal_start_rx(struct ieee80211_sub_if_data *sdata,int channel,int is_40M);

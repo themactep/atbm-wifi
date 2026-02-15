@@ -48,9 +48,9 @@ int change_driver_to_ble(char *driverName)
 	    sprintf(gCmdStr, "rmmod %s", driverName);
 	}
     system(gCmdStr);
-	usleep(2000000);	
-	
-    sprintf(gCmdStr, "insmod %s", driverName);	
+	usleep(2000000);
+
+    sprintf(gCmdStr, "insmod %s", driverName);
     system(gCmdStr);
 	usleep(3000000);
 	usleep(3000000);
@@ -61,9 +61,9 @@ int change_driver_to_ble(char *driverName)
 		return -1;
 	}
 	fcntl(atbm_fp, F_SETOWN, getpid());
-	flags = fcntl(atbm_fp, F_GETFL); 
+	flags = fcntl(atbm_fp, F_GETFL);
 	fcntl(atbm_fp, F_SETFL, flags | FASYNC);
-	
+
 	return 0;
 }
 
@@ -105,7 +105,7 @@ int change_driver_to_wifi(char *driverName)
 		atbm_fp = -1;
 		usleep(1000000);
 	}
-	
+
 	str = strstr(driverName, ".ko");
 	if(str){
 		len = str - driverName;
@@ -122,7 +122,7 @@ int change_driver_to_wifi(char *driverName)
     system(gCmdStr);
 	usleep(2000000);
 
-    sprintf(gCmdStr, "insmod %s", driverName);	
+    sprintf(gCmdStr, "insmod %s", driverName);
     system(gCmdStr);
 	usleep(3000000);
 
@@ -153,7 +153,7 @@ void ioctl_msg_func(int sig_num)
 					break;
 			}
 		}
-		
+
 		if (status.list_empty)
 		{
 			break;
@@ -185,10 +185,10 @@ void connect_wifi_ap(u8 *ssid, u8 ssidLen, u8 *pwd, u8 pwdLen)
 
 "start CMD:%s \n",gCmdStr);
 	system(gCmdStr);
-	
-/*	
+
+/*
 	sprintf(gCmdStr, "ifconfig wlan0 down");
-    sret = system(gCmdStr);	
+    sret = system(gCmdStr);
 	usleep(100000);
 
     sprintf(gCmdStr, "killall wpa_supplicant");
@@ -198,11 +198,11 @@ void connect_wifi_ap(u8 *ssid, u8 ssidLen, u8 *pwd, u8 pwdLen)
 	sprintf(gCmdStr, "wpa_supplicant -D nl80211 -i wlan0 -c /usr/wpa_cfg/wpa_supplicant.conf -B");
 	sret = system(gCmdStr);
 	usleep(100000);
-	
+
     sprintf(gCmdStr, "ifconfig wlan0 up");
     sret = system(gCmdStr);
 	usleep(100000);
-	
+
     sprintf(gCmdStr, "wpa_cli -i wlan0 remove_network 0");
     sret = system(gCmdStr);
 	usleep(100000);
@@ -217,7 +217,7 @@ void connect_wifi_ap(u8 *ssid, u8 ssidLen, u8 *pwd, u8 pwdLen)
 
     sprintf(gCmdStr, "wpa_cli -i wlan0 set_network 0 ssid '\"%s\"'", ssidStr);
     sret = system(gCmdStr);
-	fprintf(stdout,"%s\n", gCmdStr);	
+	fprintf(stdout,"%s\n", gCmdStr);
 
 	if(pwdLen > 0){
 	    sprintf(gCmdStr, "wpa_cli -i wlan0 set_network 0 psk '\"%s\"'", pwdStr);
@@ -237,7 +237,7 @@ void connect_wifi_ap(u8 *ssid, u8 ssidLen, u8 *pwd, u8 pwdLen)
 
     sprintf(gCmdStr, "wpa_cli -i wlan0 set_network 0 scan_ssid 1", ssidStr);
     sret = system(gCmdStr);
-	
+
     sprintf(gCmdStr, "wpa_cli -i wlan0 select_network 0");
     sret = system(gCmdStr);
     */
@@ -255,7 +255,7 @@ int at_cmd_direct(int fp, char *arg)
 	memset(&at_cmd, 0, sizeof(at_cmd));
 	at_cmd.len = strlen(arg);
 	memcpy(at_cmd.cmd, arg, at_cmd.len);
-	return ioctl(fp, ATBM_AT_CMD_DIRECT, (unsigned int)(&at_cmd));	
+	return ioctl(fp, ATBM_AT_CMD_DIRECT, (unsigned int)(&at_cmd));
 }
 
 void *get_command_func(void *arg)
@@ -275,21 +275,21 @@ void *get_command_func(void *arg)
 
 	unlink(SER_SOCKET_PATH);
 
-	memset(&ser_un, 0, sizeof(ser_un));  
-    ser_un.sun_family = AF_UNIX;  
+	memset(&ser_un, 0, sizeof(ser_un));
+    ser_un.sun_family = AF_UNIX;
 	strcpy(ser_un.sun_path, SER_SOCKET_PATH);
     ret = bind(socket_fd, (struct sockaddr *)&ser_un, sizeof(struct sockaddr_un));
     if (ret < 0)
 	{
-		fprintf(stdout,"bind err\n"); 
+		fprintf(stdout,"bind err\n");
 	   return;
-    }  
+    }
 
 	ret = listen(socket_fd, 5);
-    if (ret < 0) 
-	{  
-        fprintf(stdout,"listen err\n"); 
-	   return;          
+    if (ret < 0)
+	{
+        fprintf(stdout,"listen err\n");
+	   return;
     }
 
 	while (1)
@@ -309,7 +309,7 @@ void *get_command_func(void *arg)
 				break;
 			}
 		}
-		
+
 		write(connect_fd, recall, strlen(recall)+1);
 		close(connect_fd);
 		fprintf(stdout,"cmd_line: %s\n", cmd_line);
@@ -338,7 +338,7 @@ int main(int argc, char* argv[])
 		fprintf(stdout,"Usage: %s <wifi driver name xxx.ko>\n", argv[0]);
 		return -1;
 	}
-	
+
 	atbm_fp = -1;
 	sem_init(&sem, 0, 1);
 	sem_init(&sem_status, 0, 1);

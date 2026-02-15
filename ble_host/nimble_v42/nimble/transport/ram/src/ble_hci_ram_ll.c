@@ -101,7 +101,7 @@ struct HCI_CMD_SHARE_PARAM{
 struct HCI_ACL_SHARE_PARAM{
 	u32 host_cnt;
 	u32 ll_cnt;
-	u8 hci_acl[HCI_ACL_SHARE_NUM][HCI_ACL_SHARE_SIZE];	
+	u8 hci_acl[HCI_ACL_SHARE_NUM][HCI_ACL_SHARE_SIZE];
 };
 
 struct HCI_CMD_SHARE_PARAM *ble_hci_cmd_h2l_share;
@@ -158,18 +158,18 @@ void ble_hci_cmd_check(void)
 	u8 *data;
 	int len;
 	u8 *cmdbuf;
-	
+
 	if((int)(ble_hci_cmd_h2l_share->host_cnt - ble_hci_cmd_h2l_share->ll_cnt) < 0){
 		printf("ble_hci_cmd_share cnt err\n");
 		assert(0);
 	}
-	
+
 	if((int)(ble_hci_cmd_h2l_share->host_cnt - ble_hci_cmd_h2l_share->ll_cnt) > HCI_CMD_SHARE_NUM){
 		printf("ble_hci_cmd_share cnt err\n");
-		assert(0);		
+		assert(0);
 	}
 
-	//printf("cmd h2l host_cnt:%d, ll_cnt:%d\n", 
+	//printf("cmd h2l host_cnt:%d, ll_cnt:%d\n",
 	//	ble_hci_cmd_h2l_share->host_cnt, ble_hci_cmd_h2l_share->ll_cnt);
 
 	if(ble_hci_cmd_h2l_share->host_cnt == ble_hci_cmd_h2l_share->ll_cnt){
@@ -190,7 +190,7 @@ void ble_hci_cmd_check(void)
 		assert(ble_hci_ram_rx_cmd_ll_cb != NULL);
 		ble_hci_ram_rx_cmd_ll_cb(cmdbuf, ble_hci_ram_rx_cmd_ll_arg);
 		ble_hci_cmd_h2l_share->ll_cnt ++;
-	}	
+	}
 }
 
 void ble_hci_acl_check(void)
@@ -198,23 +198,23 @@ void ble_hci_acl_check(void)
 	struct os_mbuf *om;
 	uint16_t pktlen;
 	u8 *data;
-	
+
 	if((int)(ble_hci_acl_h2l_share->host_cnt - ble_hci_acl_h2l_share->ll_cnt) < 0){
 		printf("ble_hci_cmd_share cnt err\n");
 		assert(0);
 	}
-	
+
 	if((int)(ble_hci_acl_h2l_share->host_cnt - ble_hci_acl_h2l_share->ll_cnt) > HCI_ACL_SHARE_NUM){
 		printf("ble_hci_cmd_share cnt err\n");
-		assert(0);		
+		assert(0);
 	}
-	
-	//printf("acl h2l ll_cnt:%d, host_cnt:%d\n", 
+
+	//printf("acl h2l ll_cnt:%d, host_cnt:%d\n",
 	//		ble_hci_acl_h2l_share->ll_cnt, ble_hci_acl_h2l_share->host_cnt);
 
 	if(ble_hci_acl_h2l_share->host_cnt == ble_hci_acl_h2l_share->ll_cnt){
 		return;
-	}	
+	}
 
 	while((int)(ble_hci_acl_h2l_share->host_cnt - ble_hci_acl_h2l_share->ll_cnt) > 0){
 		data = &ble_hci_acl_h2l_share->hci_acl[ble_hci_acl_h2l_share->ll_cnt%HCI_ACL_SHARE_NUM][0];
@@ -241,7 +241,7 @@ void ble_hci_acl_check(void)
 			om->om_len = pktlen;
 			OS_MBUF_PKTHDR(om)->omp_len = om->om_len;
 			assert(ble_hci_ram_rx_acl_ll_cb != NULL);
-			ble_hci_ram_rx_acl_ll_cb(om, ble_hci_ram_rx_acl_ll_arg);	
+			ble_hci_ram_rx_acl_ll_cb(om, ble_hci_ram_rx_acl_ll_arg);
 			ble_hci_acl_h2l_share->ll_cnt ++;
 		}else{
 			printf("ble acl buff has no mem\n");
@@ -256,13 +256,13 @@ void ble_hci_acl_check(void)
 void ble_hci_handle_isr(void)
 {
 	uint32_t val;
-	
+
 	val = HW_READ_REG(0x161000cc);
-	
+
 	if(val & BIT(15)){
 		ble_hci_cmd_check();
 		ble_hci_acl_check();
-		
+
 		val = HW_READ_REG(0x161000d0);
 		val |= BIT(15);
 		HW_WRITE_REG(0x161000d0, val);
@@ -278,14 +278,14 @@ static int ble_l2h_evt_cb(uint8_t *hci_ev, void *arg)
 	if((int)(ble_hci_cmd_l2h_share->ll_cnt - ble_hci_cmd_l2h_share->host_cnt) < 0){
 		printf("ble_hci_cmd_share cnt err\n");
 		assert(0);
-	}	
-	
-	if((int)(ble_hci_cmd_l2h_share->ll_cnt - ble_hci_cmd_l2h_share->host_cnt) > HCI_CMD_SHARE_NUM){
-		printf("ble_hci_cmd_share cnt err\n");
-		assert(0);		
 	}
 
-	//printf("evt l2h ll_cnt:%d,host_cnt:%d\n", 
+	if((int)(ble_hci_cmd_l2h_share->ll_cnt - ble_hci_cmd_l2h_share->host_cnt) > HCI_CMD_SHARE_NUM){
+		printf("ble_hci_cmd_share cnt err\n");
+		assert(0);
+	}
+
+	//printf("evt l2h ll_cnt:%d,host_cnt:%d\n",
 	//	ble_hci_cmd_l2h_share->ll_cnt, ble_hci_cmd_l2h_share->host_cnt);
 	if((int)(ble_hci_cmd_l2h_share->ll_cnt - ble_hci_cmd_l2h_share->host_cnt) == HCI_CMD_SHARE_NUM){
 		ble_hci_trans_buf_free(hci_ev);
@@ -326,11 +326,11 @@ static int ble_l2h_acl_cb(struct os_mbuf *om, void *arg)
 	if((int)(ble_hci_acl_l2h_share->ll_cnt - ble_hci_acl_l2h_share->host_cnt) < 0){
 		printf("ble_hci_cmd_share cnt err\n");
 		assert(0);
-	}	
-	
+	}
+
 	if((int)(ble_hci_acl_l2h_share->ll_cnt - ble_hci_acl_l2h_share->host_cnt) > HCI_ACL_SHARE_NUM){
 		printf("ble_hci_cmd_share cnt err\n");
-		assert(0);		
+		assert(0);
 	}
 
 	if((int)(ble_hci_acl_l2h_share->ll_cnt - ble_hci_acl_l2h_share->host_cnt) == HCI_ACL_SHARE_NUM){
@@ -355,7 +355,7 @@ static int ble_l2h_acl_cb(struct os_mbuf *om, void *arg)
 		}else{
 			memcpy(data, om->om_data, om->om_len);
 			data += om->om_len;
-			rem_tx_len -= om->om_len;			
+			rem_tx_len -= om->om_len;
 			om_next = SLIST_NEXT(om, om_next);
 			os_mbuf_free(om);
 			om = om_next;
@@ -364,7 +364,7 @@ static int ble_l2h_acl_cb(struct os_mbuf *om, void *arg)
 			}
 		}
 	}
-	
+
 #if 0
 	data = &ble_hci_acl_l2h_share->hci_acl[ble_hci_acl_l2h_share->ll_cnt%HCI_ACL_SHARE_NUM][0];
 	rem_tx_len = get_le16(&data[2]) + BLE_HCI_DATA_HDR_SZ;
@@ -383,8 +383,8 @@ static int ble_l2h_acl_cb(struct os_mbuf *om, void *arg)
 
 	ble_hci_acl_l2h_share->ll_cnt ++;
 	ble_notify_wifi_int();
-	OS_EXIT_CRITICAL(sr);		
-	
+	OS_EXIT_CRITICAL(sr);
+
     return 0;
 }
 
@@ -431,7 +431,7 @@ ble_hci_trans_ll_evt_tx(uint8_t *hci_ev)
 		assert(ble_hci_ram_rx_cmd_hs_cb != NULL);
 		rc = ble_hci_ram_rx_cmd_hs_cb(hci_ev, ble_hci_ram_rx_cmd_hs_arg);
 	}
-	
+
     return rc;
 }
 
@@ -445,7 +445,7 @@ int
 ble_hci_trans_ll_acl_tx(struct os_mbuf *om)
 {
     int rc;
-	
+
 	if(0){//(g_hci_uart_mode){
 //		rc = ble_hci_trans_ll_acl_tx_uart(om);
 	}else{
@@ -500,7 +500,7 @@ struct os_mbuf *ble_hci_trans_acl_buf_alloc(void)
 
     usrhdr_len = sizeof(struct ble_mbuf_hdr);
     m = os_mbuf_get_pkthdr(&ble_hci_acl_mbuf_pool, usrhdr_len);
-	
+
     return m;
 }
 
@@ -549,7 +549,7 @@ ble_hci_trans_reset(void)
 	//if(g_hci_uart_mode){
 	//	ble_hci_trans_reset_uart();
 	//}
-	
+
     return 0;
 }
 
@@ -614,6 +614,6 @@ ble_hci_ram_init(void)
 	ble_hci_trans_cfg_hs(ble_l2h_evt_cb, NULL, ble_l2h_acl_cb, NULL);
 
 	IRQ_RegisterHandler(DEV_INT_NUM_WIFI_CPU, ble_hci_handle_isr);
-	
-	
+
+
 }

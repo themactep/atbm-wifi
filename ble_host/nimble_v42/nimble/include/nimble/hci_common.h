@@ -110,7 +110,7 @@ struct ble_hci_ev {
 #define BLE_HCI_OCF_LE_SET_SCAN_RSP_DATA            (0x0009)
 #define BLE_HCI_OCF_LE_SET_ADV_ENABLE               (0x000A)
 #define BLE_HCI_OCF_LE_SET_SCAN_PARAMS              (0x000B)
-#define BLE_HCI_OCF_LE_SET_SCAN_ENABLE              (0x000C)            
+#define BLE_HCI_OCF_LE_SET_SCAN_ENABLE              (0x000C)
 #define BLE_HCI_OCF_LE_CREATE_CONN                  (0x000D)
 #define BLE_HCI_OCF_LE_CREATE_CONN_CANCEL           (0x000E)
 #define BLE_HCI_OCF_LE_RD_WHITE_LIST_SIZE           (0x000F)
@@ -336,7 +336,7 @@ struct ble_hci_le_read_enhanced_remote_tx_power_rp {
     uint8_t phy;
 	int8_t cur_trans_power;
 	int8_t max_trans_power;
-	
+
 }__packed;
 
 #define BLE_HCI_OCF_LE_READ_REMOTE_TX_POWER              (0x0077)
@@ -575,7 +575,7 @@ struct ble_hci_le_request_peer_sca_cp {
 /* Advertising interval */
 #define BLE_HCI_ADV_ITVL                    (625)           /* usecs */
 #if BLE_SIM_MODE_SET
-#define BLE_HCI_ADV_ITVL_MIN                (4) 
+#define BLE_HCI_ADV_ITVL_MIN                (4)
 #else
 #define BLE_HCI_ADV_ITVL_MIN                (32)            /* units */
 #endif
@@ -1004,7 +1004,7 @@ struct ble_hci_le_request_peer_sca_cp {
 #define HCI_LEN_LE_PATH_LOSS_ZONE                    5       /*!< Path loss reporting event length. */
 #define HCI_LEN_LE_BIG_INFO_ADV_REPORT               20      /*!< BIG Info advertising report length. */
 #endif
-//new added 
+//new added
 #define BLE_HCI_LE_SUBEV_PATH_LOSS_THRESHOLD  (0x20)
 #define BLE_HCI_LE_SUBEV_POWER_REPORTING_EVENT      (0x21)
 

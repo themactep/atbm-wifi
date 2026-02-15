@@ -35,7 +35,7 @@ struct sbus_ops {
 	int (*sbus_read_sync)(struct sbus_priv *self, unsigned int addr, void *dst, int len);/*read register,download firmware,len <=256*/
 	int (*sbus_write_sync)(struct sbus_priv *self, unsigned int addr, const void *src, int len);/*write register,download firmware,len <=256*/
 	void (*lock)(struct sbus_priv *self);
-	void (*unlock)(struct sbus_priv *self);	
+	void (*unlock)(struct sbus_priv *self);
 	int (*irq_subscribe)(struct sbus_priv *self, sbus_irq_handler handler,
 				void *priv);
 	int (*irq_unsubscribe)(struct sbus_priv *self);
@@ -49,7 +49,7 @@ struct sbus_ops {
 	int (*usb_reset)(struct sbus_priv *self);
 #endif
 	int (*lmac_restart)(struct sbus_priv *self);
-	int (*bootloader_debug_config)(struct sbus_priv *self,u16 enable);	
+	int (*bootloader_debug_config)(struct sbus_priv *self,u16 enable);
 	int (*lmac_start)(struct sbus_priv *self);
 	int (*ep0_cmd)(struct sbus_priv *self);
 	int (*sbus_reset_chip)(struct sbus_priv *self);
@@ -90,7 +90,7 @@ struct sbus_ops {
 	int (*sbus_reset_cpu)(struct sbus_priv *self);
 	int (*sbus_shutdown_wlan)(struct sbus_priv *self);
 	int (*sbus_reset_chip)(struct sbus_priv *self);
-	int (*bootloader_debug_config)(struct sbus_priv *self,u16 enable);	
+	int (*bootloader_debug_config)(struct sbus_priv *self,u16 enable);
 	int (*sbus_wsm_write)(struct sbus_priv *self);
 	int (*sbus_data_write)(struct sbus_priv *self);
 	int (*sbus_init)(struct sbus_priv *self);

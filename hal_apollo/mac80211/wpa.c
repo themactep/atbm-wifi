@@ -293,7 +293,7 @@ ieee80211_crypto_tkip_decrypt(struct ieee80211_rx_data *rx)
 					  hdr->addr1, hwaccel, rx->security_idx,
 					  &rx->tkip_iv32,
 					  &rx->tkip_iv16);
-#endif  
+#endif
 	if (res != TKIP_DECRYPT_OK)
 		return RX_DROP_UNUSABLE;
 

@@ -19,7 +19,7 @@ int atbm_StartTimer(OS_TIMER *pTimer, int Interval)
 	if(pTimer->bTimerStart){
 		del_timer(&(pTimer->TimerHander));
 	}
-	
+
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 14, 0))
 	timer_setup(&(pTimer->TimerHander), pTimer->pCallback, 0);
 #else
@@ -34,7 +34,7 @@ int atbm_StartTimer(OS_TIMER *pTimer, int Interval)
 }
 
 int atbm_CancelTimer(OS_TIMER *pTimer)
-{	
+{
 	if (!pTimer->bTimerStart){
 		return -1;
 	}
@@ -119,7 +119,7 @@ ATBM_BOOL atbm_TimeAfter(atbm_uint32 tickMs)
 {
 	atbm_uint32 current_time = atbm_GetOsTimeMs();
 
-	return ((signed int)((signed int)current_time - (signed int)tickMs < 0));	
+	return ((signed int)((signed int)current_time - (signed int)tickMs < 0));
 }
 
 atbm_void atbm_wifi_ticks_timer_init(atbm_void)

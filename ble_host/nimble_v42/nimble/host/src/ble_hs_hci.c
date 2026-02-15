@@ -272,7 +272,7 @@ ble_hs_hci_wait_for_ack(void)
     int rc;
 
 START:
-	
+
 #if MYNEWT_VAL(BLE_HS_PHONY_HCI_ACKS)
     if (ble_hs_hci_phony_ack_cb == NULL) {
         rc = BLE_HS_ETIMEOUT_HCI;
@@ -329,7 +329,7 @@ ble_hs_hci_cmd_tx(uint16_t opcode, void *cmd, uint8_t cmd_len,
     if (rc != 0) {
         goto done;
     }
-	
+
     rc = ble_hs_hci_wait_for_ack();
     if (rc != 0) {
         iot_printf("error:%s:%d ogf:%x, ocf:%x\n", __FUNCTION__, __LINE__, BLE_HCI_OGF(opcode), BLE_HCI_OCF(opcode));
@@ -652,7 +652,7 @@ ble_hs_hci_init(void)
 
     rc = ble_npl_mutex_init(&ble_hs_hci_mutex);
     BLE_HS_DBG_ASSERT_EVAL(rc == 0);
-	
+
 	rc = mem_init_mbuf_pool(ble_hs_hci_frag_data,
 	                        &ble_hs_hci_frag_mempool,
 	                        &ble_hs_hci_frag_mbuf_pool,
@@ -665,6 +665,6 @@ ble_hs_hci_init(void)
 void ble_hs_hci_free(void)
 {
 	ble_npl_sem_free(&ble_hs_hci_sem);
-	ble_npl_mutex_free(&ble_hs_hci_mutex);	
+	ble_npl_mutex_free(&ble_hs_hci_mutex);
 }
 

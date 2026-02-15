@@ -284,7 +284,7 @@ static bool adv_service_uuid_valid(struct os_mbuf *buf, u16_t *uuid)
         return false;
     }
 
-    if (*uuid == 0x1828 && //0x1828 for gatt proxy client 
+    if (*uuid == 0x1828 && //0x1828 for gatt proxy client
             !IS_ENABLED(BLE_MESH_GATT_PROXY_CLIENT)) {
         return false;
     }
@@ -408,7 +408,7 @@ static void bt_mesh_scan_cb(const bt_addr_le_t *addr, s8_t rssi,
 				bt_mesh_beacon_recv(buf);
 			}
 			break;
-        
+
 #if (MYNEWT_VAL(BLE_MESH_PROVISIONER) && MYNEWT_VAL(BLE_MESH_PB_GATT)) || \
 		MYNEWT_VAL(BLE_MESH_GATT_PROXY_CLIENT)
 		case BLE_HS_ADV_TYPE_FLAGS://1
@@ -418,7 +418,7 @@ static void bt_mesh_scan_cb(const bt_addr_le_t *addr, s8_t rssi,
 			}
 			break;
 		case BLE_HS_ADV_TYPE_COMP_UUIDS16://3
-			if (!adv_service_uuid_valid(buf, &uuid)) {//get uuid 
+			if (!adv_service_uuid_valid(buf, &uuid)) {//get uuid
 				BT_DBG("Adv Service UUID mismatch, ignore this adv pkt UUID:%x",uuid);
 				return;
 			}
@@ -541,7 +541,7 @@ int bt_mesh_scan_enable(void)
 	struct ble_gap_disc_params scan_param =
 		{ .passive = 1, .filter_duplicates = 0, .itvl =
 		  MESH_SCAN_INTERVAL, .window = MESH_SCAN_WINDOW };
-    
+
 	BT_DBG("");
 
 #if (MYNEWT_VAL(BLE_MESH_PROVISIONER) && MYNEWT_VAL(BLE_MESH_PB_GATT)) || \
@@ -562,11 +562,11 @@ int bt_mesh_scan_enable(void)
         BT_INFO("ble_gap_disc ERR RC=%x",rc);
 		return rc;
 	}
-#endif	
-    
-	
+#endif
+
+
 	return rc;
-	
+
 #endif
 }
 
@@ -584,5 +584,5 @@ int bt_mesh_scan_disable(void)
 	clear_scan_bit();
 #endif
 	return ble_gap_disc_cancel();
-	
+
 }

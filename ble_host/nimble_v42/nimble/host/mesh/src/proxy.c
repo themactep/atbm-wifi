@@ -1397,14 +1397,14 @@ int bt_mesh_proxy_init(void)
 int bt_mesh_proxy_deinit(void)
 {
 	int i;
-	
+
 	for (i = 0; i < MYNEWT_VAL(BLE_MAX_CONNECTIONS); ++i) {
 #if (MYNEWT_VAL(BLE_MESH_GATT_PROXY))
 		k_work_free(&clients[i].send_beacons);
 #endif
 		os_mbuf_free_chain(clients[i].buf);
 	}
-	
+
 	return 0;
 }
 

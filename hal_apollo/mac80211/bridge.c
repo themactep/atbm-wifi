@@ -28,8 +28,8 @@
 #include <asm/unaligned.h>
 #include <linux/udp.h>
 #include <net/ip.h>
-	 
-	 
+
+
 #include "ieee80211_i.h"
 
 #include <linux/if_arp.h>
@@ -146,7 +146,7 @@ int br0_attach(struct ieee80211_sub_if_data *sdata)
     struct NETWIFI_S_BRIDGE *br0_priv;
     int Num=0;
 
-    br0_priv= atbm_kmalloc(sizeof(struct NETWIFI_S_BRIDGE),GFP_KERNEL); 
+    br0_priv= atbm_kmalloc(sizeof(struct NETWIFI_S_BRIDGE),GFP_KERNEL);
     if (br0_priv == NULL)
     {
     	atbm_printk_err("ERROR br0_attach\n\n");
@@ -241,9 +241,9 @@ br0_add(struct ieee80211_sub_if_data *sdata, const u8* mac,const u8 *ipaddr)
     struct NET_BR0_INFO_ENTRY *br_info, *new;
     int hash;
 
-	
+
 	br0_info_expire(sdata);
-    new= atbm_kmalloc(sizeof(struct NET_BR0_INFO_ENTRY),GFP_KERNEL); 
+    new= atbm_kmalloc(sizeof(struct NET_BR0_INFO_ENTRY),GFP_KERNEL);
     if (new == NULL)
     {
     	atbm_printk_err("ERROR br0_add\n\n");
@@ -305,7 +305,7 @@ br0_free_all_locked(struct NETWIFI_S_BRIDGE *br0_priv)
         _br0_free(br0_priv, br_info);
     }
 	br0_priv->fast_entry = NULL;
-	
+
 	memset(br0_priv->fast_ip,0,4);
 	memset(br0_priv->fast_mac,0,6);
     BR0_UNLOCK(br0_priv);
@@ -385,7 +385,7 @@ void br0_info_expire(struct ieee80211_sub_if_data *sdata)
 									mac[0],mac[1],mac[2],mac[3],mac[4],mac[5],ipaddr[0],ipaddr[1],ipaddr[2],ipaddr[3]);
 			_br0_free(br0_priv, br_info);
 			if(br_info == br0_priv->fast_entry){
-				br0_priv->fast_entry = NULL;				
+				br0_priv->fast_entry = NULL;
 				memset(br0_priv->fast_ip,0,4);
 				memset(br0_priv->fast_mac,0,6);
 			}
@@ -399,8 +399,8 @@ static bool ieee80211_need_brigde(struct ieee80211_local *local)
 {
 	struct ieee80211_sub_if_data *temp_sdata = NULL;
 	u32  n_brports = 0;
-	
-	rcu_read_lock();	
+
+	rcu_read_lock();
 	list_for_each_entry_rcu(temp_sdata, &local->interfaces, list){
 		void *br_port = NULL;
 		struct net_device *dev = temp_sdata->dev;
@@ -416,7 +416,7 @@ static bool ieee80211_need_brigde(struct ieee80211_local *local)
 			n_brports++;
 			break;
 		}
-	}	
+	}
 	rcu_read_unlock();
 
 	return n_brports>0?true:false;
@@ -437,14 +437,14 @@ static int ieee80211_brigde_network_find_and_replace(struct ieee80211_sub_if_dat
 		{
 			// replace the destination mac address
 			memcpy(skb->data, entry->u.info.macaddr, ETH_ALEN);
-			
+
 			br_printk("[%s]:atbmBr0:rx change node [%x:%x:%x:%x:%x:%x]->[%x:%x:%x:%x:%x:%x], ip %d.%d.%d.%d\n",sdata->name,
-				skb->data[0],skb->data[1],skb->data[2],skb->data[3],skb->data[4],skb->data[5],				
-											 entry->u.info.macaddr[0], 
-											 entry->u.info.macaddr[1], 
-											 entry->u.info.macaddr[2], 
-											 entry->u.info.macaddr[3], 
-											 entry->u.info.macaddr[4], 
+				skb->data[0],skb->data[1],skb->data[2],skb->data[3],skb->data[4],skb->data[5],
+											 entry->u.info.macaddr[0],
+											 entry->u.info.macaddr[1],
+											 entry->u.info.macaddr[2],
+											 entry->u.info.macaddr[3],
+											 entry->u.info.macaddr[4],
 											 entry->u.info.macaddr[5],
 											 ipaddr[0],
 											 ipaddr[1],
@@ -453,7 +453,7 @@ static int ieee80211_brigde_network_find_and_replace(struct ieee80211_sub_if_dat
 			entry->ageing_timer = jiffies;
 		}
 		else {
-			atbm_printk_err("<WARNING>__br0_has_expired\n");	
+			atbm_printk_err("<WARNING>__br0_has_expired\n");
 		}
 		ret = 1;
 	}
@@ -491,19 +491,19 @@ int __ieee80211_brigde_change_rxhdr(struct ieee80211_sub_if_data *sdata, struct 
 					u8 * ipaddr = (unsigned char *) &iph->daddr;
 					// forward unknow IP packet to upper TCP/IP
 					br_printk("atbm_br0: Replace DA with BR's MAC [%x:%x:%x:%x:%x:%x]->[%x:%x:%x:%x:%x:%x], ip %d.%d.%d.%d\n",
-						skb->data[0],skb->data[1],skb->data[2],skb->data[3],skb->data[4],skb->data[5],				
-											 priv->br_mac[0], 
-											 priv->br_mac[1], 
-											 priv->br_mac[2], 
-											 priv->br_mac[3], 
-											 priv->br_mac[4], 
+						skb->data[0],skb->data[1],skb->data[2],skb->data[3],skb->data[4],skb->data[5],
+											 priv->br_mac[0],
+											 priv->br_mac[1],
+											 priv->br_mac[2],
+											 priv->br_mac[3],
+											 priv->br_mac[4],
 											 priv->br_mac[5],
 											 ipaddr[0],
 											 ipaddr[1],
 											 ipaddr[2],
 											 ipaddr[3]);
 #endif
-					memcpy(skb->data, priv->br_mac, ETH_ALEN);			
+					memcpy(skb->data, priv->br_mac, ETH_ALEN);
 
 				}
 			}
@@ -516,7 +516,7 @@ int __ieee80211_brigde_change_rxhdr(struct ieee80211_sub_if_data *sdata, struct 
 			char *sip,*tip;
 			char *src_devaddr, *tgt_devaddr;
 			char * arpptr = (char *)(arp + 1);
-			
+
 			src_devaddr = arpptr;
 			arpptr += ETH_ALEN;
             sip = arpptr;
@@ -544,7 +544,7 @@ int __ieee80211_brigde_change_rxhdr(struct ieee80211_sub_if_data *sdata, struct 
 		default:
 			break;
 	}
-  //      atbm_printk_err("rxhdr in (%x),daddr[%pM],saddr[%pM]\n",ehdr->h_proto,skb->data,skb->data+6);	
+  //      atbm_printk_err("rxhdr in (%x),daddr[%pM],saddr[%pM]\n",ehdr->h_proto,skb->data,skb->data+6);
 	return 0;
 }
 
@@ -576,7 +576,7 @@ int ieee80211_brigde_hash_update(struct ieee80211_sub_if_data *sdata, struct sk_
 			//record source IP address and , source mac address into db
 			ieee80211_brigde_network_insert(sdata, skb->data+ETH_ALEN, (u8 *)&iph->saddr);
 
-			break;			
+			break;
 		}
 
 		case   __constant_htons(ETH_P_ARP):
@@ -585,8 +585,8 @@ int ieee80211_brigde_hash_update(struct ieee80211_sub_if_data *sdata, struct sk_
 			__be32 src_ipaddr, tgt_ipaddr;
 			char *src_devaddr,*tgt_devaddr;
 			char *arpptr = (char *)(arp + 1);
-			
-			
+
+
 			src_devaddr = arpptr;
 			arpptr += ETH_ALEN;
 			memcpy(&src_ipaddr, arpptr, sizeof(u32));
@@ -600,26 +600,26 @@ int ieee80211_brigde_hash_update(struct ieee80211_sub_if_data *sdata, struct sk_
 				atbm_printk_err("BR0: arp protocol unknown (%4x)!\n", htons(arp->ar_pro));
 				return -1;
 			}
-			//some muticast with source IP is all zero, 
+			//some muticast with source IP is all zero,
 			if (src_ipaddr == 0)
 				break;
 			//if(memcmp(src_devaddr,NETDEV_HWADDR(sdata),6)){
 				//record sourc
 				//frame_hexdump("\nbeforce replace ARP:", ((char *)(arp + 1))-2,22);
 				// change to ARP sender mac address to wlan STA address
-				
-				
+
+
                	ieee80211_brigde_network_insert(sdata, src_devaddr, (const u8 *)&src_ipaddr);
 
-	
 
-			   			
-				
+
+
+
 				atbm_printk_err("%s 2: src_devaddr[%pM]£¬tgt_devaddr[%pM] \n",__func__,src_devaddr,tgt_devaddr);
-				
-				
-				memcpy(src_devaddr, NETDEV_HWADDR(sdata), ETH_ALEN);	
-				
+
+
+				memcpy(src_devaddr, NETDEV_HWADDR(sdata), ETH_ALEN);
+
 				//frame_hexdump("\nafter replace ARP:", ((char *)(arp + 1))-2,22);
 			//}
 			//ieee80211_brigde_network_insert(sdata, skb->data+ETH_ALEN, &src_ipaddr);
@@ -630,7 +630,7 @@ int ieee80211_brigde_hash_update(struct ieee80211_sub_if_data *sdata, struct sk_
 		default:
 			break;
 	}
-	
+
 	return 0;
 }
 
@@ -643,7 +643,7 @@ int ieee80211_brigde_change_rxhdr(struct ieee80211_sub_if_data *sdata, struct sk
 	void *br_port = NULL;
     struct NETWIFI_S_BRIDGE *br0_priv = sdata->bridge_priv;
 	int need_look=1;
-	
+
 	if(br0_priv==0)
 		return -2;
 
@@ -663,18 +663,18 @@ int ieee80211_brigde_change_rxhdr(struct ieee80211_sub_if_data *sdata, struct sk
 
 	if( br_port ){
 
-		
+
 #ifdef CONFIG_MAC80211_BRIDGE_MULTI_PORT
 		if(ieee80211_need_brigde(sdata->local) == false){
 			return 0;
 		}
 #endif
-		if((sdata->vif.type == NL80211_IFTYPE_STATION) &&	
+		if((sdata->vif.type == NL80211_IFTYPE_STATION) &&
 			(!is_multicast_ether_addr(ehdr->h_dest)))
 		{
 
 				__vlan_hdr_del();
-				
+
 				/*
 				 *	This function look up the destination network address from
 				 *	the NAT2.5 database. Return value = -1 means that the
@@ -682,19 +682,19 @@ int ieee80211_brigde_change_rxhdr(struct ieee80211_sub_if_data *sdata, struct sk
 				 */
 				if (ehdr->h_proto == __constant_htons(ETH_P_IP)){
 					struct iphdr* iph = (struct iphdr *)(ehdr +1);
-					if(br0_priv->fast_entry && 
-						!memcmp(br0_priv->fast_ip, &iph->daddr, 4)){ 
+					if(br0_priv->fast_entry &&
+						!memcmp(br0_priv->fast_ip, &iph->daddr, 4)){
 						memcpy(skb->data, br0_priv->fast_mac, ETH_ALEN);
 						br0_priv->fast_entry->ageing_timer = jiffies;
-						need_look = 0;			
+						need_look = 0;
 					}
-				}	
+				}
 				if(need_look) {
 					ret = __ieee80211_brigde_change_rxhdr(sdata, skb);
 				}
-				
+
 				__vlan_hdr_add();
-				
+
 		}
 	}
 
@@ -702,7 +702,7 @@ int ieee80211_brigde_change_rxhdr(struct ieee80211_sub_if_data *sdata, struct sk
 	#if 1
 	if(memcmp(br0_priv->br_mac,ehdr->h_source,6)==0){
 		#if 0
-		{	
+		{
 			struct ieee80211_local *local = sdata->local;
 			struct ieee80211_sub_if_data *deliver_sdata;
 			struct ethhdr *ehdr_deliver = NULL;
@@ -717,7 +717,7 @@ int ieee80211_brigde_change_rxhdr(struct ieee80211_sub_if_data *sdata, struct sk
 					(deliver_sdata->vif.type != NL80211_IFTYPE_STATION)){
 					continue;
 				}
-			
+
 				/*
 				 * send multicast frames both to higher layers in
 				 * local net stack and back to the wireless medium
@@ -730,7 +730,7 @@ int ieee80211_brigde_change_rxhdr(struct ieee80211_sub_if_data *sdata, struct sk
 					atbm_printk_err("%s: failed to clone "
 					       "multicast frame\n", deliver_sdata->name);
 				break;
-			}	
+			}
 			if (deliver_skb) {
 				/* send to wireless media */
 				deliver_skb->protocol = htons(ETH_P_802_3);
@@ -826,23 +826,23 @@ void ieee80211_tx_set_dhcp_bcast_flag(struct ieee80211_sub_if_data *sdata, struc
 struct ieee80211_sub_if_data *ieee80211_brigde_sdata_check(struct ieee80211_local *local,struct sk_buff **pskb,
 																			   struct ieee80211_sub_if_data *source_sdata)
 {
-	struct net_device *dev = source_sdata->dev;	
+	struct net_device *dev = source_sdata->dev;
 	struct sk_buff *skb = *pskb;
 	struct ethhdr *ehdr = (struct ethhdr *)skb->data;
 	struct ieee80211_sub_if_data *sdata = source_sdata;
 	struct ieee80211_sub_if_data *sta_sdata = NULL;
 	struct ieee80211_sub_if_data *temp_sdata = NULL;
 	struct NETWIFI_S_BRIDGE *br0_priv = NULL;
-	
+
 	rcu_read_lock();
-	
+
 	if(memcmp(ehdr->h_dest,ehdr->h_source,ETH_ALEN)){
 		goto exit_rcu;
 	}
-	
+
 	if(rcu_dereference(dev->rx_handler_data) == NULL)
 		goto exit_rcu;
-	
+
 	list_for_each_entry_rcu(temp_sdata, &local->interfaces, list){
 		if(temp_sdata->vif.type != NL80211_IFTYPE_STATION){
 			continue;
@@ -855,10 +855,10 @@ struct ieee80211_sub_if_data *ieee80211_brigde_sdata_check(struct ieee80211_loca
 		sta_sdata = temp_sdata;
 		break;
 	}
-	
+
 	if(sta_sdata == NULL)
 		goto exit_rcu;
-	
+
 	if(atbm_skb_shared(skb) || atbm_skb_cloned(skb)){
 		skb = atbm_skb_copy(*pskb, GFP_ATOMIC);
 		if(skb == NULL){
@@ -877,13 +877,13 @@ struct ieee80211_sub_if_data *ieee80211_brigde_sdata_check(struct ieee80211_loca
 		struct iphdr* iph = (struct iphdr *)(ehdr +1);
 		u8* daip = (u8 *)(&iph->daddr);
 		u8* saip = (u8 *)(&iph->saddr);
-		struct NET_BR0_INFO_ENTRY * entry = NULL;		
+		struct NET_BR0_INFO_ENTRY * entry = NULL;
 		struct sta_info *sta = NULL;
 
 		if(!is_multicast_ether_addr(ehdr->h_dest)){
-			
+
 			entry = _br0_find_netinfo_ip(br0_priv,(const u8 *)daip);
-			
+
 			if(entry){
 				sta = rcu_dereference(local->sta_hash[STA_HASH(entry->u.info.macaddr)]);
 				while (sta) {
@@ -899,7 +899,7 @@ struct ieee80211_sub_if_data *ieee80211_brigde_sdata_check(struct ieee80211_loca
 					if (memcmp(sta->sta.addr, ehdr->h_dest, ETH_ALEN) == 0)
 						break;
 					sta = rcu_dereference(sta->hnext);
-				}	
+				}
 			}
 			if(sta == NULL){
 				sdata = sta_sdata;
@@ -908,9 +908,9 @@ struct ieee80211_sub_if_data *ieee80211_brigde_sdata_check(struct ieee80211_loca
 	        	sdata = sta->sdata;
 				memcpy(ehdr->h_dest,sta->sta.addr,6);
 	        }
-			
+
 		}else {
-			
+
 		}
 		atbm_printk_debug("%s:dmac[%pM],smac[%pM]\n",__func__,ehdr->h_dest,ehdr->h_source);
 		atbm_printk_debug("%s:dip[%d:%d:%d:%d],sip[%d:%d:%d:%d]\n",__func__,daip[0],daip[1],daip[2],daip[3],saip[0],saip[1],saip[2],saip[3]);
@@ -935,7 +935,7 @@ struct ieee80211_sub_if_data *ieee80211_brigde_sdata_check(struct ieee80211_loca
 				if (memcmp(sta->sta.addr, entry->u.info.macaddr, ETH_ALEN) == 0)
 					break;
 				sta = rcu_dereference(sta->hnext);
-			}	
+			}
 		}
 		/*
 		*da mac find sta
@@ -946,7 +946,7 @@ struct ieee80211_sub_if_data *ieee80211_brigde_sdata_check(struct ieee80211_loca
 				if (memcmp(sta->sta.addr, damac, ETH_ALEN) == 0)
 					break;
 				sta = rcu_dereference(sta->hnext);
-			}	
+			}
 		}
 		if(sta == NULL){
 			sdata = sta_sdata;
@@ -956,12 +956,12 @@ struct ieee80211_sub_if_data *ieee80211_brigde_sdata_check(struct ieee80211_loca
 			sdata = sta->sdata;
 			damac = sta->sta.addr;
 		}
-		
+
 		if(arp->ar_op == htons(ARPOP_REQUEST))
 			memcpy(ehdr->h_dest,broadcast,6);
 		else if(arp->ar_op == htons(ARPOP_REPLY))
 			memcpy(ehdr->h_dest,damac,6);
-		
+
 		atbm_printk_debug("arp:dip[%d:%d:%d:%d],mac[%pM]\n",daip[0],daip[1],daip[2],daip[3],damac);
 	}else if(ehdr->h_proto == __constant_htons(ETH_P_PAE)){
 		struct sta_info *sta = NULL;
@@ -1014,7 +1014,7 @@ int ieee80211_brigde_change_txhdr(struct ieee80211_sub_if_data *sdata, struct sk
 
 	if(br_port)
 	{
-		
+
 #ifdef CONFIG_MAC80211_BRIDGE_MULTI_PORT
 		if(ieee80211_need_brigde(sdata->local) == false){
 			return 0;
@@ -1030,7 +1030,7 @@ int ieee80211_brigde_change_txhdr(struct ieee80211_sub_if_data *sdata, struct sk
 														ehdr->h_source[4],
 														ehdr->h_source[5],ehdr->h_proto ,ETH_P_8021Q,ETH_P_IP
 														);
-			
+
 			printk("tx if %x:%x:%x:%x:%x:\n",!is_multicast_ether_addr(ehdr->h_dest),
 				memcmp(ehdr->h_source, br0_priv->br_mac, ETH_ALEN) ,
 				!memcmp(ehdr->h_source, br0_priv->fast_mac,ETH_ALEN) ,
@@ -1038,8 +1038,8 @@ int ieee80211_brigde_change_txhdr(struct ieee80211_sub_if_data *sdata, struct sk
 				br0_priv->fast_entry);
 
 		*/
-		
-		
+
+
 		if(atbm_skb_shared(skb) || atbm_skb_cloned(skb)){
 			skb = atbm_skb_copy(*pskb, GFP_ATOMIC);
 			if(skb == NULL){
@@ -1057,14 +1057,14 @@ int ieee80211_brigde_change_txhdr(struct ieee80211_sub_if_data *sdata, struct sk
 			(memcmp(ehdr->h_source, br0_priv->br_mac, ETH_ALEN) &&
 			memcmp(ehdr->h_source, br0_priv->fast_mac,ETH_ALEN)) ||
 			/*ehdr->h_proto != __constant_htons(ETH_P_IP) ||*/
-			!br0_priv->fast_entry) 
+			!br0_priv->fast_entry)
 #endif//0
-		{			
+		{
 			__vlan_hdr_del();
 
 			if (ehdr->h_proto == __constant_htons(ETH_P_IP)) {
 				struct iphdr* iph = (struct iphdr *)(ehdr +1);
-				if((memcmp(ehdr->h_source, br0_priv->fast_mac,ETH_ALEN)==0) 
+				if((memcmp(ehdr->h_source, br0_priv->fast_mac,ETH_ALEN)==0)
 					&&(memcmp(br0_priv->fast_ip, &iph->saddr, 4)==0)){
 					if (br0_priv->fast_entry) {
 						br0_priv->fast_entry->ageing_timer = jiffies;
@@ -1081,18 +1081,18 @@ int ieee80211_brigde_change_txhdr(struct ieee80211_sub_if_data *sdata, struct sk
 						memcpy(br0_priv->fast_mac, ehdr->h_source, ETH_ALEN);
 						memcpy(br0_priv->fast_ip, &iph->saddr, 4);
 						br0_priv->fast_entry->ageing_timer = jiffies;
-						atbm_printk_debug("ieee80211_brigde_change_txhdr: fast_mac [%x:%x:%x:%x:%x:%x], ip %d.%d.%d.%d\n",			
-																br0_priv->fast_mac[0], 
-																br0_priv->fast_mac[1], 
-																br0_priv->fast_mac[2], 
-																br0_priv->fast_mac[3], 
-																br0_priv->fast_mac[4], 
+						atbm_printk_debug("ieee80211_brigde_change_txhdr: fast_mac [%x:%x:%x:%x:%x:%x], ip %d.%d.%d.%d\n",
+																br0_priv->fast_mac[0],
+																br0_priv->fast_mac[1],
+																br0_priv->fast_mac[2],
+																br0_priv->fast_mac[3],
+																br0_priv->fast_mac[4],
 																br0_priv->fast_mac[5],
 																br0_priv->fast_ip[0],
 																br0_priv->fast_ip[1],
 																br0_priv->fast_ip[2],
 																br0_priv->fast_ip[3]);
-						need_insert = 0;							
+						need_insert = 0;
 					}
 				}
 			}
@@ -1110,7 +1110,7 @@ int ieee80211_brigde_change_txhdr(struct ieee80211_sub_if_data *sdata, struct sk
 			__vlan_hdr_add();
 
 		}
-		//if SA == br_mac && skb== IP  => copy SIP to br_ip 
+		//if SA == br_mac && skb== IP  => copy SIP to br_ip
 		if (!memcmp(ehdr->h_source, br0_priv->br_mac, ETH_ALEN) &&
 			(ehdr->h_proto == __constant_htons(ETH_P_IP)))
 			memcpy(br0_priv->br_ip, skb->data+WLAN_ETHHDR_LEN+12, 4);
@@ -1123,7 +1123,7 @@ int ieee80211_brigde_change_txhdr(struct ieee80211_sub_if_data *sdata, struct sk
 		//change source mac to station macaddr
 		if(memcmp(ehdr->h_source, sdata->dev->dev_addr, ETH_ALEN) != 0){
 			memcpy(ehdr->h_source, sdata->dev->dev_addr, ETH_ALEN);
-			
+
 			ieee80211_tx_set_dhcp_bcast_flag(sdata, skb);
 		}
 
@@ -1158,20 +1158,20 @@ void br0_netdev_open(struct net_device *netdev)
 
 	if(br0_priv ==NULL)
 		return;
-	
+
 #if (LINUX_VERSION_CODE > KERNEL_VERSION(2, 6, 35))
 	rcu_read_lock();
 #endif	// (LINUX_VERSION_CODE > KERNEL_VERSION(2, 6, 35))
 
 	{
 #if (LINUX_VERSION_CODE <= KERNEL_VERSION(2, 6, 35))
-		if (netdev->br_port) 
+		if (netdev->br_port)
 #else   // (LINUX_VERSION_CODE <= KERNEL_VERSION(2, 6, 35))
 		if (rcu_dereference(netdev->rx_handler_data))
 #endif  // (LINUX_VERSION_CODE <= KERNEL_VERSION(2, 6, 35))
 		{
 			struct net_device *br_netdev;
-#if 1			
+#if 1
 			br_netdev = ieee80211_get_br_dev(netdev);
 
 			if(br_netdev == NULL){
@@ -1198,7 +1198,7 @@ void br0_netdev_open(struct net_device *netdev)
 		else {
 			atbm_printk_err("%s()-%d: dev_get_by_name(%s)\n", __FUNCTION__, __LINE__, CONFIG_BR_EXT_BRNAME);
 		}
-		
+
 	}//
 
 #if (LINUX_VERSION_CODE > KERNEL_VERSION(2, 6, 35))

@@ -60,17 +60,17 @@ static void PHY_RF_SetReg_Table(const rf_reg *psm_table)
 	u32 iRegAddr;
 	u32 iRegVal;
 	u32 const *p;
-	
+
 	p = (u32*)psm_table;
-			
+
 	while (*p != PHY_RFIP_INVALID)
 	{
 		iRegAddr = *p++;
-		iRegVal  = *p++; 
-			
+		iRegVal  = *p++;
+
 		PHY_RF_HW_WRITE_REG(iRegAddr, iRegVal);
-		
-	}	
+
+	}
 }
 static void ROM_PHY_RF_WriteReg_Bit_u16(const rf_reg_bit_u16* rf_reg_bit_table)
 {
@@ -78,7 +78,7 @@ static void ROM_PHY_RF_WriteReg_Bit_u16(const rf_reg_bit_u16* rf_reg_bit_table)
 	pReg = (rf_reg_bit_u16*)rf_reg_bit_table;
 
 	while (pReg->addr != PHY_RFIP_INVALID)
-	{		
+	{
 		ROM_HW_WRITE_REG_BIT(pReg->addr,pReg->endBit,pReg->startBit,pReg->data);
 		pReg++;
 	}
@@ -91,7 +91,7 @@ static void ROM_PHY_TX_Psm_addr_value(const u16 *reg_addr_vec,const u32 *reg_val
 	{
 		PHY_RF_HW_WRITE_REG(reg_addr_vec[addr_idx] + RFIP_BASE_ADDR,reg_value_vec[addr_idx]);
 	}
-	
+
 }
 
 /**************************************************************************
@@ -119,7 +119,7 @@ static void PHY_RF_TX_Config( void )
     	// Original test pattern: reg w	txForceLdoOn=1 -> FrameDetect bypassed		RFIPTXLDOCFG		=001C,00000001
         PHY_RF_HW_WRITE_REG(PHY_RFIP_TXLDOCFG_ADDR,PHY_RFIP_TXLDOCFG_TXFORCELDOON_EN);//value=0x9=1001
     }
-	
+
 	/*Psm status reg value*/
 	if(regval_sets->phy_params.rfSubtypeDefine == regval_sets->phy_params.aresAzlc){
 		ROM_PHY_TX_Psm_addr_value(Rf_Tx_Psm_addr_offset,Rf_Tx_Psm_valueAresAZLC,14);
@@ -139,10 +139,10 @@ static void PHY_RF_PA_Reg(void)
 	}else {
 		ROM_PHY_RF_WriteReg_Bit_u16(Rf_TxPa_TableAres);
 	}
-	
+
 	ROM_HW_WRITE_REG_BIT(PHY_RFIP_TXPA_VSWR,12, 9, 0x3);
 	ROM_HW_WRITE_REG_BIT(PHY_RFIP_TXPA_REG1_ADDR,13, 11, 0x7);
-	
+
 }
 static void PHY_RF_Temp_Reg(void)
 {
@@ -155,14 +155,14 @@ static void PHY_RF_Temp_Reg(void)
 static void PHY_RF_Init_Reg(void)
 {
 	struct wsm_phy_regval_sets *regval_sets = phy_reg_table_get();
-	//u32 uRegValue;	
-	
-	/*Init some important reg*/	
+	//u32 uRegValue;
+
+	/*Init some important reg*/
 	//uRegValue=PHY_RF_HW_READ_REG(PHY_RFIP_SOFT_CFG_TXLO_ADD);
 	///uRegValue&=~BIT(0);
 	//PHY_RF_HW_WRITE_REG(PHY_RFIP_SOFT_CFG_TXLO_ADD,uRegValue);
 	ROM_HW_WRITE_REG_BIT(PHY_RFIP_SOFT_CFG_TXLO_ADD,0,0,0);
-	PHY_RF_SetReg_Table(Rf_init_value);	
+	PHY_RF_SetReg_Table(Rf_init_value);
 	if(regval_sets->phy_params.rfSubtypeDefine == regval_sets->phy_params.aresAzlc)
 		HW_WRITE_REG(PHY_RFIP_RSV_RW1_ADDR,0xff6f8f1f);
 	ROM_HW_WRITE_REG_BIT(PHY_RFIP_RSV_RW0_ADDR, 31, 31, 1);
@@ -181,9 +181,9 @@ static void PHY_RF_RX_Config(void)
 }
 
 static void PHY_RF_RxAdc_Init(void)
-{	
+{
 	struct wsm_phy_regval_sets *regval_sets = phy_reg_table_get();
-	
+
 	ROM_PHY_RF_WriteReg_Bit_u16(Rf_RxAdc_Table);
 	{
 		if(GET_LMAC_REDUCE_POWER_CONSUMPTION(__le32_to_cpu(regval_sets->phy_params.compileMacro))){
@@ -191,15 +191,15 @@ static void PHY_RF_RxAdc_Init(void)
 		}else {
 			ROM_HW_WRITE_REG_BIT(0x0acc0140,14,8,3);
 		}
-		
+
 	}
 	/*
 #if REDUCE_POWER_CONSUMPTION
-	{0x0acc0140, 14 , 8 , 7},    //rxadc_ibcomp_q[1:0],bit[9:8],bit[111:10]rxadc_input_buffer_ibias_adj													 
-	//{0x0acc0140, 14, 10, 0 },	//rxadc_input_buffer_ibias_adj[1:0],bit[14:10] 	
+	{0x0acc0140, 14 , 8 , 7},    //rxadc_ibcomp_q[1:0],bit[9:8],bit[111:10]rxadc_input_buffer_ibias_adj
+	//{0x0acc0140, 14, 10, 0 },	//rxadc_input_buffer_ibias_adj[1:0],bit[14:10]
 #else
-	{0x0acc0140, 14, 8 , 3},	//rxadc_ibcomp_q[1:0],bit[9:8]													 
-	//{0x0acc0140, 14, 10, 0 },	//rxadc_input_buffer_ibias_adj[1:0],bit[14:10] 
+	{0x0acc0140, 14, 8 , 3},	//rxadc_ibcomp_q[1:0],bit[9:8]
+	//{0x0acc0140, 14, 10, 0 },	//rxadc_input_buffer_ibias_adj[1:0],bit[14:10]
 #endif
 
 */
@@ -209,7 +209,7 @@ static void PHY_RF_RxAdc_Init(void)
 static void PHY_RF_Abb_RcCal_Init(void)
 {
 	/*rx_lpf_ccal_offset<4:0>=rccali_result<4:0>*/
-		//	ROM_HW_WRITE_REG_BIT(0xacc00A4,8,4,0xf);	
+		//	ROM_HW_WRITE_REG_BIT(0xacc00A4,8,4,0xf);
 	/*tx_lpf_ccal_offset<4:0>=rccali_result<4:0>*/
 		//	ROM_HW_WRITE_REG_BIT(0xacc00A4,13,9,0xf);
 
@@ -227,7 +227,7 @@ static void PHY_RF_Abb_RcCal_Init(void)
 	rxabb_ldo_load_en_bak=HW_READ_REG(0xacc01a4);
 	ROM_HW_WRITE_REG_BIT(0xacc0004,1,1,1);
 	/* 2:´ò¿ªRXABB LDO¸øRC calibrationµÍÑ¹Ä£¿é¹©µç*/
-	
+
 	/*rxabb_ldo_ref_pup*/
 	ROM_HW_WRITE_REG_BIT(0xacc01a0 ,9,9,1);
 	/*rxabb_ldo_load_en*/
@@ -235,10 +235,10 @@ static void PHY_RF_Abb_RcCal_Init(void)
 	/*rxabb_ldo_pup*/
 	ROM_HW_WRITE_REG_BIT(0xacc01a0 ,10,10,1);
 	/*3:Ê¹ÄÜ24MÊ±ÖÓ */
-	
+
 	ROM_HW_WRITE_REG_BIT(0x16101024	 ,13,13,0);
 	/*4:Æô¶¯RC calibration²¢°Ñ½á¹ûÐ´Èëµ½txabb/rxabbµÄµçÈÝÕóÁÐ¿ØÖÆ×ÖÖÐ*/
-	
+
 	/*rccali_pup=rsv_rw0<0>=1*/
 	ROM_HW_WRITE_REG_BIT(0xacc02a4,0,0,1);
 	/*rccali_rstn= rsv_rw0<10>=1*/
@@ -249,7 +249,7 @@ static void PHY_RF_Abb_RcCal_Init(void)
 	ROM_HW_WRITE_REG_BIT(0xacc02a4,9,9,0);
 	/*delay 20us*/
 	ROM_lmac_Wait(20);
-	
+
 	/*Èç¹ûÎª1,¶ÁÈ¡Ð£×¼½á¹ûrccali_result<4:0> ( rsv_ro<11:7>=0acc017c<11:7>)*/
 	#if 0
 	read_data_rccal_done = ROM_HW_READ_REG_BIT(0xacc02a8,0,0);
@@ -263,7 +263,7 @@ static void PHY_RF_Abb_RcCal_Init(void)
 		/*tx_lpf_rc_update=1*/
 		ROM_HW_WRITE_REG_BIT(0xacc009C,5,5,1);
 		/*rx_lpf_ccal_offset<4:0>=rccali_result<4:0>*/
-		ROM_HW_WRITE_REG_BIT(0xacc00A4,8,4,RcTuningResults);		
+		ROM_HW_WRITE_REG_BIT(0xacc00A4,8,4,RcTuningResults);
 		/*rx_lpf_ccal_fo=1*/
 		ROM_HW_WRITE_REG_BIT(0xacc009C,8,8,1);
 		/*//rx_lpf_rc_update=1*/
@@ -278,15 +278,15 @@ static void PHY_RF_Abb_RcCal_Init(void)
 		/*tx_lpf_rc_update=1*/
 		ROM_HW_WRITE_REG_BIT(0xacc009C,5,5,1);
 		/*rx_lpf_ccal_offset<4:0>=rccali_result<4:0>*/
-		ROM_HW_WRITE_REG_BIT(0xacc00A4,8,4,0xf);		
+		ROM_HW_WRITE_REG_BIT(0xacc00A4,8,4,0xf);
 		/*rx_lpf_ccal_fo=1*/
 		ROM_HW_WRITE_REG_BIT(0xacc009C,8,8,1);
 		/*//rx_lpf_rc_update=1*/
 		ROM_HW_WRITE_REG_BIT(0xacc009C,4,4,1);
 	}
-	
+
 	/*rccalÄ£¿éÍê³ÉÖ®ºó½«RX_PSM¸´Î»£¬¹Ø±Õrccal*/
-	
+
 	/*rxabb_ldo_ref_pup*/
 	HW_WRITE_REG(0xacc01a0,rxabb_ldo_ref_pup_bak);
 	/*rxabb_ldo_load_en*/
@@ -297,7 +297,7 @@ static void PHY_RF_Abb_RcCal_Init(void)
 	ROM_HW_WRITE_REG_BIT(0x16101024,13,13,1);
 	/*rccali_pup=rsv_rw0<0>=1*/
 	ROM_HW_WRITE_REG_BIT(0xacc0180,0,0,0);
-	
+
 	ROM_HW_WRITE_REG_BIT(0xacc0004,1,1,0);
 	/*rccali_rstn= rsv_rw0<10>=1 ??? is right */
 	//ROM_HW_WRITE_REG_BIT(0xacc0180,10,10,0);
@@ -324,10 +324,10 @@ PUBLIC void PHY_RF_PLL_Init_ROMCALL(void)
 /*#if (CFG_DPLL_CLOCK==24)
 	ROM_HW_WRITE_REG_BIT(0xacc00ac,31,0,0x12C22203);
 	ROM_HW_WRITE_REG_BIT(0xacc00bc,31,0,0x000600CC);
-#elif (CFG_DPLL_CLOCK==26)	
+#elif (CFG_DPLL_CLOCK==26)
 	ROM_HW_WRITE_REG_BIT(0xacc00ac,31,0,0x12C22203);
 	ROM_HW_WRITE_REG_BIT(0xacc00bc,31,0,0x000600DC);
-#elif (CFG_DPLL_CLOCK==27)	
+#elif (CFG_DPLL_CLOCK==27)
 	ROM_HW_WRITE_REG_BIT(0xacc00ac,31,0,0x12C22203);
 	ROM_HW_WRITE_REG_BIT(0xacc00bc,31,0,0x000600DC);
 #endif*/
@@ -338,16 +338,16 @@ PUBLIC void PHY_RF_PLL_Init_ROMCALL(void)
 	ROM_HW_WRITE_REG_BIT(0xacc0288,0,0,0);
 	/*power up LDO*/
 	/*rfpll_pup_cpldo*/
-	ROM_HW_WRITE_REG_BIT(0xacc00AC,3,3,1); 
+	ROM_HW_WRITE_REG_BIT(0xacc00AC,3,3,1);
 	/*rfpll_pup_digldo*/
-	ROM_HW_WRITE_REG_BIT(0xacc00AC,4,4,1); 
+	ROM_HW_WRITE_REG_BIT(0xacc00AC,4,4,1);
 	/*rfpll_pup_vcoldo*/
-	ROM_HW_WRITE_REG_BIT(0xacc00B8,21,21,1); 
+	ROM_HW_WRITE_REG_BIT(0xacc00B8,21,21,1);
 	/*rfpll_vco_fc,fast_charge*/
 	ROM_HW_WRITE_REG_BIT(0xacc00AC,6,6,1);
 	ROM_lmac_Wait(5);
 	/*rfpll_vco_fc*/
-	ROM_HW_WRITE_REG_BIT(0xacc00AC,6,6,0);	
+	ROM_HW_WRITE_REG_BIT(0xacc00AC,6,6,0);
 }
 #endif
 static void PHY_RF_ConfigRFIP(void)

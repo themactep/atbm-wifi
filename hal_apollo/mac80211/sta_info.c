@@ -215,7 +215,7 @@ static void sta_info_flush_cache_frag(struct ieee80211_sub_if_data *sdata,u8 *ma
 			idx = IEEE80211_FRAGMENT_MAX - 1;
 
 		entry = &sdata->fragments[idx];
-		
+
 		if (atbm_skb_queue_empty(&entry->skb_list))
 			continue;
 
@@ -246,7 +246,7 @@ static void sta_info_flush_cache_frag(struct ieee80211_sub_if_data *sdata,u8 *ma
 static void __sta_info_free(struct ieee80211_local *local,
 			    struct sta_info *sta)
 {
-	
+
 	atbm_skb_queue_purge(&sta->handshake_buffed);
 #ifndef CONFIG_RATE_HW_CONTROL
 	if (sta->rate_ctrl) {
@@ -481,10 +481,10 @@ static int sta_info_finish_insert(struct sta_info *sta,
 		memset(&sinfo, 0, sizeof(sinfo));
 		sinfo.filled = 0;
 		sinfo.generation = local->sta_generation;
-		
+
 #ifdef ATBM_AP_SME
 	if (!((sdata->vif.type == NL80211_IFTYPE_AP)||(sdata->vif.type == NL80211_IFTYPE_P2P_GO))){
-		
+
 			cfg80211_new_sta(sdata->dev, sta->sta.addr, &sinfo, GFP_KERNEL);
 		}
 #else
@@ -939,12 +939,12 @@ static bool sta_info_cleanup_expire_buffered(struct ieee80211_local *local,
 	/* This is only necessary for stations on BSS interfaces */
 	if (!sta->sdata->bss)
 		return false;
-	
-#ifdef ATBM_AP_SME 
+
+#ifdef ATBM_AP_SME
 	if( !test_sta_flag(sta, WLAN_STA_ASSOC_AP))
 		return false;
 #endif
-	
+
 	for (ac = 0; ac < IEEE80211_NUM_ACS; ac++)
 		have_buffered |=
 			sta_info_cleanup_expire_buffered_ac(local, sta, ac);
@@ -974,7 +974,7 @@ static int __must_check __sta_info_destroy(struct sta_info *sta)
 	 * will be sufficient.
 	 */
 #ifdef ATBM_AP_SME
-	atbm_del_timer_sync(&sta->sta_session_timer);	
+	atbm_del_timer_sync(&sta->sta_session_timer);
 	ieee80211_ap_sme_free_aid(sdata,sta);
 	if(test_sta_flag(sta,WLAN_STA_DEAUTHENNING))
 		ieee80211_ap_sme_sta_sync_unlock(sdata);
@@ -1023,7 +1023,7 @@ static int __must_check __sta_info_destroy(struct sta_info *sta)
 		synchronize_rcu();
 		//drv_flush(local, sdata, false);
 	}
-	
+
 	local->num_sta--;
 	local->sta_generation++;
 
@@ -1038,7 +1038,7 @@ static int __must_check __sta_info_destroy(struct sta_info *sta)
 		drv_sta_remove(local, sdata, &sta->sta);
 		sdata = sta->sdata;
 	}
-	
+
 	sta_info_flush_cache_frag(sdata,sta->sta.addr);
 #ifdef CONFIG_MAC80211_ATBM_ROAMING_CHANGES
 	/*

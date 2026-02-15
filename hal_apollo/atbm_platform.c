@@ -15,7 +15,7 @@
 #include "sbus.h"
 #include "apollo_plat.h"
 #ifdef SDIO_BUS
-#ifndef CONFIG_ATBM_SDIO_MMC_ID 
+#ifndef CONFIG_ATBM_SDIO_MMC_ID
 #define CONFIG_ATBM_SDIO_MMC_ID	"mmc0"
 #endif
 
@@ -99,7 +99,7 @@ extern int sunxi_wlan_get_bus_index(void);
 //extern unsigned int oob_irq;
 #endif
 
-//wsd add 
+//wsd add
 #if (ATBM_WIFI_PLATFORM == PLATFORM_GK7202V330)
 #define PLATFORMINF     "gk7202v330"
 //É¨¿¨
@@ -125,16 +125,16 @@ static int ark_wifi_power_set(const struct atbm_platform_data *pdata,bool enable
 
 	if (!request_mem_region(POWER_REG, 4, "ARK_WIFI_POWER_REG"))
 		return -EINVAL;
-	
+
 	pRegVal = ioremap(POWER_REG, 4);
 
-	if(!pRegVal) 
+	if(!pRegVal)
 	{
 		printk(KERN_INFO"[v330] ERROR:Cannot request WIFI_POWERREG\n");
 		release_mem_region(POWER_REG, 4);
 		return -1;
 	}
-		
+
 	*pRegVal = 0x1000;
 	//writel(0x112C0050,0x1000);
 	iounmap(pRegVal);
@@ -144,7 +144,7 @@ static int ark_wifi_power_set(const struct atbm_platform_data *pdata,bool enable
 	{
 		printk(KERN_INFO"[v330] ERROR:Cannot request WIFI_POWERON\n");
 	}
-	
+
 	//gpio_direction_output(pdata->power_gpio, 1);
 	mdelay(200);
 	gpio_set_value(pdata->power_gpio, 0);
@@ -158,7 +158,7 @@ static int ark_wifi_power_set(const struct atbm_platform_data *pdata,bool enable
 	return 0;
 
 }
-#endif 
+#endif
 
 
 #ifndef PLATFORMINF
@@ -192,8 +192,8 @@ u32 atbm_wlan_get_oob_irq(void)
 
 static int atbm_platform_power_ctrl(const struct atbm_platform_data *pdata,bool enabled)
 {
-	int ret = 0; 
-#ifndef USB_BUS	
+	int ret = 0;
+#ifndef USB_BUS
 	#if (ATBM_WIFI_PLATFORM == PLATFORM_XUNWEI) ||(ATBM_WIFI_PLATFORM == PLATFORM_FRIENDLY)
 	{
 #ifndef WIFI_FW_DOWNLOAD
@@ -221,10 +221,10 @@ static int atbm_platform_power_ctrl(const struct atbm_platform_data *pdata,bool 
 
 	#if (ATBM_WIFI_PLATFORM == PLATFORM_FRIENDLY)
 	{
-		
+
 	}
 	#endif
-#if (ATBM_WIFI_PLATFORM == PLATFORM_SUN6I_64)	
+#if (ATBM_WIFI_PLATFORM == PLATFORM_SUN6I_64)
 	//int wlan_bus_index = sunxi_wlan_get_bus_index();
 #if 0
 	if (gpio_request(354, "wlan_regon")!=0) {
@@ -280,7 +280,7 @@ extern void extern_wifi_set_enable(int is_on);
     rockchip_wifi_power(enabled);
 #endif
 
-#if (ATBM_WIFI_PLATFORM == PLATFORM_GK7202V330)	
+#if (ATBM_WIFI_PLATFORM == PLATFORM_GK7202V330)
 	ret = ark_wifi_power_set(pdata, enabled);
 {
 //	if(enabled)
@@ -352,10 +352,10 @@ static int atbm_platform_insert_crtl(const struct atbm_platform_data *pdata,bool
 			return wlan_bus_index;
 		if (enabled){
 			sunxi_mmc_rescan_card(wlan_bus_index);
-		}else{		
-	
+		}else{
+
 		}
-	
+
 		//oob_irq = sunxi_wlan_get_oob_irq();
 	}
 	#endif
@@ -376,7 +376,7 @@ static int atbm_platform_insert_crtl(const struct atbm_platform_data *pdata,bool
 		sunxi_mci_rescan_card(sdc_id, enabled);
 	}
 #endif
-#if (ATBM_WIFI_PLATFORM == PLATFORM_GK7202V330)	
+#if (ATBM_WIFI_PLATFORM == PLATFORM_GK7202V330)
 	 {
 		 mdelay(100);
 		 if (enabled)
@@ -398,7 +398,7 @@ int atbm_power_ctrl(const struct atbm_platform_data *pdata,bool enabled)
 
 }
 int atbm_insert_crtl(const struct atbm_platform_data *pdata,bool enabled)
-{	
+{
 	return atbm_platform_insert_crtl(pdata,enabled);
 }
 #ifdef SDIO_BUS
@@ -438,8 +438,8 @@ int atbm_plat_request_gpio_irq(const struct atbm_platform_data *pdata,struct sbu
 	if (WARN_ON(ret))
 		goto err;
 #else //IRQ_THREAD_REQ
-	
-	ret = request_irq(bgf_irq, (void *)atbm_gpio_irq,  
+
+	ret = request_irq(bgf_irq, (void *)atbm_gpio_irq,
 							IORESOURCE_IRQ | IORESOURCE_IRQ_HIGHEDGE | IORESOURCE_IRQ_SHAREABLE ,
 							"atbm_wlan_irq", self);
 	if (WARN_ON(ret))
@@ -447,9 +447,9 @@ int atbm_plat_request_gpio_irq(const struct atbm_platform_data *pdata,struct sbu
 
 #endif  //IRQ_THREAD_REQ
 
-	
+
 #else   //(ATBM_WIFI_PLATFORM == other)
-	
+
 	if (gpio_is_valid(pdata->irq_gpio)) {
 		ret = gpio_request(pdata->irq_gpio, "apollo wifi BGF EINT");
 		if (ret) {
@@ -470,7 +470,7 @@ int atbm_plat_request_gpio_irq(const struct atbm_platform_data *pdata,struct sbu
 	if (WARN_ON(ret))
 		goto err;
 #endif
-	
+
 
 	*atbm_bgf_irq = bgf_irq;
 

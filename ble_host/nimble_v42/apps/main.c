@@ -135,7 +135,7 @@ int lib_ble_main(void)
 	iot_printf("ble_hs_hci_cmd_reset\n");
 	nimble_release();
 	lib_ble_start = 0;
-	
+
 	return 0;
 }
 

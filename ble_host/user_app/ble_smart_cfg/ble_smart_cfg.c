@@ -68,7 +68,7 @@ void get_ble_addr(uint8_t* ble_addr)
 	uint8_t *addr;
 	//ble_hs_id_addr(BLE_ADDR_RANDOM,&addr,NULL);
 	//iot_printf("addr %02hhx:%B2hhx:%B2hhx:%02hhx:%2hhx:%02hhxin",addr[0], addr[1], addr[2], addr[3], addr[4],addr[5]);
-	
+
 	ble_hs_id_addr(BLE_ADDR_PUBLIC,&addr, NULL);
 	//iot_printf("pub addr %02hhx:%02hx:%2hx:%2hhx:%02hhx:%02hhx\n",addr[5],addr[4],addr[3],addr[2],addr[1],addr[0]);
 	memcpy(ble_addr, addr, 6);
@@ -243,7 +243,7 @@ static int ble_svc_gatt_access(uint16_t conn_handle, uint16_t attr_handle,
 		if(ble_smart_info.step == BLE_SMART_CFG_STATUS_END){
 			return 0;
 		}
-		
+
 		switch(ble_smart_info.step)
 		{
 			case 0:
@@ -256,7 +256,7 @@ static int ble_svc_gatt_access(uint16_t conn_handle, uint16_t attr_handle,
 					}
 
 					iot_printf("ble ssid_len = %d\n",ble_smart_info.ssid_len);
-					if(ble_smart_info.ssid_len > 32){					
+					if(ble_smart_info.ssid_len > 32){
 						iot_printf("ble ssid_len too big error\n");
 						ble_smart_info.step = BLE_SMART_CFG_STATUS_SSID_LEN_ERR;
 						ble_npl_sem_release(&hci_smt_sem);
@@ -265,9 +265,9 @@ static int ble_svc_gatt_access(uint16_t conn_handle, uint16_t attr_handle,
 					else {
 						ble_smart_info.step =1;
 					}
-				}				
+				}
 				break;
-				
+
 			case 1:
 				if((ble_smart_info.ssid_cnt + len <= ble_smart_info.ssid_len)){
 					memcpy(&ble_smart_info.ssid[ble_smart_info.ssid_cnt], data, len);
@@ -281,7 +281,7 @@ static int ble_svc_gatt_access(uint16_t conn_handle, uint16_t attr_handle,
 				if(ble_smart_info.ssid_cnt == ble_smart_info.ssid_len){
 					ble_smart_info.step =2;
 					iot_printf("ble ssid = %s\n", ble_smart_info.ssid);
-				}				
+				}
 				break;
 
 			case 2:
@@ -295,12 +295,12 @@ static int ble_svc_gatt_access(uint16_t conn_handle, uint16_t attr_handle,
 
 					iot_printf("ble pwd_len = %d\n",ble_smart_info.pwd_len);
 
-					if(ble_smart_info.pwd_len > 64){					
+					if(ble_smart_info.pwd_len > 64){
 						iot_printf("ble pwd_len too big error\n");
 						ble_smart_info.step = BLE_SMART_CFG_STATUS_PWD_LEN_ERR;
 						ble_npl_sem_release(&hci_smt_sem);
 					}
-					else if((ble_smart_info.pwd_len < 5)&&(ble_smart_info.pwd_len > 0)){					
+					else if((ble_smart_info.pwd_len < 5)&&(ble_smart_info.pwd_len > 0)){
 						iot_printf("ble pwd_len too short error\n");
 						ble_smart_info.step = BLE_SMART_CFG_STATUS_PWD_LEN_ERR;
 						ble_npl_sem_release(&hci_smt_sem);
@@ -312,9 +312,9 @@ static int ble_svc_gatt_access(uint16_t conn_handle, uint16_t attr_handle,
 					else {
 						ble_smart_info.step =3;
 					}
-				}				
+				}
 				break;
-				
+
 			case 3:
 				if((ble_smart_info.pwd_cnt + len <= ble_smart_info.pwd_len)){
 					memcpy(&ble_smart_info.pwd[ble_smart_info.pwd_cnt], data, len);
@@ -328,9 +328,9 @@ static int ble_svc_gatt_access(uint16_t conn_handle, uint16_t attr_handle,
 				if(ble_smart_info.pwd_cnt == ble_smart_info.pwd_len){
 					ble_smart_info.step =4;
 					iot_printf("ble pwd = %s\n", ble_smart_info.ssid);
-				}				
+				}
 				break;
-				
+
 			default:
 				break;
 		}
@@ -357,8 +357,8 @@ static int ble_svc_gatt_access(uint16_t conn_handle, uint16_t attr_handle,
 		#endif
 	}
 
-	
-	
+
+
 	return 0;
 }
 
@@ -402,7 +402,7 @@ static const struct ble_gatt_svc_def gatt_svr_svcs[] = {
             0, /* No more characteristics in this service */
         }, }
     },
-    
+
 	{
 		/* Service: GATT */
 		.type = BLE_GATT_SVC_TYPE_PRIMARY,
@@ -490,7 +490,7 @@ btshell_print_adv_fields(const struct ble_hs_adv_fields *fields)
 			//putchar(((char *)fields->name)[i]);
 			iot_printf("%c", ((char *)fields->name)[i]);
         }
-		
+
         iot_printf("\n");
     }
 
@@ -571,7 +571,7 @@ ble_slave_gap_event(struct ble_gap_event *event, void *arg)
 	params.latency=0;
 	params.supervision_timeout=300;//????3?°ßo?®§°ßo?®§??Supervision timeout for the LE Link.Range: 0x000A to 0x0C80Time = connTimeout* 10 msecTime Range: 100 msec to 32 seconds
 	int conn_idx;
-	int rc;	
+	int rc;
 	uint8_t i;
 	struct ble_hs_adv_fields fields;
 	uint8_t ble_name[30];
@@ -599,7 +599,7 @@ ble_slave_gap_event(struct ble_gap_event *event, void *arg)
 			blesmt_advertise();
 		}
 		return 0;
-		
+
 	case BLE_GAP_EVENT_DISCONNECT:
 		atbm_ble_status=ATBM_BLE_STATUS_IDLE;
 	    iot_printf("disconnect; reason=%d \n", event->disconnect.reason);
@@ -622,7 +622,7 @@ ble_slave_gap_event(struct ble_gap_event *event, void *arg)
 			//if (event->disc.event_type == BLE_HCI_ADV_RPT_EVTYPE_DIR_IND) {
 				//return 0;
 			//}
-			
+
 			ble_hs_adv_parse_fields(&fields, event->disc.data, event->disc.length_data);
 			if(fields.name && fields.name_len){
 
@@ -641,7 +641,7 @@ ble_slave_gap_event(struct ble_gap_event *event, void *arg)
 					iot_printf("\n");
 				}
 				iot_printf("\n********************end*****************************\n");
-			}	
+			}
 	        /*
 	         * There is no adv data to print in case of connectable
 	         * directed advertising
@@ -650,7 +650,7 @@ ble_slave_gap_event(struct ble_gap_event *event, void *arg)
 	                iot_printf("\nConnectable directed advertising event\n");
 	                return 0;
 	        }
-			
+
 			//ble_parse_smt_adv_data(&ble_rx_adv_data);
 	        //btshell_decode_adv_data(event->disc.data, event->disc.length_data, arg);
 	#endif
@@ -757,7 +757,7 @@ ble_slave_gap_event(struct ble_gap_event *event, void *arg)
 	    		//log ?aindicate°ß°ß?°Ï?Tsubscribe event; conn_handle=1 attr_handle=10 reason=1 prevn=0 curn=0 previ=0 curi=1
 	    		//log1?indicate°ß°ß?°Ï?Tsubscribe event; conn_handle=1 attr_handle=10 reason=1 prevn=0 curn=0 previ=1 curi=0
 		    if((event->subscribe.prev_indicate==0)&&(event->subscribe.cur_indicate==1))
-		    {	   
+		    {
 			    char* ble_indicate ="send indicate";
 			     iot_printf("ble_svc_gatt_changed_val_handle=%d\n",
 			                   ble_svc_gatt_changed_val_handle);
@@ -820,8 +820,8 @@ static void blesmt_advertise(void)
 	uint8_t mfg_data[3] = {0xAB, 0xAB, 0xA0};
 	int rc;
 
-    memset(&fields, 0, sizeof(fields));	
-	
+    memset(&fields, 0, sizeof(fields));
+
     fields.name = (uint8_t *)device_name;
     fields.name_len = strlen(device_name);
     fields.name_is_complete = 1;
@@ -836,7 +836,7 @@ static void blesmt_advertise(void)
 
 	fields.mfg_data = mfg_data;
 	fields.mfg_data_len = 3;
-	
+
     rc = ble_gap_adv_set_fields(&fields);
     if (rc != 0) {
         iot_printf("error setting advertisement data; rc=%d\n", rc);
@@ -846,7 +846,7 @@ static void blesmt_advertise(void)
 	struct ble_hs_adv_fields adv_fields;
 	ble_uuid16_t uuids16_rsp[2];
 	uint8_t mfg_rsp_data[3] = {0xff, 0xcc, 0xdd};
-	memset(&adv_fields, 0, sizeof(adv_fields));	
+	memset(&adv_fields, 0, sizeof(adv_fields));
 
 	adv_fields.name = (uint8_t *)device_name;
 	adv_fields.name_len = strlen(device_name);
@@ -883,7 +883,7 @@ static void blesmt_advertise(void)
 	if (rc != 0) {
 	    iot_printf("ble_hs_id_set_rnd rc=%d\n", rc);
 	    return;
-	}	      
+	}
 	#endif
     rc = ble_gap_adv_start(blesmt_addr_type, NULL, BLE_HS_FOREVER,
                            		&adv_params, ble_slave_gap_event, NULL);
@@ -892,7 +892,7 @@ static void blesmt_advertise(void)
     if (rc != 0) {
         iot_printf("error enabling advertisement; rc=%d\n", rc);
         return;
-    }	
+    }
 
 	#if 0
 	uint8_t own_addr_type;
@@ -911,13 +911,13 @@ static void blesmt_advertise(void)
 	disc_params.passive = 0;
 
 	/* Use defaults for the rest of the parameters. */
-	/*Time interval from when the Controller started its last scan until it 
+	/*Time interval from when the Controller started its last scan until it
 	begins the subsequent scan on the primary advertising physical channel.
 	Range: 0x0004 to 0xFFFF
 	Time = N * 0.625 ms
 	Time Range: 2.5 ms to 40.959375 s*/
-	disc_params.itvl = 300;//Êâ´ÊèèÈó¥ÈöîÔºåËÆæÁΩÆÂ§ö‰πÖÊâ´Êèè‰∏ÄÊ¨°  
-	
+	disc_params.itvl = 300;//Êâ´ÊèèÈó¥ÈöîÔºåËÆæÁΩÆÂ§ö‰πÖÊâ´Êèè‰∏ÄÊ¨°
+
 	/* Duration of the scan on the primary advertising physical channel.
 	Range: 0x0004 to 0xFFFF
 	Time = N * 0.625 ms
@@ -949,11 +949,11 @@ static void blesmt_advertise(void)
 
 int ble_startup_indication(unsigned char* data)
 {
-	
+
 }
 void atbm_ioctl_ble_smt_event_async(uint8_t* event_buffer, uint16_t event_len)
 {
-	
+
 }
 #endif  //ifeq ($(CONFIG_LINUX_BLE_STACK_APP), y)
 extern bool g_is_quit;
@@ -1004,7 +1004,7 @@ static int ble_smart_cfg_task(void* param)
 			sleep(1);
 			rc = 0;
 		}
-		
+
 		if (rc == 0) {
 			if (ble_smart_info.step == 4) {
 				iot_printf("ble smart cfg connect ap! ssid:%s pwd:%s \n", ble_smart_info.ssid, ble_smart_info.pwd);
@@ -1016,7 +1016,7 @@ static int ble_smart_cfg_task(void* param)
 			}
 			else if (ble_smart_info.step == BLE_SMART_CFG_SSID_PWD_TRANS_END) {
 
-				//check wifi connect status				 
+				//check wifi connect status
 				//	ble_smart_cfg_indication(BLE_SMART_CFG_STATUS_END, &ble_smart_info);
 				wifi_connected_status = get_wifi_wpa_status();
 				iot_printf("BLE_SMART_CFG_SSID_PWD_TRANS_END!wifi_connected_status:%d \n", wifi_connected_status);
@@ -1059,7 +1059,7 @@ static int ble_smart_cfg_task(void* param)
 	}
 #endif
 
-	while (!atbm_ble_is_quit) 
+	while (!atbm_ble_is_quit)
 	{
 		sleep(1);
 	}
@@ -1144,9 +1144,9 @@ void ble_smart_cfg_test_ok(u8 *ssid, u8 *pwd)
 	strcpy(ble_smart_info.ssid, ssid);
 	ble_smart_info.ssid_len = strlen(ssid);
 	strcpy(ble_smart_info.pwd, pwd);
-	ble_smart_info.pwd_len = strlen(pwd);	
+	ble_smart_info.pwd_len = strlen(pwd);
 	ble_smart_info.step = BLE_SMART_CFG_STATUS_END;
-	ble_npl_sem_release(&hci_smt_sem);	
+	ble_npl_sem_release(&hci_smt_sem);
 }
 
 

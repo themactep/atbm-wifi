@@ -164,7 +164,7 @@ struct prov_link {
 
     u8_t prov_salt[16];         /* Provisioning Salt */
 
-#if IS_ENABLED(CONFIG_BT_MESH_PB_ADV) || IS_ENABLED(CONFIG_BT_MESH_PB_GATT) 
+#if IS_ENABLED(CONFIG_BT_MESH_PB_ADV) || IS_ENABLED(CONFIG_BT_MESH_PB_GATT)
     bool  linking;           /* Linking is being establishing */
     u16_t link_close;        /* Link close been sent flag */
     u32_t id;                /* Link ID */
@@ -398,7 +398,7 @@ static int provisioner_node_reset(int node_index)
 	if(!node->provisioned){
 		return -EINVAL;
 	}
-	
+
     /* Reset corresponding rpl when reset the node */
     for (i = 0; i < ARRAY_SIZE(bt_mesh.rpl); i++) {
         rpl = &bt_mesh.rpl[i];
@@ -605,7 +605,7 @@ const u8_t *provisioner_get_device_key(u16_t dst_addr)
             return node->dev_key;
         }
     }
-	
+
     return NULL;
 }
 
@@ -735,7 +735,7 @@ static void reset_link(int i, u8_t reason)
     if (pub_key) {
         atomic_set_bit(link[i].flags, LOCAL_PUB_KEY);
     }
-	
+
 	net_buf_simple_init(rx_buf[i], 0);
 	link[i].rx.buf = rx_buf[i];
 
@@ -826,7 +826,7 @@ static int bearer_ctl_send(int i, u8_t op, void *data, u8_t data_len)
     struct os_mbuf *buf;
 
     BT_DBG("op 0x%02x data_len %u", op, data_len);
-    
+
     prov_clear_tx(i);
 
     buf = adv_buf_create();
@@ -921,7 +921,7 @@ static int prov_send_adv(struct os_mbuf *msg)
 
     prov_clear_tx(i);
 
-    start = adv_buf_create();  
+    start = adv_buf_create();
     if (!start) {
         return -ENOBUFS;
     }
@@ -1051,7 +1051,7 @@ static void send_invite(void)
 {
     struct os_mbuf *buf = PROV_BUF(2);
     int i = prov_ctx.pb_index;
-	
+
     prov_buf_init(buf, PROV_INVITE);
 
     net_buf_simple_add_u8(buf, provisioner->prov_attention);
@@ -1065,7 +1065,7 @@ static void send_invite(void)
     }
 
     link[i].expect = PROV_CAPABILITIES;
-	
+
 done:
 	os_mbuf_free_chain(buf);
 }
@@ -1351,7 +1351,7 @@ static int prov_auth(u8_t method, u8_t action, u8_t size)
             memset(link[i].auth + size, 0, PROV_AUTH_VAL_SIZE - size);
             return provisioner->prov_output_num(input, str, size, i);
         } else {
-            u32_t div[8] = { 10, 100, 1000, 10000, 100000, 
+            u32_t div[8] = { 10, 100, 1000, 10000, 100000,
 							1000000, 10000000, 100000000 };
             u32_t num;
 
@@ -1361,7 +1361,7 @@ static int prov_auth(u8_t method, u8_t action, u8_t size)
             sys_put_be32(num, &link[i].auth[12]);
             memset(link[i].auth, 0, 12);
             return provisioner->prov_output_num(input, &num, size, i);
-        }		
+        }
     }
 
     default:
@@ -1417,7 +1417,7 @@ static void send_confirm(void)
 
     prov_buf_init(buf, PROV_CONFIRM);
 
-	
+
     if (bt_mesh_prov_conf(link[i].conf_key, link[i].rand, link[i].auth,
                           net_buf_simple_add(buf, 16))) {
         BT_ERR("Unable to generate confirmation value");
@@ -1780,7 +1780,7 @@ static void send_prov_data(void)
     link[i].ki_flags = prov_ctx.curr_flags;
     link[i].iv_index = prov_ctx.curr_iv_index;
     link[i].expect = PROV_COMPLETE;
-	
+
 done:
 	os_mbuf_free_chain(buf);
 }
@@ -1853,7 +1853,7 @@ static void prov_complete(const u8_t *data)
         close_link(i, CLOSE_REASON_FAILED);
         return;
     }
-	
+
     for (j = 0; j < CONFIG_BT_MESH_PROV_NODES_MAX; j++) {
         if (!prov_nodes[j].provisioned) {
             prov_nodes[j].provisioned  = true;
@@ -2235,7 +2235,7 @@ static void gen_prov_start(struct prov_rx *rx, struct os_mbuf *buf)
         gen_prov_ack_send(rx->xact_id);
         return;
     }
-	
+
 	trailing_space = OS_MBUF_TRAILINGSPACE(link[i].rx.buf);
 
     link[i].rx.buf->om_len = net_buf_simple_pull_be16(buf);
@@ -2533,7 +2533,7 @@ static int provisioner_prov_initd = false;
 int provisioner_prov_init(const struct bt_mesh_provisioner *provisioner_info)
 {
     int i,rc;
-  
+
 	if(provisioner_prov_initd){
 		return 0;
 	}
@@ -2589,15 +2589,15 @@ int provisioner_prov_init(const struct bt_mesh_provisioner *provisioner_info)
 int provisioner_prov_deinit(void)
 {
 	int i;
-	
+
 	provisioner = NULL;
-	
+
 	for(i=0; i<CONFIG_BT_MESH_PBA_SAME_TIME; i++){
 		k_delayed_work_free(&link[i].tx.retransmit);
 		free_segments(i);
-		os_mbuf_free_chain(rx_buf[i]);	
+		os_mbuf_free_chain(rx_buf[i]);
 	}
-	
+
 	for(i=0; i<BT_MESH_PROV_SAME_TIME; i++){
 		k_delayed_work_free(&link[i].timeout);
 		memset(&link[i], 0, sizeof(struct prov_link));
@@ -2769,7 +2769,7 @@ bool provisioner_flags_match(struct os_mbuf *buf)
     }
 
     flags = net_buf_simple_pull_u8(buf);
-	
+
 	BT_DBG("Received adv pkt with flags: 0x%02x", flags);
 
     return true;
@@ -2838,7 +2838,7 @@ int bt_mesh_prov_input_data(u8_t *num, u8_t size, bool num_flag)
      *  input by provisioner is number or string.
      */
     int i = prov_ctx.pb_index;
-	
+
 	memset(link[i].auth, 0, 16);
     if (num_flag) {
         /* Provisioner input number */
@@ -2847,7 +2847,7 @@ int bt_mesh_prov_input_data(u8_t *num, u8_t size, bool num_flag)
         /* Provisioner input string */
         memcpy(link[i].auth, num, size);
     }
-	
+
 	send_confirm();
     return 0;
 }
@@ -2855,7 +2855,7 @@ int bt_mesh_prov_input_data(u8_t *num, u8_t size, bool num_flag)
 int bt_mesh_prov_oob_pub_key(const u8_t pub_key_x[32], const u8_t pub_key_y[32])
 {
 	int i = prov_ctx.pb_index;
-	
+
     /* Swap X and Y halves independently to big-endian */
     sys_memcpy_swap(&link[i].conf_inputs[81], pub_key_x, 32);
     sys_memcpy_swap(&link[i].conf_inputs[81] + 32, pub_key_y, 32);
@@ -3140,11 +3140,11 @@ start:
             BT_ERR("No PB-GATT link available");
             return -ENOMEM;
         }
-		
+
         if (bt_mesh_gattc_conn_create(&link[i].addr,0x1827)){//for compile
 			memset(link[i].uuid, 0, 16);
 			link[i].oob_info = 0x0;
-			memset(&link[i].addr, 0, sizeof(link[i].addr));   
+			memset(&link[i].addr, 0, sizeof(link[i].addr));
 			return -ENOMEM;
         } else {
 			link[i].connecting = true;
@@ -3631,7 +3631,7 @@ int bt_mesh_provisioner_local_app_key_add(const u8_t app_key[16], u16_t net_idx,
 
     key = &(bt_mesh.p_app_keys[add]);
     keys = &key->keys[0];
-	
+
     if (bt_mesh_app_id(p_key, &keys->id)) {
         BT_ERR("Generate aid fail");
         key->appkey_active = false;

@@ -1,9 +1,9 @@
 /**************************************************************************************************************
- * altobeam RTOS wifi hmac source code 
+ * altobeam RTOS wifi hmac source code
  *
  * Copyright (c) 2018, altobeam.inc   All rights reserved.
  *
- *  The source code contains proprietary information of AltoBeam, and shall not be distributed, 
+ *  The source code contains proprietary information of AltoBeam, and shall not be distributed,
  *  copied, reproduced, or disclosed in whole or in part without prior written permission of AltoBeam.
 *****************************************************************************************************************/
 
@@ -27,19 +27,19 @@ char *strtok(char* str, const char *delimit)
     char *ret = NULL;
 	char *p = NULL;
 	int i;
-	
+
     if(delimit == NULL){
 		return str;
 	}
-	
+
     if(str != NULL){
 		tmp = str;
 	}
-        
+
     if(tmp == NULL){
 		return NULL;
 	}
-	
+
     ret = tmp;
     p = strstr(tmp, delimit);
     if(p != NULL){
@@ -47,8 +47,8 @@ char *strtok(char* str, const char *delimit)
         for(i = 0; i < strlen(delimit); i ++){
             *(p + i) = '\0';
         }
-    } 
-	else{        
+    }
+	else{
         tmp = NULL;
     }
     return ret;

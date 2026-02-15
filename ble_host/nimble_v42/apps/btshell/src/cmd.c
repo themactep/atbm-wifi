@@ -775,18 +775,18 @@ cmd_connect(int argc, char **argv)
         goto __error;
         return rc;
     }
-	
+
 	str ="scan_interval";
     phy_1M_params.scan_itvl = parse_arg_uint16_dflt(str, 0x0010, &rc);
     if (rc != 0) {
         goto __error;
-    
+
     }
-	
+
 	str ="scan_window";
     phy_1M_params.scan_window = parse_arg_uint16_dflt(str, 0x0010, &rc);
     if (rc != 0) {
-        goto __error;    
+        goto __error;
     }
 	str ="interval_min";
 
@@ -808,28 +808,28 @@ cmd_connect(int argc, char **argv)
 
     phy_1M_params.latency = parse_arg_uint16_dflt(str, 0, &rc);
     if (rc != 0) {
-        goto __error;    
+        goto __error;
     }
 	str ="timeout";
 
     phy_1M_params.supervision_timeout = parse_arg_uint16_dflt(str, 0x0100, &rc);
     if (rc != 0) {
-        goto __error; 
+        goto __error;
     }
 	str ="min_conn_event_len";
 
     phy_1M_params.min_ce_len = parse_arg_uint16_dflt(str,
                                                      0x0010, &rc);
     if (rc != 0) {
-        goto __error; 
+        goto __error;
     }
 	str ="max_conn_event_len";
 
     phy_1M_params.max_ce_len = parse_arg_uint16_dflt(str,
                                                      0x0300, &rc);
     if (rc != 0) {
-        goto __error; 
-    
+        goto __error;
+
     }
 
     if (ext == 0x00) {
@@ -852,15 +852,15 @@ cmd_connect(int argc, char **argv)
     phy_coded_params.scan_itvl = parse_arg_uint16_dflt(str,
                                                        0x0010, &rc);
     if (rc != 0) {
-        goto __error; 
+        goto __error;
     }
-	
+
 	str ="coded_scan_window";
     phy_coded_params.scan_window = parse_arg_uint16_dflt(str,
                                                          0x0010, &rc);
     if (rc != 0) {
-        goto __error; 
-    
+        goto __error;
+
     }
 	str ="coded_interval_min";
 
@@ -876,7 +876,7 @@ cmd_connect(int argc, char **argv)
                                                       BLE_GAP_INITIAL_CONN_ITVL_MAX,
                                                       &rc);
     if (rc != 0) {
-        goto __error;    
+        goto __error;
     }
 	str ="coded_latency";
 
@@ -890,7 +890,7 @@ cmd_connect(int argc, char **argv)
 
     if (rc != 0) {
         goto __error;
-    
+
     }
 	str ="coded_min_conn_event";
 
@@ -898,7 +898,7 @@ cmd_connect(int argc, char **argv)
         parse_arg_uint16_dflt(str, 0x0010, &rc);
     if (rc != 0) {
         goto __error;
-    
+
     }
 	str ="coded_max_conn_event";
 
@@ -915,7 +915,7 @@ cmd_connect(int argc, char **argv)
                                                    &rc);
     if (rc != 0) {
         goto __error;
-    
+
     }
 	str ="2M_interval_max";
 
@@ -923,7 +923,7 @@ cmd_connect(int argc, char **argv)
                                                    BLE_GAP_INITIAL_CONN_ITVL_MAX, &rc);
     if (rc != 0) {
         goto __error;
-    
+
     }
 	str ="2M_latency";
 
@@ -946,7 +946,7 @@ cmd_connect(int argc, char **argv)
                                                      &rc);
     if (rc != 0) {
         goto __error;
-    
+
     }
 	str ="2M_max_conn_event";
 
@@ -954,7 +954,7 @@ cmd_connect(int argc, char **argv)
                                                      0x0300, &rc);
     if (rc != 0) {
         goto __error;
-    
+
     }
 
     if (ext == 0x02) {
@@ -976,7 +976,7 @@ cmd_connect(int argc, char **argv)
                                    &phy_coded_params);
     return rc;
 __error:
-	
+
     iot_printf("err %s\n",str);
     return rc;
 }
@@ -1921,25 +1921,25 @@ cmd_set_adv_data(int argc, char **argv)
 }
 pAtbm_thread_t ble_test_thread = NULL;
 static const uint8_t test_f[250]={
-0x00, 0x36, 0x35, 0x34, 0x78, 0x58, 0x00, 0x00, 0x00, 0x00, 
+0x00, 0x36, 0x35, 0x34, 0x78, 0x58, 0x00, 0x00, 0x00, 0x00,
 0x00, 0x00, 0x01, 0x00, 0x00, 0x30, 0x02, 0x09, 0x00, 0x00,
-0x78, 0x36, 0x35, 0x34, 0x78, 0x58, 0x00, 0x00, 0x00, 0x00, 
+0x78, 0x36, 0x35, 0x34, 0x78, 0x58, 0x00, 0x00, 0x00, 0x00,
 0x00, 0x00, 0x01, 0x00, 0x00, 0x30, 0x02, 0x09, 0x00, 0x00,
-0x78, 0x36, 0x35, 0x34, 0x78, 0x58, 0x00, 0x00, 0x00, 0x00, 
+0x78, 0x36, 0x35, 0x34, 0x78, 0x58, 0x00, 0x00, 0x00, 0x00,
 0x00, 0x00, 0x01, 0x00, 0x00, 0x30, 0x02, 0x09, 0x00, 0x00,
-0x78, 0x36, 0x35, 0x34, 0x78, 0x58, 0x00, 0x00, 0x00, 0x00, 
+0x78, 0x36, 0x35, 0x34, 0x78, 0x58, 0x00, 0x00, 0x00, 0x00,
 0x00, 0x00, 0x01, 0x00, 0x00, 0x30, 0x02, 0x09, 0x00, 0x00,
-0x78, 0x36, 0x35, 0x34, 0x78, 0x58, 0x00, 0x00, 0x00, 0x00, 
+0x78, 0x36, 0x35, 0x34, 0x78, 0x58, 0x00, 0x00, 0x00, 0x00,
 0x00, 0x00, 0x01, 0x00, 0x00, 0x30, 0x02, 0x09, 0x00, 0x00,//10
-0x78, 0x36, 0x35, 0x34, 0x78, 0x58, 0x00, 0x00, 0x00, 0x00, 
+0x78, 0x36, 0x35, 0x34, 0x78, 0x58, 0x00, 0x00, 0x00, 0x00,
 0x00, 0x00, 0x01, 0x00, 0x00, 0x30, 0x02, 0x09, 0x00, 0x00,
-0x78, 0x36, 0x35, 0x34, 0x78, 0x58, 0x00, 0x00, 0x00, 0x00, 
+0x78, 0x36, 0x35, 0x34, 0x78, 0x58, 0x00, 0x00, 0x00, 0x00,
 0x00, 0x00, 0x01, 0x00, 0x00, 0x30, 0x02, 0x09, 0x00, 0x00,
-0x78, 0x36, 0x35, 0x34, 0x78, 0x58, 0x00, 0x00, 0x00, 0x00, 
+0x78, 0x36, 0x35, 0x34, 0x78, 0x58, 0x00, 0x00, 0x00, 0x00,
 0x00, 0x00, 0x01, 0x00, 0x00, 0x30, 0x02, 0x09, 0x00, 0x00,
-0x78, 0x36, 0x35, 0x34, 0x78, 0x58, 0x00, 0x00, 0x00, 0x00, 
+0x78, 0x36, 0x35, 0x34, 0x78, 0x58, 0x00, 0x00, 0x00, 0x00,
 0x00, 0x00, 0x01, 0x00, 0x00, 0x30, 0x02, 0x09, 0x00, 0x00,
-0x78, 0x36, 0x35, 0x34, 0x78, 0x58, 0x00, 0x00, 0x00, 0x00, 
+0x78, 0x36, 0x35, 0x34, 0x78, 0x58, 0x00, 0x00, 0x00, 0x00,
 0x00, 0x00, 0x01, 0x00, 0x00, 0x30, 0x02, 0x09, 0x00, 0x00,//20
 };
 struct ble_tset_notify{
@@ -1965,7 +1965,7 @@ SRAM_CODE static int send_notify_task(void* argc)
 		//test_f[0]++;
 		iot_printf(" send len %d\n",value->len);
 		rc=gatt_svr_chr_notify(ble_conn_handle, blesmt_notify_handle, test_f, value->len);
-		
+
 		if(atbm_ble_status != 2){
 			break;
 		}
@@ -1994,10 +1994,10 @@ SRAM_CODE static int ble_sent_test(int argc, char **argv)
 	ble_tset_notify_var.timer = parse_arg_uint16("interval",&rc);
 
 	ble_tset_notify_var.cnt = parse_arg_uint32("number",&rc);
-                                            
+
 	ble_tset_notify_var.len= parse_arg_uint8("len",&rc);
 	iot_printf("timer %dms  cnt %d len %d\n", ble_tset_notify_var.timer,ble_tset_notify_var.cnt,ble_tset_notify_var.len);
-	
+
 	if(ble_test_thread)
 		atbm_stopThread(ble_test_thread);
 	ble_test_thread = atbm_createThread(send_notify_task, &ble_tset_notify_var, BLE_APP_PRIO);
@@ -2146,7 +2146,7 @@ cmd_white_list(int argc, char **argv)
             iot_printf("err 'addr'\n");
             return rc;
         }
-		
+
         addrs[addrs_cnt].type = parse_arg_kv("addr_type", cmd_addr_type, &rc);
         if (rc != 0) {
             iot_printf("err 'addr'\n");
@@ -2174,7 +2174,7 @@ static const struct shell_param white_list_params[] = {
     {"addr_type", "white-list address types, usage: =[public|random]"},
     {NULL, NULL}
 };
-	
+
 
 
 static const struct shell_cmd_help white_list_help = {
@@ -2189,18 +2189,18 @@ cmd_white_list_add(int argc, char **argv)
 {
 	int rc;
 	ble_addr_t addr;
-	
+
     rc = parse_arg_all(argc - 1, argv + 1);
     if (rc != 0) {
         return rc;
-    }	
-	
+    }
+
 	rc = parse_arg_mac("addr", addr.val);
 	if (rc != 0) {
         iot_printf("err 'addr'\n");
         return rc;
     }
-	
+
     addr.type = parse_arg_kv("addr_type", cmd_addr_type, &rc);
     if (rc != 0) {
         iot_printf("err 'addr_type'\n");
@@ -2211,13 +2211,13 @@ cmd_white_list_add(int argc, char **argv)
 		iot_printf("err 'ble_gap_wl_busy'\n");
 		return -1;
 	}
-	
+
 	rc = ble_gap_wl_tx_add(&addr);
     if (rc != 0) {
         iot_printf("ble_gap_wl_tx_add err:%d\n", rc);
         return rc;
     }
-	
+
 	return 0;
 }
 
@@ -2239,7 +2239,7 @@ SRAM_CODE static int
 cmd_white_list_clr(int argc, char **argv)
 {
 	int rc;
-	
+
 	if(ble_gap_wl_busy()){
 		iot_printf("err 'ble_gap_wl_busy'\n");
 		return -1;
@@ -2250,7 +2250,7 @@ cmd_white_list_clr(int argc, char **argv)
         iot_printf("ble_gap_wl_tx_clear err:%d\n", rc);
         return rc;
     }
-	
+
 	return 0;
 }
 
@@ -2273,25 +2273,25 @@ cmd_white_list_add_test(int argc, char **argv)
 	uint8_t cnt;
 	int i, rc;
 	ble_addr_t addr;
-	
+
 	if (argc < 2) {
 		iot_printf("argc err\n");
 		return -1;
 	}
-	
+
 	cnt = strtoul(argv[1], NULL, 0);
-	
+
 	if(ble_gap_wl_busy()){
 		iot_printf("err 'ble_gap_wl_busy'\n");
 		return -1;
 	}
-	
+
 	rc = ble_gap_wl_tx_clear();
 	if (rc != 0) {
 		iot_printf("white list clr err\n");
 		return rc;
 	}
-	
+
 	addr.val[0] = 0x00;
 	addr.val[1] = 0x11;
 	addr.val[2] = 0x11;
@@ -2306,9 +2306,9 @@ cmd_white_list_add_test(int argc, char **argv)
 	    if (rc != 0) {
 	        iot_printf("ble_gap_wl_tx_add err:%d\n", rc);
 	        return rc;
-	    }		
+	    }
 	}
-	
+
 	return 0;
 }
 
@@ -2339,26 +2339,26 @@ cmd_pvcy_add(int argc, char **argv)
     rc = parse_arg_all(argc - 1, argv + 1);
     if (rc != 0) {
         return rc;
-    }	
-	
+    }
+
 	rc = parse_arg_mac("addr", addr.val);
 	if (rc != 0) {
         iot_printf("err 'addr'\n");
         return rc;
     }
-	
+
     addr.type = parse_arg_kv("addr_type", cmd_addr_type, &rc);
     if (rc != 0) {
         iot_printf("err 'addr_type'\n");
         return rc;
-    }	
-	
+    }
+
 	rc = parse_arg_byte_stream_exact_length("irk", irk, 16);
     if (rc != 0) {
         iot_printf("err 'irk'\n");
         return rc;
     }
-	
+
 	iot_printf("type:%x,addr:%02X:%02X:%02X:%02X:%02X:%02X\n", addr.type,
 		addr.val[0],addr.val[1],addr.val[2],addr.val[3],addr.val[4],addr.val[5]);
 	iot_printf("irk");
@@ -2371,8 +2371,8 @@ cmd_pvcy_add(int argc, char **argv)
     if (rc != 0) {
         iot_printf("btshell_pvcy_add err:%d\n", rc);
         return rc;
-    }		
-	
+    }
+
 	return 0;
 }
 
@@ -2396,29 +2396,29 @@ cmd_pvcy_rmv(int argc, char **argv)
 {
 	int rc;
 	ble_addr_t addr;
-	
+
     rc = parse_arg_all(argc - 1, argv + 1);
     if (rc != 0) {
         return rc;
-    }	
-	
+    }
+
 	rc = parse_arg_mac("addr", addr.val);
     if (rc != 0) {
         iot_printf("err 'addr'\n");
         return rc;
     }
-	
+
     addr.type = parse_arg_kv("addr_type", cmd_addr_type, &rc);
     if (rc != 0) {
         iot_printf("err 'addr_type'\n");
         return rc;
-    }	
+    }
 
 	rc = btshell_pvcy_rmv(&addr);
     if (rc != 0) {
         iot_printf("btshell_pvcy_rmv err:%d\n", rc);
         return rc;
-    }	
+    }
 
 	return 0;
 }
@@ -2445,14 +2445,14 @@ cmd_pvcy_add_test(int argc, char **argv)
 	int i, rc;
 	ble_addr_t addr;
 	uint8_t irk[16];
-	
+
 	if (argc < 2) {
 		iot_printf("argc err\n");
 		return -1;
 	}
-	
+
 	cnt = strtoul(argv[1], NULL, 0);
-	
+
 	addr.val[0] = 0x00;
 	addr.val[1] = 0x11;
 	addr.val[2] = 0x11;
@@ -2461,7 +2461,7 @@ cmd_pvcy_add_test(int argc, char **argv)
 	addr.val[5] = 0x11;
 	addr.type = 0;
 	memset(irk, 0x33, 16);
-	
+
 	rc = ble_hs_pvcy_clear_entries();
     if (rc != 0) {
         iot_printf("ble_hs_pvcy_clear_entries err:%d\n", rc);
@@ -2475,9 +2475,9 @@ cmd_pvcy_add_test(int argc, char **argv)
 	    if (rc != 0) {
 	        iot_printf("btshell_pvcy_add err:%d\n", rc);
 	        return rc;
-	    }			
+	    }
 	}
-	
+
 	return 0;
 }
 
@@ -3552,11 +3552,11 @@ cmd_default_power_set(int argc, char **argv)
     if (rc != 0) {
         return rc;
     }
-	
+
 	dbm = parse_arg_long_bounds("tx_pwr", 0, 15, &rc);
 	if(rc != 0){
 	    iot_printf("invalid 'conn' parameter\n");
-        return rc;	
+        return rc;
 	}
 
 	ble_gap_set_default_tx_power((int8_t)dbm);
@@ -3726,7 +3726,7 @@ SRAM_CODE static  int rpa_timeout(int argc, char **argv){
     uint8_t buf[BLE_HCI_SET_RESOLV_PRIV_ADDR_TO_LEN];
     int rc;
 	uint16_t timeout;
-	
+
     rc = parse_arg_all(argc - 1, argv + 1);
     if (rc != 0) {
         return rc;
@@ -3763,7 +3763,7 @@ SRAM_CODE int smp_data_inject(int argc, char **argv)
     if (rc != 0) {
         return rc;
     }
-	
+
     handle =  parse_arg_uint8("handle", &rc);
 	if (rc != 0) {
         iot_printf("invalid 'handle' parameter\n");
@@ -3781,12 +3781,12 @@ SRAM_CODE int smp_data_inject(int argc, char **argv)
         iot_printf("invalid 'data' parameter\n");
         return rc;
     }
-	
+
 	pkey.action = type;
 	pkey.passkey = data;
 	ble_sm_inject_io(handle, &pkey);
 	iot_printf("inject:type:%d,passkey:%d\n",type,data);
-	
+
 	return 0;
 }
 
@@ -3800,23 +3800,23 @@ SRAM_CODE int ble_hci_le_set_adv_data(int argc, char **argv)
     uint8_t adv_data[24]={0x05,0x03,0x00,0x18,0x01,0x18,0x0D,0x09,0x50,0x54,0x53,0x2D,
     0x47,0x41,0x50,0x2D,0x30,0x36,0x42,0x38,0x03,0x19,0x00,0x00	};
 	int i;
-    
+
     rc = parse_arg_all(argc - 1, argv + 1);
     if (rc != 0) {
         return rc;
     }
-    
+
     rc = parse_arg_to_hex("data", sizeof(data), data, &len);
     if(rc)
-    {	
+    {
         memcpy(data,adv_data,24);
     }
-    printf("advtise data [%d]:\n",len);   
+    printf("advtise data [%d]:\n",len);
     for( i =0; i<len ;i++)
         printf("%02x",data[i]);
     printf("\n");
      //memcpy(data,adv_data,24);
-    
+
     opcode = BLE_HCI_OP(BLE_HCI_OGF_LE, BLE_HCI_OCF_LE_SET_ADV_DATA);
     rc = ble_hs_hci_cmd_build_le_set_adv_data(data, len, buf, sizeof buf);
     assert(rc == 0);
@@ -4226,7 +4226,7 @@ SRAM_CODE static int cmd_dtm_tx(int argc, char **argv)
         iot_printf("err 'chan'\n");
         return rc;
     }
-	
+
     length = parse_arg_uint8("len", &rc);
     if (rc != 0) {
         iot_printf("err 'len'\n");
@@ -4238,7 +4238,7 @@ SRAM_CODE static int cmd_dtm_tx(int argc, char **argv)
         iot_printf("err 'payload'\n");
         return rc;
     }
-	
+
     phyMode = parse_arg_uint8("phyMode", &rc);
     if (rc != 0) {
         iot_printf("err 'phyMode'\n");
@@ -4293,13 +4293,13 @@ SRAM_CODE static int cmd_dtm_rx(int argc, char **argv)
         iot_printf("err 'chan'\n");
         return rc;
     }
-	
+
     phyMode = parse_arg_uint8("phyMode", &rc);
     if (rc != 0) {
         iot_printf("err 'phyMode'\n");
         return rc;
     }
-	
+
 	rc = ble_hs_dtm_rx_test(channel, phyMode);
 
     return rc;
@@ -4391,7 +4391,7 @@ SRAM_CODE static int cmd_srrc_set(int argc, char **argv)
 	else if (argc > 1 && strcmp(argv[1], "stop") == 0) {
 		 rc = ble_stop_srrc();
 	}
-	
+
     return rc;
 }
 
@@ -4427,9 +4427,9 @@ SRAM_CODE static int cmd_scan_name_set(int argc, char **argv)
 		return -1;
 	}
 	name_len = strlen(name);
-	
+
 	rc = ble_hs_scan_set_name_filt(name_len, name);
-	
+
 	return rc;
 }
 
@@ -4504,7 +4504,7 @@ SRAM_CODE static int cmd_receiver_test(int argc, char **argv)
         iot_printf("err 'chan'\n");
         return rc;
     }
-	
+
     phyMode = parse_arg_uint8("phyMode", &rc);
     if (rc != 0) {
         iot_printf("err 'phyMode'\n");
@@ -4566,7 +4566,7 @@ SRAM_CODE static int cmd_transmitter_test(int argc, char **argv)
         iot_printf("err 'chan'\n");
         return rc;
     }
-	
+
     length = parse_arg_uint8("len", &rc);
     if (rc != 0) {
         iot_printf("err 'len'\n");
@@ -5036,8 +5036,8 @@ static const struct shell_cmd btshell_commands[] = {
 #if (MYNEWT_VAL_SHELL_CMD_HELP)
         .help = &test_tx_help,
 #endif
-    },  
-	 
+    },
+
     {
         .sc_cmd = "phy-set",
         .sc_cmd_func = cmd_phy_set,
@@ -5058,8 +5058,8 @@ static const struct shell_cmd btshell_commands[] = {
 #if (MYNEWT_VAL_SHELL_CMD_HELP)
         .help = &phy_read_help,
 #endif
-    },   
-	
+    },
+
     {
         .sc_cmd = "host-enable",
         .sc_cmd_func = cmd_host_enable,
@@ -5096,7 +5096,7 @@ static const struct shell_cmd btshell_commands[] = {
         .help = &smp_data_inject_help,
 #endif
     },
-    
+
 	{
 		.sc_cmd = "dtm-tx",
 		.sc_cmd_func = cmd_dtm_tx,
@@ -5104,7 +5104,7 @@ static const struct shell_cmd btshell_commands[] = {
 		.help = &dtm_tx_help,
 #endif
 	},
-	
+
 	{
 		.sc_cmd = "dtm-rx",
 		.sc_cmd_func = cmd_dtm_rx,
@@ -5120,7 +5120,7 @@ static const struct shell_cmd btshell_commands[] = {
 		.help = &pwr_set_help,
 #endif
 	},
-	
+
 	{
 		.sc_cmd = "tone-tx",
 		.sc_cmd_func = cmd_tone_tx,
@@ -5169,7 +5169,7 @@ static const struct shell_cmd btshell_commands[] = {
 static int cmd_bt_shell_help(int argc, char **argv){
 	int cmdid=0;
 
-	for(cmdid=0;cmdid<sizeof(btshell_commands)/sizeof(btshell_commands[0]);cmdid++){	
+	for(cmdid=0;cmdid<sizeof(btshell_commands)/sizeof(btshell_commands[0]);cmdid++){
 		iot_printf("%s	:",btshell_commands[cmdid].sc_cmd);
 #if (MYNEWT_VAL_SHELL_CMD_HELP)
 		iot_printf("%s",btshell_commands[cmdid].help->summary);
@@ -5205,13 +5205,13 @@ static  void cli_btshell(char *pLine)
 	char * str;
 	int cmdid=0;
 	const struct shell_cmd *cmd;
-	
+
 	while(1){
 	    str = cli_get_token(&pLine);
 	    if (str[0] == 0)
 	    {
 	        break;
-	    }		
+	    }
 		argv[argc]=str;
 		argc++;
 		if(argc>=MAX_ARGV_CNT){

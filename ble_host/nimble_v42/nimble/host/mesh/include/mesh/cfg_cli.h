@@ -85,7 +85,7 @@ int bt_mesh_cfg_app_key_update(u16_t net_idx, u16_t addr, u16_t key_net_idx,
 			    u16_t key_app_idx, const u8_t app_key[16],
 			    u8_t *status);
 
-int bt_mesh_cfg_app_key_get(u16_t net_idx, u16_t addr, u16_t key_net_idx, 
+int bt_mesh_cfg_app_key_get(u16_t net_idx, u16_t addr, u16_t key_net_idx,
 							u8_t **data, u16_t *len, u8_t *status);
 
 int bt_mesh_cfg_app_key_del(u16_t net_idx, u16_t addr, u16_t key_net_idx,
@@ -96,7 +96,7 @@ int bt_mesh_cfg_node_reset(uint16_t net_idx, uint16_t addr, bool *status);
 
 int bt_mesh_cfg_kr_phase_get(u16_t net_idx, u16_t addr, u8_t *status, u8_t *phase);
 
-int bt_mesh_cfg_kr_phase_set(u16_t net_idx, u16_t addr, u8_t transition, 
+int bt_mesh_cfg_kr_phase_set(u16_t net_idx, u16_t addr, u8_t transition,
 							u8_t *status, u8_t *phase);
 
 int bt_mesh_cfg_mod_app_bind(u16_t net_idx, u16_t addr, u16_t elem_addr,

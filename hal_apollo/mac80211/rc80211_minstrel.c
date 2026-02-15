@@ -119,7 +119,7 @@ minstrel_update_stats_calibrate_rate_policy(struct minstrel_priv *mp,
 					use_table2_flag = 1;
 					break;
 				}
-				else if((mr->success_prob1 > 20) && (i == 6)) 
+				else if((mr->success_prob1 > 20) && (i == 6))
 
 				{
 
@@ -131,7 +131,7 @@ minstrel_update_stats_calibrate_rate_policy(struct minstrel_priv *mp,
 
 				}
 
-				else if ((mr->success_prob1 > 15) && (i > 5)) 
+				else if ((mr->success_prob1 > 15) && (i > 5))
 
 				{
 
@@ -149,13 +149,13 @@ minstrel_update_stats_calibrate_rate_policy(struct minstrel_priv *mp,
 
 				{
 
-					mi->table_flag = 0; 
+					mi->table_flag = 0;
 
 					mi->table_count = 0;
 
 
 
-				}                   
+				}
 
 
 
@@ -174,7 +174,7 @@ minstrel_update_stats_calibrate_rate_policy(struct minstrel_priv *mp,
 
 		{ // table2
 
-			mi->table_flag = 1; 
+			mi->table_flag = 1;
 
 			mi->table_count = 0;
 
@@ -182,7 +182,7 @@ minstrel_update_stats_calibrate_rate_policy(struct minstrel_priv *mp,
 
 		else
 
-		{   
+		{
 
 
 
@@ -212,7 +212,7 @@ minstrel_update_stats_calibrate_rate_policy(struct minstrel_priv *mp,
 
 				//default table 2
 
-				mi->table_flag = 0; 
+				mi->table_flag = 0;
 
 				mi->table_count = 0;
 
@@ -253,16 +253,16 @@ minstrel_update_stats_per_s(struct minstrel_priv *mp, struct minstrel_sta_info *
 			success_prob = 0;
 		}
 		mr->success_prob1 = success_prob;
-#ifdef MINSTREL_PHY_DEBUG_PRINT 
+#ifdef MINSTREL_PHY_DEBUG_PRINT
 		atbm_printk_always("Rate:%d success_hist1:%llu, att_hist1:%llu, success_prob:%u, cur_tp:%u, prob:%u\n", mr->bitrate/2, mr->succ_hist1, mr->att_hist1, success_prob,mr->cur_tp, mr->probability/180);
 #endif		//	mr->succ_hist1 = 0;
 		//	mr->att_hist1 = 0;
-	}    
+	}
 	if(mi->rssi_count!= 0)
 		mi->mean_rssi = (int) (mi->total_rssi / mi->rssi_count);
 
 	minstrel_update_stats_calibrate_rate_policy(mp, mi);
-#ifdef MINSTREL_PHY_DEBUG_PRINT 
+#ifdef MINSTREL_PHY_DEBUG_PRINT
 	atbm_printk_always("\n mi->rssi_count:%d,  mi->mean_rssi%d  mi->max_rssi :%d, mi->min_rssi:%d tableflag:%d count:%d\n",
 			mi->rssi_count, mi->mean_rssi, mi->max_rssi, mi->min_rssi, mi->table_flag, mi->table_count);
 	atbm_printk_always("high_not_sample_cnt:%d, high_sample_cnt:%d, low_sample_cnt:%d, not_sample_cnt:%d\n", mi->high_not_sample_cnt, mi->high_sample_cnt,
@@ -279,7 +279,7 @@ minstrel_update_stats_per_s(struct minstrel_priv *mp, struct minstrel_sta_info *
 	mi->mean_rssi = 0;
 	mi->max_rssi  = -128;
 
-	mi->min_rssi  = 127;	
+	mi->min_rssi  = 127;
 }
 #endif
 	static void
@@ -313,13 +313,13 @@ minstrel_update_stats(struct minstrel_priv *mp, struct minstrel_sta_info *mi)
 				mr->probability = p;
 				mr->cur_tp = p * (1000000 / usecs);
 				}*/
-#ifdef MINSTREL_RSSI_USED		
+#ifdef MINSTREL_RSSI_USED
 		if (mr->attempts) {
 
 			//p = (mr->success * 18000) / mr->attempts;
 
 			mr->succ_hist += mr->success;
-			mr->att_hist += mr->attempts;	
+			mr->att_hist += mr->attempts;
 
 			mr->succ_hist1 += mr->success;
 			mr->att_hist1 += mr->attempts;
@@ -333,7 +333,7 @@ minstrel_update_stats(struct minstrel_priv *mp, struct minstrel_sta_info *mi)
 				mr->att_hist2 = (mr->att_hist2+mr->attempts*700+4)/8;
 			}
 			else if (mr->attempts > 100)
-			{ 
+			{
 
 				mr->succ_hist2 = (mr->succ_hist2+mr->success*300+2)/4;
 
@@ -345,7 +345,7 @@ minstrel_update_stats(struct minstrel_priv *mp, struct minstrel_sta_info *mi)
 
 			else if (mr->attempts > 50)
 
-			{ 
+			{
 
 				mr->succ_hist2 = (mr->succ_hist2+mr->success*100+1)/2;
 
@@ -384,7 +384,7 @@ minstrel_update_stats(struct minstrel_priv *mp, struct minstrel_sta_info *mi)
 			p = ((p * (100 - mp->ewma_level)) + (mr->probability *
 						mp->ewma_level)) / 100;
 			mr->probability = p;
-			mr->cur_tp = p * (1000000 / usecs);		
+			mr->cur_tp = p * (1000000 / usecs);
 		}
 #endif
 
@@ -400,7 +400,7 @@ minstrel_update_stats(struct minstrel_priv *mp, struct minstrel_sta_info *mi)
 			if (mr->probability < 2700)
 #else
 			if ((mr->probability > 17100) || (mr->probability < 1800))
-#endif				
+#endif
 			{
 				mr->adjusted_retry_count = mr->retry_count >> 1;
 				if (mr->adjusted_retry_count > 2)
@@ -411,7 +411,7 @@ minstrel_update_stats(struct minstrel_priv *mp, struct minstrel_sta_info *mi)
 #ifdef MINSTREL_RSSI_USED
 			if(mr->probability<3600)
 			mr->adjusted_retry_count = 3;
-			else	
+			else
 			mr->adjusted_retry_count = mr->retry_count;
 #else
 				mr->adjusted_retry_count = mr->retry_count;
@@ -449,7 +449,7 @@ minstrel_update_stats(struct minstrel_priv *mp, struct minstrel_sta_info *mi)
 
 #ifdef MINSTREL_RSSI_USED
 		if ((index_max_tp <= 3) && (mi->table_flag == 1))
-		{	
+		{
 			index_max_tp = max(index_max_tp + 2, (u32)4);
 			mi->max_tp_rate = index_max_tp;
 		}
@@ -461,7 +461,7 @@ minstrel_update_stats(struct minstrel_priv *mp, struct minstrel_sta_info *mi)
 			}
 			else
 			{
-				mi->max_tp_rate2= 4; 
+				mi->max_tp_rate2= 4;
 			}
 		}
 		else
@@ -470,7 +470,7 @@ minstrel_update_stats(struct minstrel_priv *mp, struct minstrel_sta_info *mi)
 				mi->max_tp_rate2 = min(max(index_max_tp2, (u32)2), index_max_tp - 1);
 			else if(index_max_tp >= 1)
 				mi->max_tp_rate2 = max(index_max_tp, index_max_tp2);
-			else 
+			else
 				mi->max_tp_rate2 = index_max_tp2;
 		}
 
@@ -489,13 +489,13 @@ minstrel_update_stats(struct minstrel_priv *mp, struct minstrel_sta_info *mi)
 				mi->max_prob_rate = min(max((u32)2, index_max_prob), mi->max_tp_rate2 - 1);
 			else if (mi->max_tp_rate2 == 1)
 				mi->max_prob_rate = max((u32)1, index_max_prob);
-			else 
+			else
 				mi->max_prob_rate = index_max_prob;
 /*
-			if ((mi->max_tp_rate2 > 0) &&(mi->max_tp_rate>0)) 
+			if ((mi->max_tp_rate2 > 0) &&(mi->max_tp_rate>0))
 			{
 				mi->max_prob_rate = min(min(mi->max_tp_rate - 1, mi->max_tp_rate2 - 1), max(index_max_prob, 2));
-				
+
 			}
 			else
 			mi->max_prob_rate = index_max_prob;
@@ -654,8 +654,8 @@ minstrel_update_stats(struct minstrel_priv *mp, struct minstrel_sta_info *mi)
 						sample_max_rate = 7;
 					else
 						sample_max_rate = max((u32)7, mi->max_tp_rate + 2);
-					
-					if ((msr->success_prob1 < 5) && sample_ndx > sample_max_rate  && (mi->initial_flag == 1)) 
+
+					if ((msr->success_prob1 < 5) && sample_ndx > sample_max_rate  && (mi->initial_flag == 1))
 					{
 #ifdef MINSTREL_PHY_DEBUG_PRINT
 						mi->high_not_sample_cnt++;
@@ -687,9 +687,9 @@ minstrel_update_stats(struct minstrel_priv *mp, struct minstrel_sta_info *mi)
 							sample = false;
 #ifdef MINSTREL_PHY_DEBUG_PRINT
 							mi->high_not_sample_cnt++;
-#endif	
+#endif
 						}
-# ifdef MINSTREL_RSSI_USED		
+# ifdef MINSTREL_RSSI_USED
 					}
 #endif
 				} else {
@@ -721,21 +721,21 @@ minstrel_update_stats(struct minstrel_priv *mp, struct minstrel_sta_info *mi)
 				ndx = mi->max_tp_rate;
 
 			ar[0].idx = mi->r[ndx].rix;
-#ifdef MINSTREL_RSSI_USED			
+#ifdef MINSTREL_RSSI_USED
 			if (sample && (sample_slower==0))
 				ar[0].count = 2;
 			else
 #endif
-			{	
+			{
 				ar[0].count = minstrel_get_retry_count(&mi->r[ndx], info);
 #ifdef MINSTREL_RSSI_USED
 				if (mi->max_tp_rate <= 1)
-				ar[0].count = max((u8)4, ar[0].count);	
+				ar[0].count = max((u8)4, ar[0].count);
 				else if ((mi->max_tp_rate <= 3 && mi->r[0].probability< 9000) && (mi->r[ndx].probability>= 2700))
 				ar[0].count = max((u8)6,ar[0].count);
-#endif	
-				
-			}		
+#endif
+
+			}
 
 			if (!mrr) {
 				if (!sample)
@@ -751,7 +751,7 @@ minstrel_update_stats(struct minstrel_priv *mp, struct minstrel_sta_info *mi)
 			if (sample) {
 				if (sample_slower)
 				{		mrr_ndx[0] = sample_ndx;
-				}	
+				}
 				else{
 					mrr_ndx[0] = mi->max_tp_rate;
 				}
@@ -760,7 +760,7 @@ minstrel_update_stats(struct minstrel_priv *mp, struct minstrel_sta_info *mi)
 			}
 			mrr_ndx[1] = mi->max_prob_rate;
 #ifdef MINSTREL_RSSI_USED
-			if (mi->table_flag == 1)	
+			if (mi->table_flag == 1)
 				mrr_ndx[2] = 4;
 			else
 #endif
@@ -822,24 +822,24 @@ minstrel_update_stats(struct minstrel_priv *mp, struct minstrel_sta_info *mi)
 			}
 
 
-#ifdef MINSTREL_SAMPLE_SKIP_LOW_RATE 
+#ifdef MINSTREL_SAMPLE_SKIP_LOW_RATE
 			for (col = 0; col < SAMPLE_COLUMNS; col++) {
 				for (i = 0; i < n_srates; i++) {
 
 					if(SAMPLE_TBL(mi, i, col)== 1)
 					{
-						SAMPLE_TBL(mi, i, col) = 6;  
+						SAMPLE_TBL(mi, i, col) = 6;
 					}
 				}
 			}
 #endif
 #ifdef MINSTREL_RSSI_USED
-#ifdef MINSTREL_PHY_DEBUG_PRINT 
+#ifdef MINSTREL_PHY_DEBUG_PRINT
 			atbm_printk_always("minstrel sample table:\n");
 			for (col = 0; col < SAMPLE_COLUMNS; col++) {
 				for (i = 0; i < n_srates; i++) {
 
-					atbm_printk_always("%d ", SAMPLE_TBL(mi, i, col));  
+					atbm_printk_always("%d ", SAMPLE_TBL(mi, i, col));
 
 				}
 				atbm_printk_always("\n");

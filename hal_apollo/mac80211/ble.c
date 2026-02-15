@@ -180,7 +180,7 @@ static int atbm_ioctl_ble_set_resp_data(struct ieee80211_local* local,u8* data)
 void atbm_ioctl_ble_adv_rpt_async(struct ieee80211_hw *hw,u8 *event_buffer, u16 event_len)
 {
 	struct sk_buff *skb;
-	
+
 	skb = atbm_dev_alloc_skb(sizeof(struct ioctl_status_async));
 	if(skb){
 		struct ioctl_status_async *async = (struct ioctl_status_async *)skb->data;
@@ -200,7 +200,7 @@ void atbm_ioctl_ble_adv_rpt_async(struct ieee80211_hw *hw,u8 *event_buffer, u16 
 void atbm_ioctl_ble_conn_rpt_async(struct ieee80211_hw *hw,u8 *event_buffer, u16 event_len)
 {
 	struct sk_buff *skb;
-	
+
 	skb = atbm_dev_alloc_skb(sizeof(struct ioctl_status_async));
 	if(skb){
 		struct ioctl_status_async *async = (struct ioctl_status_async *)skb->data;
@@ -213,10 +213,10 @@ void atbm_ioctl_ble_conn_rpt_async(struct ieee80211_hw *hw,u8 *event_buffer, u16
 		async->type        = 1;
 		async->list_empty  = 0;
 		atbm_skb_put(skb,sizeof(struct ioctl_status_async));
-		
+
 		ieee80211_ble_recv(hw,skb);
 	}
-	
+
 }
 
 #endif//#ifdefCONFIG_ATBM_BLE_ADV_COEXISTstatic int atbm_ioctl_notify_add(u8 type, u8 driver_mode, u8 *event_buffer, u16 event_len)
@@ -245,11 +245,11 @@ static struct ieee80211_ble_cdev *ieee80211_get_ble_dev(struct file *filp)
 {
 	struct ieee80211_ble_file *ble_file = filp->private_data;
 	struct ieee80211_ble_cdev *ble_cdev = NULL;
-	
+
 	BUG_ON(ble_file == NULL);
 	BUG_ON(ble_file->dev ==  NULL);
 	ieee80211_ble_cdev_lock(ble_file->dev);
-	
+
 	ble_cdev = ieee80211_ble_cdev_get_priv(ble_file->dev);
 	if(ble_cdev == NULL){
 		ieee80211_ble_cdev_unlock(ble_file->dev);
@@ -263,7 +263,7 @@ static void ieee80211_put_ble_dev(struct file *filp)
 
 	BUG_ON(ble_file == NULL);
 	BUG_ON(ble_file->dev ==  NULL);
-	
+
 	ieee80211_ble_cdev_unlock(ble_file->dev);
 }
 static int __match_devt(struct device *dev, const void *data)
@@ -306,20 +306,20 @@ static int ieee80211_ble_ioctl_flush (struct file *filp, fl_owner_t id)
 	if(ble_cdev == NULL){
 		goto exit;
 	}
-	
+
 	if(file_count(filp) > 1){
 		ieee80211_put_ble_dev(filp);
 		goto exit;
 	}
-	
+
 	if(ble_cdev){
 		spin_lock_bh(&ble_cdev->lock);
 		ieee80211_ble_file_flush((struct ieee80211_ble_file *)filp->private_data);
 		spin_unlock_bh(&ble_cdev->lock);
 		ieee80211_put_ble_dev(filp);
 	}
-	
-exit:	
+
+exit:
 	return 0;
 }
 
@@ -327,9 +327,9 @@ static ssize_t ieee80211_ble_ioctl_write(struct file *filp, const char __user *b
 {
 	struct ieee80211_ble_cdev *ble_cdev = ieee80211_get_ble_dev(filp);
 	struct ieee80211_ble_file *ble_file = filp->private_data;
-	
+
 	atbm_printk_ble("ioctl_write(%zu)\n",len);
-	
+
 	if(ble_cdev == NULL){
 		return -1;
 	}
@@ -337,12 +337,12 @@ static ssize_t ieee80211_ble_ioctl_write(struct file *filp, const char __user *b
 	if(ble_file->ops->write == NULL){
 		goto err;
 	}
-	
+
 	if(len > IEEE80211_BLE_IOCTL_DATA_SIZE){
 		atbm_printk_err("ble_ioctl_write len err (%zu)\n",len);
 		goto err;
 	}
-		
+
 	if (0 != copy_from_user(&ble_file->ioctl_data[0], buff, len)) {
 		atbm_printk_err("%s: copy_from_user err.\n", __func__);
 		goto err;
@@ -370,22 +370,22 @@ static ssize_t ieee80211_ble_ioctl_writev(struct kiocb *iocb
 	struct ieee80211_ble_file *ble_file = filp->private_data;
 	size_t len = 0;
 	u8 *xmit;
-	
+
 	if(ble_cdev == NULL){
 		atbm_printk_err("writev: ble_dev err\n");
 		return -1;
 	}
-	
+
 	if(ble_file->ops->write == NULL){
 		goto err;
 	}
-	
+
 #if (LINUX_VERSION_CODE < KERNEL_VERSION(4, 0, 0))
 	len = iov_length(iov, nr_segs);
 #else
 	len = iov_iter_count(iov);
 #endif
-	
+
 	atbm_printk_ble("ioctl_writev(%zu)\n",len);
 
 	if(len > IEEE80211_BLE_IOCTL_DATA_SIZE){
@@ -396,12 +396,12 @@ static ssize_t ieee80211_ble_ioctl_writev(struct kiocb *iocb
 	xmit = ble_file->ioctl_data;
 
 	memset(xmit,0,IEEE80211_BLE_IOCTL_DATA_SIZE);
-	
+
 #if (LINUX_VERSION_CODE < KERNEL_VERSION(4, 0, 0))
 	{
 		int i = 0;
 		for (i = 0; i < nr_segs; i++) {
-			
+
 			if (copy_from_user(xmit, iov[i].iov_base, iov[i].iov_len)){
 				atbm_printk_err("writev: copy err\n");
 				goto err;
@@ -417,12 +417,12 @@ static ssize_t ieee80211_ble_ioctl_writev(struct kiocb *iocb
 #endif
 
 	len = ble_file->ops->write(ble_cdev,ble_file,len);;
-	
+
 	ieee80211_put_ble_dev(filp);
 	return len;
 err:
 	ieee80211_put_ble_dev(filp);
-	return -1;	
+	return -1;
 }
 static unsigned int ieee80211_ble_ioctl_poll(struct file *filp, struct poll_table_struct *wait)
 {
@@ -441,14 +441,14 @@ static int ieee80211_ble_ioctl_open(struct inode *inode, struct file *filp)
 	struct device *dev = NULL;
 	struct ieee80211_ble_file *ble_file;
 	struct ieee80211_ble_cdev *ble_cdev;
-	
+
 	ble_file = atbm_kzalloc(sizeof(struct ieee80211_ble_file), GFP_KERNEL);
 
 	if(ble_file == NULL){
 		atbm_printk_err("ioctl_open malloc err\n");
 		goto err;
 	}
-	
+
 	if (imajor(inode) == MAJOR(ble_devt)){
 		dev = ieee80211_ble_device_find_by_devt(inode->i_rdev);
 	}
@@ -457,22 +457,22 @@ static int ieee80211_ble_ioctl_open(struct inode *inode, struct file *filp)
 
 	ieee80211_ble_cdev_lock(dev);
 	ble_cdev = ieee80211_ble_cdev_get_priv(dev);
-	
+
 	if(ble_cdev == NULL){
 		atbm_printk_err("ble_cdev is null ,can not open\n");
 		goto err_ble;
 	}
-	
+
 	ble_file->dev   = dev;
 	ble_file->filp  = filp;
 	ble_file->inode = inode;
-	
+
 	atbm_skb_queue_head_init(&ble_file->recv_queue);
 	init_waitqueue_head(&ble_file->read_wait);
 	spin_lock_bh(&ble_cdev->lock);
 	list_add_tail(&ble_file->head,&ble_cdev->ble_files);
 	spin_unlock_bh(&ble_cdev->lock);
-	
+
 	ieee8021_ble_operations_init(ble_file);
 	atbm_printk_always("ioctl_open(%p)(%p)\n",dev,dev_get_drvdata(dev));
 	filp->private_data = ble_file;
@@ -492,7 +492,7 @@ static int ieee80211_ble_ioctl_fasync(int fd, struct file *filp, int on)
 	struct ieee80211_ble_file *ble_file = (struct ieee80211_ble_file *)filp->private_data;
 
 	BUG_ON(ble_file == NULL);
-	
+
 	return fasync_helper(fd, filp, on, &ble_file->connect_async);
 }
 
@@ -500,11 +500,11 @@ static int ieee80211_ble_ioctl_release(struct inode *inode, struct file *filp)
 {
 	struct ieee80211_ble_file *ble_file = (struct ieee80211_ble_file *)filp->private_data;
 	struct ieee80211_ble_cdev *ble_cdev;
-	
+
 	BUG_ON(ble_file->dev == NULL);
 	ieee80211_ble_cdev_lock(ble_file->dev);
 	ble_cdev = ieee80211_ble_cdev_get_priv(ble_file->dev);
-	
+
 	if(ble_cdev){
 		spin_lock_bh(&ble_cdev->lock);
 		ieee80211_ble_file_flush(ble_file);
@@ -515,14 +515,14 @@ static int ieee80211_ble_ioctl_release(struct inode *inode, struct file *filp)
 	ieee80211_ble_cdev_unlock(ble_file->dev);
 	put_device(ble_file->dev);
 	atbm_kfree(ble_file);
-	
+
 	return 0;
 }
 static int ieee80211_ble_file_submit_skb(struct ieee80211_ble_file *ble_file,struct sk_buff *skb)
 {
 	struct ieee80211_ble_status *cb;
 	int ret = -1;
-	
+
 	cb = IEEE80211_BLE_SKB_CB(skb);
 	cb->nr   = 0;
 
@@ -545,22 +545,22 @@ static int ieee80211_ble_cdev_rx(struct platform_device *pdev, struct sk_buff *s
 	struct ieee80211_ble_file *ble_file_prev = NULL;
 	int ret = -1;
 	int n_files = 0;
-	
+
 	BUG_ON(ble_cdev == NULL);
-	
+
 	spin_lock_bh(&ble_cdev->lock);
 
 	/*
-	*submit skb to each file 
+	*submit skb to each file
 	*/
 	list_for_each_entry(ble_file, &ble_cdev->ble_files, head){
 		struct sk_buff *new;
-		
+
 		if(ble_file_prev == NULL){
 			ble_file_prev = ble_file;
 			continue;
 		}
-		
+
 		new = atbm_skb_copy(skb, GFP_ATOMIC);
 
 		if(new){
@@ -569,15 +569,15 @@ static int ieee80211_ble_cdev_rx(struct platform_device *pdev, struct sk_buff *s
 				atbm_kfree_skb(new);
 			}
 		}
-		
+
 		ble_file_prev = ble_file;
 	}
-	
+
 	if(ble_file_prev){
 		n_files ++ ;
 		ret = ble_file_prev->ops->recv(ble_file_prev,skb);
 	}
-	
+
 	spin_unlock_bh(&ble_cdev->lock);
 
 	return ret;
@@ -590,27 +590,27 @@ static ssize_t ieee80211_ble_read(struct file *filp, char __user *buff, size_t l
 	struct sk_buff *skb;
 	int ret = 0;
 	struct sk_buff_head list;
-	
+
 	//atbm_printk_ble("ble_read task[%p/%s],len[%zu][%d]\n",current,current->comm,len,ble_file->read_happens);
-	
+
 	while (len) {
 		struct ieee80211_ble_status *cb;
-		
+
 		ble_cdev =  ieee80211_get_ble_dev(filp);
-		
+
 		if(ble_cdev == NULL){
 			atbm_printk_err("ble_cdev has been flushed\n");
 			ret = -1;
 			goto err_dev;
 		}
-		
+
 		if(ble_file->flushed == true){
 			atbm_printk_err("ble_file has been flushed\n");
 			goto err_file;
 		}
-		
+
 		__atbm_skb_queue_head_init(&list);
-		
+
 		spin_lock_irqsave(&ble_file->recv_queue.lock,flags);
 
 		if (atbm_skb_queue_empty(&ble_file->recv_queue)){
@@ -635,13 +635,13 @@ static ssize_t ieee80211_ble_read(struct file *filp, char __user *buff, size_t l
 				status->list_empty = 1;
 			}
 		}
-		
+
 		if(ble_file->ops->read){
 			ret = ble_file->ops->read(ble_cdev,ble_file,skb,buff,len);
 		}else {
 			ret = skb->len;
 		}
-		
+
 		if(ret >= skb->len){
 			__atbm_skb_unlink(skb,&list);
 			atbm_kfree_skb(skb);
@@ -655,16 +655,16 @@ static ssize_t ieee80211_ble_read(struct file *filp, char __user *buff, size_t l
 		atbm_skb_queue_splice_init(&list,&ble_file->recv_queue);
 		spin_unlock_irqrestore(&ble_file->recv_queue.lock,flags);
 		ieee80211_put_ble_dev(filp);
-		
+
 //		atbm_printk_ble("ble_read finished[%p/%s],len[%d][%d]\n",current,current->comm,ret,ble_file->read_happens);
 		ble_file->read_happens ++;
-		
+
 		break;
-		
-try_wait:		
+
+try_wait:
 		spin_unlock_irqrestore(&ble_file->recv_queue.lock,flags);
 		ieee80211_put_ble_dev(filp);
-		
+
 		if (filp->f_flags & O_NONBLOCK) {
 			ret = -EAGAIN;
 			atbm_printk_debug("read not need block\n");
@@ -675,16 +675,16 @@ try_wait:
 			break;
 		}
 		//atbm_printk_ble("read waiting\n");
-		
+
 		ret = wait_event_interruptible(ble_file->read_wait,
 					       !atbm_skb_queue_empty(&ble_file->recv_queue));
 		if (ret < 0){
-			
+
 			break;
 		}
 		//atbm_printk_ble("wait_event up(%d)\n",ret);
 	}
-	
+
 err_dev:
 	return ret;
 err_file:
@@ -715,21 +715,21 @@ static long ieee80211_ble_unlock_ioctl(struct file *filp, unsigned int cmd, unsi
 	struct ieee80211_ble_cdev *ble_cdev = ieee80211_get_ble_dev(filp);
 	struct ieee80211_ble_file *ble_file = filp->private_data;
 	int ret = -1;
-	
+
 	if(ble_cdev == NULL){
 		return -1;
 	}
-	
+
 	if(ble_file->flushed == true){
 		atbm_printk_err("ble_file has been flushed\n");
 		goto err;
 	}
-	
+
 	if(ble_file->ops->ioctl == NULL){
 		goto err;
 	}
 
-	
+
 	ret = ble_file->ops->ioctl(ble_cdev,ble_file,cmd,arg);
 err:
 	ieee80211_put_ble_dev(filp);
@@ -754,9 +754,9 @@ static int ieee80211_ble_bluez_submit_skb(struct ieee80211_ble_file *ble_file,st
 	struct hci_dev *hdev = container_of(ble_file->dev, struct hci_dev, dev);
 	struct sk_buff *bt_skb = NULL;
 	u8 pkt_type;
-	
+
 	atbm_printk_ble("bluezsubmit in (%zu)(%d)(%zu)\n",cb->size,skb->len,cb->nr);
-	
+
 	BUG_ON(cb->nr != 0);
 	/*
 	*remove type,driver_mode,list_empty;
@@ -774,7 +774,7 @@ static int ieee80211_ble_bluez_submit_skb(struct ieee80211_ble_file *ble_file,st
 	pkt_type = skb->data[0];
 
 	atbm_skb_pull(skb,1);
-	
+
 	atbm_printk_ble("bluezsubmit out(%zu)(%d)(%d)\n",cb->size,skb->len,pkt_type);
 
 	bt_skb = bt_skb_alloc(skb->len,GFP_ATOMIC);
@@ -786,11 +786,11 @@ static int ieee80211_ble_bluez_submit_skb(struct ieee80211_ble_file *ble_file,st
 	WARN_ON(skb_copy_bits(skb,0,skb_put(bt_skb,skb->len),skb->len));
 
 	memset(bt_skb->cb,0,sizeof(bt_skb->cb));
-	
+
 	bt_cb((bt_skb))->expect = 0;
 	bt_cb((bt_skb))->pkt_type = pkt_type;
 
-	
+
 	ieee80211_ble_bluez_recv(hdev,bt_skb);
 exit:
 	atbm_kfree_skb(skb);
@@ -807,26 +807,26 @@ static int ieee80211_ble_bluez_open(struct hci_dev *hdev)
 {
 	struct ieee80211_ble_cdev *ble_cdev = dev_get_drvdata(&hdev->dev);
 	struct ieee80211_ble_file *ble_file;
-	
+
 	if(ble_cdev == NULL){
 		goto err_cdev;
 	}
-	
+
 	ble_file = &ble_cdev->hdev_file;
 	memset(ble_file,0,sizeof(struct ieee80211_ble_file));
-	
+
 	ble_file->dev = &hdev->dev;
 	ble_file->ops = &ieee880211_blez_ops;
 
 	atbm_skb_queue_head_init(&ble_file->recv_queue);
 	init_waitqueue_head(&ble_file->read_wait);
-	
+
 	spin_lock_bh(&ble_cdev->lock);
 	list_add_tail(&ble_file->head,&ble_cdev->ble_files);
 	spin_unlock_bh(&ble_cdev->lock);
 
 	atbm_printk_ble("bluez open\n");
-	
+
 	return 0;
 err_cdev:
 	return -1;
@@ -836,14 +836,14 @@ static int ieee80211_ble_bluez_close(struct hci_dev *hdev)
 {
 	struct ieee80211_ble_cdev *ble_cdev = dev_get_drvdata(&hdev->dev);
 	struct ieee80211_ble_file *ble_file;
-	
-	
+
+
 	if(ble_cdev ==  NULL){
 		goto exit;
 	}
-	
+
 	ble_file = &ble_cdev->hdev_file;
-	
+
 	spin_lock_bh(&ble_cdev->lock);
 	ieee80211_ble_file_flush(ble_file);
 	spin_unlock_bh(&ble_cdev->lock);
@@ -858,13 +858,13 @@ static int ieee80211_ble_bluez_flush(struct hci_dev *hdev)
 	struct ieee80211_ble_cdev *ble_cdev = dev_get_drvdata(&hdev->dev);
 	struct ieee80211_ble_file *ble_file;
 	unsigned long flags;
-	
+
 	if(ble_cdev == NULL){
-		goto exit;	
+		goto exit;
 	}
 
 	ble_file = &ble_cdev->hdev_file;
-	
+
 	spin_lock_irqsave(&ble_file->recv_queue.lock,flags);
 	__atbm_skb_queue_purge(&ble_file->recv_queue);
 	spin_unlock_irqrestore(&ble_file->recv_queue.lock,flags);
@@ -943,7 +943,7 @@ static int handle_unsupported_command(struct hci_dev *hdev, struct sk_buff *skb)
 #if (LINUX_VERSION_CODE <= KERNEL_VERSION(3, 4, 0))
 static void ieee80211_ble_bluez_destruct(struct hci_dev *hdev)
 {
-	
+
 }
 #endif
 static int ieee80211_ble_bluez_send_frame(
@@ -958,7 +958,7 @@ static int ieee80211_ble_bluez_send_frame(
 	char *xmit_buff;
 	struct ieee80211_ble_cdev *ble_cdev = dev_get_drvdata(&hdev->dev);
 	struct platform_device *pdev;
-	
+
 	if(ble_cdev == NULL){
 		goto exit;
 	}
@@ -997,8 +997,8 @@ static int ieee80211_ble_bluez_send_frame(
 	if (xmit_buff == NULL) {
 		goto exit;
 	}
-	
-	
+
+
 	WARN_ON(skb_copy_bits(skb,0,xmit_buff,skb->len));
 
 	ieee80211_ble_commb_xmit(pdev, xmit_buff, skb->len);
@@ -1009,7 +1009,7 @@ exit:
 static int ieee80211_ble_bluez_init(struct ieee80211_ble_cdev *ble_cdev)
 {
 	struct hci_dev *hdev = NULL;
-	
+
 	hdev = hci_alloc_dev();
 
 	if(hdev == NULL){
@@ -1052,20 +1052,20 @@ static int ieee80211_ble_bluez_deinit(struct ieee80211_ble_cdev *ble_cdev)
 	}
 
 	dev_set_drvdata(&hdev->dev, NULL);
-	
+
 	ble_cdev->hdev = NULL;
-	
+
 
 	hci_unregister_dev(hdev);
 
-	
+
 	hci_free_dev(hdev);
 exit:
 	return 0;
 }
 #endif
 static int ieee80211_ble_cdev_init(struct ieee80211_ble_cdev *ble_cdev)
-{	
+{
 	spin_lock_init(&ble_cdev->lock);
 	INIT_LIST_HEAD(&ble_cdev->ble_files);
 	return 0;
@@ -1080,7 +1080,7 @@ static int ieee80211_ble_cdev_deinit(struct ieee80211_ble_cdev *ble_cdev)
 		/*
 		*del list
 		*/
-		ieee80211_ble_file_flush(ble_file);	
+		ieee80211_ble_file_flush(ble_file);
 	}
 	spin_unlock_bh(&ble_cdev->lock);
 	return 0;
@@ -1102,22 +1102,22 @@ static void ieee80211_ble_file_prepare_exit(struct ieee80211_ble_cdev *ble_cdev)
 	struct ieee80211_ble_file *ble_file;
 	struct sk_buff *new = NULL;
 	struct completion	done;
-	
+
 	init_completion(&done);
-	
+
 	spin_lock_bh(&ble_cdev->lock);
-	
+
 	list_for_each_entry(ble_file, &ble_cdev->ble_files, head){
-		
-		
+
+
 		if(ble_file->ops->dev_type != BLE_DEV_TYPE_BLUEDROID){
 			continue;
 		}
 
 		atbm_printk_ble("ble_file bluedroid exit\n");
-		
+
 		new = atbm_dev_alloc_skb(sizeof(struct ioctl_status_async));
-		
+
 		if(new){
 			int idx = 0;
 			struct ioctl_status_async *async = (struct ioctl_status_async *)new->data;
@@ -1127,7 +1127,7 @@ static void ieee80211_ble_file_prepare_exit(struct ieee80211_ble_cdev *ble_cdev)
 			cb->size        = 8;
 			cb->context1    = ble_file;
 			cb->context2    = &done;
-			
+
 			async->event_buffer[idx++] = 0;
 			async->event_buffer[idx++] = 0;
 			async->event_buffer[idx++] = 0;
@@ -1141,22 +1141,22 @@ static void ieee80211_ble_file_prepare_exit(struct ieee80211_ble_cdev *ble_cdev)
 			async->list_empty  = 0;
 			ble_file->exiting  = true;
 			atbm_skb_put(new,sizeof(struct ioctl_status_async));
-			
+
 			new->destructor = ieee80211_ble_file_prepare_skb_destructor;
-			
+
 			if(ble_file->ops->recv(ble_file,new) != 0){
 				atbm_kfree_skb(new);
 			}
 
-			
+
 		}
 
 		break;
 	}
-	
+
 	if(new == NULL)
 		complete(&done);
-	
+
 	spin_unlock_bh(&ble_cdev->lock);
 
 	if (!wait_for_completion_timeout(&done, 10*HZ)){
@@ -1187,7 +1187,7 @@ static int wakeup_reason_pm_event(struct notifier_block *notifier,
 
 static int atbm_ble_platform_probe(struct platform_device *pdev)
 {
-	
+
 	struct ieee80211_ble_cdev *ble_cdev;
 
 	ble_cdev = atbm_kzalloc(sizeof(struct ieee80211_ble_cdev),GFP_KERNEL);
@@ -1195,11 +1195,11 @@ static int atbm_ble_platform_probe(struct platform_device *pdev)
 	if(ble_cdev == NULL){
 		goto err;
 	}
-		
+
 	if(ieee80211_ble_commb_start(pdev)){
 		goto err;
 	}
-	
+
 	ieee80211_ble_commb_subscribe(pdev, ieee80211_ble_cdev_rx);
 	ble_cdev->pdev = pdev;
 	ieee80211_ble_cdev_init(ble_cdev);
@@ -1237,7 +1237,7 @@ static int atbm_ble_platform_remove(struct platform_device *pdev)
 	struct ieee80211_ble_cdev *ble_cdev = dev_get_drvdata(&pdev->dev);
 
 	ieee80211_ble_file_prepare_exit(ble_cdev);
-	
+
 	ieee80211_ble_commb_stop(pdev);
 	ieee80211_ble_commb_unsubscribe(pdev);
 
@@ -1251,7 +1251,7 @@ static int atbm_ble_platform_remove(struct platform_device *pdev)
 	synchronize_rcu();
 	unregister_pm_notifier(&ble_cdev->pm_notifier);
 	device_destroy(ble_class,ble_cdev->ble_devt);
-	
+
 	dev_set_drvdata(&pdev->dev,NULL);
 	atbm_printk_always("ble_platform_remove(%p)\n",ble_cdev);
 	atbm_kfree(ble_cdev);
@@ -1266,7 +1266,7 @@ static struct platform_driver atbm_ble_platform_driver = {
 	},
 };
 #ifdef BLUEDROID
-ssize_t ieee8021_ble_operations_bluedriod_read (struct ieee80211_ble_cdev *cdev, 
+ssize_t ieee8021_ble_operations_bluedriod_read (struct ieee80211_ble_cdev *cdev,
 					struct ieee80211_ble_file *ble_file,struct sk_buff *skb,
 					char __user *buff, size_t len)
 {
@@ -1292,18 +1292,18 @@ ssize_t ieee8021_ble_operations_bluedriod_read (struct ieee80211_ble_cdev *cdev,
 	atbm_printk_ble("read_bluedroid out(%zu)(%d)(%zu)\n",cb->size,skb->len,len);
 	ieee80211_ble_dump(__func__,skb->data,skb->len);
 	copy_len = min(len,(size_t)skb->len);
-		
+
 	ret = copy_to_user(buff, skb->data,copy_len);
-		
+
 	if(ret == 0){
-		ret = copy_len;		
+		ret = copy_len;
 	}else {
 		ret = -1;
 	}
 
 	return ret;
 }
-static ssize_t ieee8021_ble_operations_bluedriod_write (struct ieee80211_ble_cdev *cdev, 
+static ssize_t ieee8021_ble_operations_bluedriod_write (struct ieee80211_ble_cdev *cdev,
 					struct ieee80211_ble_file *ble_file,size_t len)
 {
 	char* xmit_buff;
@@ -1313,9 +1313,9 @@ static ssize_t ieee8021_ble_operations_bluedriod_write (struct ieee80211_ble_cde
 	if (xmit_buff == NULL) {
 		goto err;
 	}
-	
+
 	atbm_printk_ble("bluedriod_write (%zu)\n",len);
-	
+
 	memcpy(xmit_buff, ble_file->ioctl_data, len);
 
 	ieee80211_ble_commb_xmit(cdev->pdev, xmit_buff, len);
@@ -1324,7 +1324,7 @@ static ssize_t ieee8021_ble_operations_bluedriod_write (struct ieee80211_ble_cde
 err:
 	return -1;
 }
-static ssize_t ieee8021_ble_operations_bluedriod_ioctl(struct ieee80211_ble_cdev *ble_cdev, 
+static ssize_t ieee8021_ble_operations_bluedriod_ioctl(struct ieee80211_ble_cdev *ble_cdev,
 					struct ieee80211_ble_file *ble_file,unsigned int cmd, unsigned long arg)
 {
 	atbm_printk_ble("bluedroid not support ioctl\n");
@@ -1339,7 +1339,7 @@ static struct ieee8021_ble_operations ieee880211_ble_ops = {
 	.recv  = ieee80211_ble_file_submit_skb,
 };
 #else
-ssize_t ieee8021_ble_operations_default_read (struct ieee80211_ble_cdev *cdev, 
+ssize_t ieee8021_ble_operations_default_read (struct ieee80211_ble_cdev *cdev,
 					struct ieee80211_ble_file *ble_file,struct sk_buff *skb,
 					char __user *buff, size_t len)
 {
@@ -1348,16 +1348,16 @@ ssize_t ieee8021_ble_operations_default_read (struct ieee80211_ble_cdev *cdev,
 	struct ieee80211_ble_status *cb = IEEE80211_BLE_SKB_CB(skb);
 
 	BUG_ON(cb->nr != 0);
-	
+
 	ret = copy_to_user(buff, skb->data,copy_len);
-		
+
 	if(ret == 0){
 		ret = copy_len;
 	}else {
 		ret = -1;
 	}
 
-	return ret;	
+	return ret;
 }
 static void ieee80211_ble_ioctl_tx(struct ieee80211_ble_cdev *ble_cdev,uint8_t* buf)
 {
@@ -1382,21 +1382,21 @@ pkt_free:
 	atbm_printk_always("unsupport ble mode\n");
 #endif //#ifdef CONFIG_WIFI_BT_COMB
 }
-static ssize_t ieee8021_ble_operations_default_write (struct ieee80211_ble_cdev *cdev, 
+static ssize_t ieee8021_ble_operations_default_write (struct ieee80211_ble_cdev *cdev,
 					struct ieee80211_ble_file *ble_file,size_t len)
 {
 	ieee80211_ble_ioctl_tx(cdev,ble_file->ioctl_data);
 
 	return len;
 }
-static ssize_t ieee8021_ble_operations_default_ioctl(struct ieee80211_ble_cdev *ble_cdev, 
+static ssize_t ieee8021_ble_operations_default_ioctl(struct ieee80211_ble_cdev *ble_cdev,
 					struct ieee80211_ble_file *ble_file,unsigned int cmd, unsigned long arg)
 {
 	if (copy_from_user(ble_file->ioctl_data, (struct at_cmd_direct *)arg,IEEE80211_BLE_IOCTL_DATA_SIZE)){
 		atbm_printk_err("%s: copy_from_user err.\n", __func__);
 		goto err;
 	}
-	
+
 	switch(cmd){
 	case ATBM_BLE_COEXIST_START:
 		ieee80211_ble_ioctl_start(ble_cdev,ble_file->ioctl_data);
@@ -1406,13 +1406,13 @@ static ssize_t ieee8021_ble_operations_default_ioctl(struct ieee80211_ble_cdev *
 		break;
 #ifdef CONFIG_ATBM_BLE_ADV_COEXIST
 	case ATBM_BLE_SET_ADV_DATA:
-		atbm_ioctl_ble_set_adv_data(ble_cdev->pdev->dev.platform_data,ble_file->ioctl_data);		
+		atbm_ioctl_ble_set_adv_data(ble_cdev->pdev->dev.platform_data,ble_file->ioctl_data);
 		break;
 	case ATBM_BLE_ADV_RESP_MODE_START:
-		atbm_ioctl_ble_adv_resp_start(ble_cdev->pdev->dev.platform_data,ble_file->ioctl_data); 
+		atbm_ioctl_ble_adv_resp_start(ble_cdev->pdev->dev.platform_data,ble_file->ioctl_data);
 		break;
 	case ATBM_BLE_SET_RESP_DATA:
-		atbm_ioctl_ble_set_resp_data(ble_cdev->pdev->dev.platform_data,ble_file->ioctl_data);	
+		atbm_ioctl_ble_set_resp_data(ble_cdev->pdev->dev.platform_data,ble_file->ioctl_data);
 		break;
 #endif  //#ifdef CONFIG_ATBM_BLE_ADV_COEXIST
 	case ATBM_BLE_HIF_TXDATA:
@@ -1461,18 +1461,18 @@ int  ieee80211_ble_platform_init(void)
 	int ret = -1;
 
 	ret = platform_driver_register(&atbm_ble_platform_driver);
-	
+
 	if (ret){
 		goto err;
 	}
-	
+
 	ret = alloc_chrdev_region(&ble_devt, 0, ATBM_BLE_MAX, "atbm_ioctl");
-	
+
 	if (ret) {
 		atbm_printk_err("Unable to lock minors for atbm_ioctl\n");
 		goto error_region;
 	}
-	
+
 	ble_class = class_create(THIS_MODULE, "atbm_ioctl_class");
 
 	if(ble_class == NULL){
@@ -1480,12 +1480,12 @@ int  ieee80211_ble_platform_init(void)
 		atbm_printk_err("fail to alloc class\n");
 		goto error_class;
 	}
-	
+
 	ble_device_cdev.owner = THIS_MODULE;
 	cdev_init(&ble_device_cdev, &ieee880211_ble_ioctl_fops);
-	
+
 	ret = cdev_add(&ble_device_cdev, ble_devt, ATBM_BLE_MAX);
-	
+
 	if (ret) {
 		atbm_printk_err("Unable to get ble dev major %d\n",ble_devt);
 		goto error_cdev;
@@ -1519,19 +1519,19 @@ void ieee80211_ble_dev_recv(struct ieee80211_hw *hw,u8 *event_buffer, u16 event_
 	if(skb){
 		struct ioctl_status_async *async = (struct ioctl_status_async *)skb->data;
 		struct ieee80211_ble_status *cb  = IEEE80211_BLE_SKB_CB(skb);
-		
+
 		cb->hw_hdr_size = sizeof(struct wsm_hdr);
 		cb->size = event_len;
 		cb->context1 = NULL;
 		cb->context2 = NULL;
-		
+
 		BUG_ON(event_len > MAX_SYNC_EVENT_BUFFER_LEN);
 		memcpy(async->event_buffer,event_buffer,event_len);
 		async->driver_mode = 0;
 		async->type        = 0;
 		async->list_empty  = 0;
 		atbm_skb_put(skb,sizeof(struct ioctl_status_async));
-		
+
 		ieee80211_ble_recv(hw,skb);
 	}
 }
@@ -1547,7 +1547,7 @@ static void  ieee80211_ble_dump(const char *string,u8 *mem,size_t len)
 		}
 		atbm_printk_err("[%x]",mem[i]);
 	}
-#endif	
+#endif
 }
 static int ieee80211_ble_thread_wakeup(struct ieee80211_ble_thread *thread)
 {
@@ -1556,7 +1556,7 @@ static int ieee80211_ble_thread_wakeup(struct ieee80211_ble_thread *thread)
 	rcu_read_lock();
 	if(test_and_set_bit(THREAD_ACTION_WAKEUP, &thread->flags) == 0){
 		bh = rcu_dereference(thread->thread);
-		if(bh){			
+		if(bh){
 			wake_up_process((struct task_struct *)bh);
 		}
 	}
@@ -1569,7 +1569,7 @@ static int ieee80211_ble_thread_deinit(struct ieee80211_ble_thread *thread)
 	void *bh;
 	struct ieee80211_local *local = thread->local;
 	struct ieee80211_ble_local *ble_local = &local->ble_local;
-	
+
 	set_bit(THREAD_ACTION_SHOULD_STOP,&thread->flags);
 	spin_lock_bh(&ble_local->ble_spin_lock);
 	bh = rcu_dereference(thread->thread);
@@ -1588,7 +1588,7 @@ static int ieee80211_ble_kthread_should_stop(struct ieee80211_ble_thread *thread
 	if(!kthread_should_stop()){
 		return 0;
 	}
-	
+
 	set_bit(THREAD_ACTION_SHOULD_STOP,&thread->flags);
 	if(test_bit(THREAD_ACTION_SHOULD_SUSPEND, &thread->flags)) {
 		if (!test_and_set_bit(THREAD_ACTION_SUSPENED, &thread->flags))
@@ -1608,7 +1608,7 @@ static void ieee80211_ble_schedule_timeout(struct ieee80211_ble_thread *thread)
 
 static int ieee80211_ble_wait_action(struct ieee80211_ble_thread *thread)
 {
-	set_current_state(TASK_INTERRUPTIBLE);	
+	set_current_state(TASK_INTERRUPTIBLE);
 	while (!ieee80211_ble_kthread_should_stop(thread)) {
 		if (test_and_clear_bit(THREAD_ACTION_WAKEUP,
 				       &thread->flags)) {
@@ -1618,7 +1618,7 @@ static int ieee80211_ble_wait_action(struct ieee80211_ble_thread *thread)
 		if (!ieee80211_ble_kthread_should_stop(thread))
 			ieee80211_ble_schedule_timeout(thread);
 		set_current_state(TASK_INTERRUPTIBLE);
-		
+
 	}
 	__set_current_state(TASK_RUNNING);
 	return -1;
@@ -1636,9 +1636,9 @@ static int ieee80211_ble_thread_process(void *val)
 }
 
 static int ieee80211_ble_thread_init(struct ieee80211_ble_thread *thread)
-{	
+{
 	thread->thread = kthread_create(ieee80211_ble_thread_process,thread, thread->name);
-	
+
 	if (IS_ERR(thread->thread)){
 		thread->thread = NULL;
 		atbm_printk_err("sdio %s err\n",thread->name);
@@ -1654,7 +1654,7 @@ static int ieee80211_ble_xmit_thread(struct ieee80211_ble_thread *thread)
 	struct ieee80211_ble_local *ble_local = &local->ble_local;
 
 	while((skb  =  atbm_skb_dequeue(&ble_local->ble_xmit_queue))){
-		
+
 		/*
 		*start tx
 		*/
@@ -1674,7 +1674,7 @@ static int ieee80211_ble_xmit_init(struct ieee80211_local *local)
 {
 	struct ieee80211_ble_local *ble_local = &local->ble_local;
 	struct ieee80211_ble_thread *thread = &ble_local->xmit_thread;
-	
+
 	atbm_skb_queue_head_init(&ble_local->ble_xmit_queue);
 
 	thread->flags = 0;
@@ -1697,14 +1697,14 @@ void  ieee80211_ble_recv(struct ieee80211_hw *hw,struct sk_buff *skb)
 	struct ieee80211_ble_local *ble_local = &local->ble_local;
 
 	spin_lock_bh(&ble_local->ble_spin_lock);
-	
+
 	if(ble_local->ble_started == true){
 		atbm_skb_queue_tail(&ble_local->ble_recv_queue,skb);
 		ieee80211_ble_thread_wakeup(&ble_local->recv_thread);
 	}else {
 		atbm_dev_kfree_skb(skb);
 	}
-	
+
 	spin_unlock_bh(&ble_local->ble_spin_lock);
 }
 static int ieee80211_ble_recv_thread(struct ieee80211_ble_thread *thread)
@@ -1713,20 +1713,20 @@ static int ieee80211_ble_recv_thread(struct ieee80211_ble_thread *thread)
 	struct ieee80211_local *local = thread->local;
 	struct ieee80211_ble_local *ble_local = &local->ble_local;
 	int  (*ble_cb)(struct platform_device *pble_dev, struct sk_buff *skb);
-	
+
 	mutex_lock(&ble_local->ble_mutex_lock);
 
 	ble_cb = rcu_dereference(ble_local->ble_recv_callback);
-	
+
 	while((skb  =  atbm_skb_dequeue(&ble_local->ble_recv_queue))){
 		int ret = -1;
 		atbm_printk_debug("%s:ble(%d)\n",__func__,skb->len);
-		if(ble_cb) 
+		if(ble_cb)
 			ret = ble_cb(&local->ble_dev,skb);
 		if(ret)
 			atbm_dev_kfree_skb(skb);
 	}
-	
+
 	mutex_unlock(&ble_local->ble_mutex_lock);
 
 	return 0;
@@ -1735,7 +1735,7 @@ static int ieee80211_ble_recv_init(struct ieee80211_local *local)
 {
 	struct ieee80211_ble_local *ble_local = &local->ble_local;
 	struct ieee80211_ble_thread *thread = &ble_local->recv_thread;
-	
+
 	atbm_skb_queue_head_init(&ble_local->ble_recv_queue);
 
 	thread->flags = 0;
@@ -1756,7 +1756,7 @@ static int ieee80211_ble_xmit_exit(struct ieee80211_local *local)
 {
 	struct ieee80211_ble_local *ble_local = &local->ble_local;
 	struct ieee80211_ble_thread *thread = &ble_local->xmit_thread;
-	
+
 	ieee80211_ble_thread_deinit(thread);
 
 	atbm_skb_queue_purge(&ble_local->ble_xmit_queue);
@@ -1767,7 +1767,7 @@ static int ieee80211_ble_recv_exit(struct ieee80211_local *local)
 {
 	struct ieee80211_ble_local *ble_local = &local->ble_local;
 	struct ieee80211_ble_thread *thread = &ble_local->recv_thread;
-	
+
 	ieee80211_ble_thread_deinit(thread);
 
 	atbm_skb_queue_purge(&ble_local->ble_recv_queue);
@@ -1775,7 +1775,7 @@ static int ieee80211_ble_recv_exit(struct ieee80211_local *local)
 }
 
 
-static struct ieee80211_local *ble_to_local(struct platform_device *pble_dev) 
+static struct ieee80211_local *ble_to_local(struct platform_device *pble_dev)
 {
 	return container_of(pble_dev, struct ieee80211_local, ble_dev);
 }
@@ -1815,9 +1815,9 @@ static int ieee80211_ble_commb_stop(struct platform_device *pble_dev)
 	spin_lock_bh(&ble_local->ble_spin_lock);
 	ble_local->ble_started = false;
 	spin_unlock_bh(&ble_local->ble_spin_lock);
-	
+
 	synchronize_rcu();
-	
+
 	ieee80211_ble_xmit_exit(local);
 	ieee80211_ble_recv_exit(local);
 	atbm_printk_init("ble stop\n");
@@ -1829,7 +1829,7 @@ static int ieee80211_ble_commb_xmit(struct platform_device *pble_dev,u8 *xmit,si
 	struct ieee80211_local *local = ble_to_local(pble_dev);
 	struct ieee80211_ble_buff *ble_buff;
 	struct ieee80211_ble_local *ble_local = &local->ble_local;
-	
+
 	struct sk_buff *skb;
 	ieee80211_ble_dump(__func__,xmit,xmit_len);
 	ble_buff = container_of((void *)xmit, struct ieee80211_ble_buff, mem);
@@ -1837,12 +1837,12 @@ static int ieee80211_ble_commb_xmit(struct platform_device *pble_dev,u8 *xmit,si
 	skb = ble_buff->skb;
 
 	BUG_ON((skb->data + IEEE80211_BLE_SKB_HEADNEED) != (u8*)ble_buff);
-	
+
 	atbm_skb_reserve(skb, IEEE80211_BLE_SKB_HEADNEED+sizeof(struct ieee80211_ble_buff));
 	atbm_skb_put(skb,xmit_len);
-	
+
 	spin_lock_bh(&ble_local->ble_spin_lock);
-	
+
 	if(ble_local->ble_started == true){
 		atbm_printk_debug("[%s]:len [%d]\n",__func__,skb->len);
 		atbm_skb_queue_tail(&ble_local->ble_xmit_queue,skb);
@@ -1850,7 +1850,7 @@ static int ieee80211_ble_commb_xmit(struct platform_device *pble_dev,u8 *xmit,si
 	}else {
 		atbm_dev_kfree_skb(skb);
 	}
-	
+
 	spin_unlock_bh(&ble_local->ble_spin_lock);
 	return 0;
 }
@@ -1865,7 +1865,7 @@ static int ieee80211_ble_commb_subscribe(struct platform_device *pble_dev,
 	mutex_lock(&ble_local->ble_mutex_lock);
 	rcu_assign_pointer(ble_local->ble_recv_callback,recv);
 	mutex_unlock(&ble_local->ble_mutex_lock);
-	
+
 	return 0;
 }
 static int ieee80211_ble_commb_unsubscribe(struct platform_device *pble_dev)
@@ -1884,7 +1884,7 @@ static char *ieee80211_ble_commb_ble_alloc_xmit(struct platform_device *pble_dev
 {
 	struct sk_buff *skb;
 	struct  ieee80211_ble_buff *ble_buff;
-	
+
 	skb = atbm_dev_alloc_skb(len +  IEEE80211_BLE_SKB_HEADNEED + sizeof(struct  ieee80211_ble_buff));
 
 	if(skb == NULL){
@@ -1903,23 +1903,23 @@ static void ieee80211_ble_device_release(struct device *dev)
 int ieee80211_ble_dev_int(struct ieee80211_local *local)
 {
 	struct ieee80211_ble_local *ble_local = &local->ble_local;
-	
+
 	struct platform_device *pble_dev = &local->ble_dev;
 
 	pble_dev->name = "atbm_ble";
 	pble_dev->id   = 0;
 	pble_dev->dev.platform_data = local;
 	pble_dev->dev.release = ieee80211_ble_device_release;
-	
+
 	ble_local->ble_recv_callback = 0;
 	atbm_printk_err("ble_spin_lock init \n");
 	spin_lock_init(&ble_local->ble_spin_lock);
 	mutex_init(&ble_local->ble_mutex_lock);
 	return 0;
-	
+
 }
 int ieee80211_ble_dev_register(struct ieee80211_local *local)
-{	
+{
 	struct atbm_common *hw_priv=local->hw.priv;
 	if(hw_priv->loader_ble == 1){
 		atbm_printk_err("ieee80211_ble_dev_register\n");
@@ -1938,7 +1938,7 @@ void ieee80211_ble_dev_deregister(struct ieee80211_local *local)
 	if(hw_priv->loader_ble == 1){
 		atbm_printk_err("ieee80211_ble_dev_deregister\n");
 		platform_device_unregister(&local->ble_dev);
-		
+
 	}
 	mutex_destroy(&ble_local->ble_mutex_lock);
 }
@@ -1958,12 +1958,12 @@ int atbm_ble_init(struct ieee80211_local *local)
 #endif
 #endif
 
-#ifdef CONFIG_ATBM_BLE	
+#ifdef CONFIG_ATBM_BLE
 		ieee80211_ble_dev_int(local);
 #endif
 
-		
-#ifdef CONFIG_ATBM_BLE	
+
+#ifdef CONFIG_ATBM_BLE
 
 		result = ieee80211_ble_dev_register(local);
 		if(result){
@@ -1983,7 +1983,7 @@ int atbm_ble_exit(struct ieee80211_local *local)
 	struct atbm_common *hw_priv=local->hw.priv;
 	atbm_printk_err("atbm_ble_exit ++++++++++ \n");
 	if(hw_priv->loader_ble == 1){
-		
+
 #ifdef CONFIG_ATBM_BLE
 	ieee80211_ble_dev_deregister(local);
 #endif

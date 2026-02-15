@@ -46,9 +46,9 @@ void ble_npl_callout_free(struct ble_npl_callout* co)
     timer_delete(co->c_timer);
 }
 
-void ble_npl_callout_init(struct ble_npl_callout *c, 
+void ble_npl_callout_init(struct ble_npl_callout *c,
                           struct ble_npl_eventq *evq,
-                          ble_npl_event_fn *ev_cb, 
+                          ble_npl_event_fn *ev_cb,
                           void *ev_arg)
 {
     struct sigevent         event;

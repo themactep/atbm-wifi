@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
 	sprintf(command, "%s", argv[tmp_argc++]);
 
 	while (tmp_argc < argc)
-	{	
+	{
 		sprintf(command, "%s %s", command, argv[tmp_argc++]);
 	}
 
@@ -40,15 +40,15 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 
-	memset(&ser_un, 0, sizeof(ser_un));  
-    ser_un.sun_family = AF_UNIX;  
+	memset(&ser_un, 0, sizeof(ser_un));
+    ser_un.sun_family = AF_UNIX;
 	strcpy(ser_un.sun_path, SER_SOCKET_PATH);
 
-	ret = connect(socket_fd, (struct sockaddr *)&ser_un, sizeof(struct sockaddr_un));  
-	if(ret < 0)  
-	{  
+	ret = connect(socket_fd, (struct sockaddr *)&ser_un, sizeof(struct sockaddr_un));
+	if(ret < 0)
+	{
 		fprintf(stdout,"connect err\n");
-		return -1; 
+		return -1;
 	}
 
 	write(socket_fd, command, strlen(command)+1);

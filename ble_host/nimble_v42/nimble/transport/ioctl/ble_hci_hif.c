@@ -265,7 +265,7 @@ void ble_hci_ram_init(void)
 {
     int rc;
 	uint16_t block_count;
-	
+
     /* Ensure this function only gets called by sysinit. */
     SYSINIT_ASSERT_ACTIVE();
 
@@ -454,7 +454,7 @@ void ble_hci_trans_free_hif_pkt(struct ble_hci_hif_pkt* tx_pkt)
     case BLE_HCI_HIF_ACL:
         os_mbuf_free_chain(tx_pkt->data);
         break;
-#endif  //	
+#endif  //
     default:
         assert(0);
     }
@@ -590,13 +590,13 @@ bool atbm_ble_is_quit;
 int open_atbm_ioctl(void)
 {
     unsigned long flags = 0;
-	
+
     atbm_fp = open("/dev/atbm_ioctl", O_RDWR);
     if (atbm_fp < 0) {
         fprintf(stdout, "open /dev/atbm_ioctl fail.\n");
         return -1;
     }
-	
+
     fcntl(atbm_fp, F_SETOWN, getpid());
     flags = fcntl(atbm_fp, F_GETFL);
     fcntl(atbm_fp, F_SETFL, flags | FASYNC);
@@ -655,17 +655,17 @@ void ioctl_msg_func(int sig_num)
 static void* fs_read_func(void* arg)
 {
 	int len = 0;
-	
+
 	while (!g_is_quit) {
 //		iot_printf("fs_read_func\n");
 		sem_wait(&sem_status);
 
 		do{
-//			iot_printf("read_happens ++ (%d)\n",read_happens); 
+//			iot_printf("read_happens ++ (%d)\n",read_happens);
 			memset(&g_blehifRxdata, 0, sizeof(struct ioctl_status_async));
 			len = read(atbm_fp, &g_blehifRxdata, sizeof(struct ioctl_status_async));
 //			iot_printf("read_happens --0 (%d)\n",read_happens);
-			
+
 			if (len < (int)(sizeof(g_blehifRxdata))) {
 	            fprintf(stdout, "Line:%d read connect stat error.\n", __LINE__);
 	            break;
@@ -702,10 +702,10 @@ int ble_ioctl_tx(u8 * buffer,int len)
 
 u8 ble_xmit_buff[2048];
 void atbm_ble_dev_schedule_tx(void)
-{   
+{
     struct ble_hci_hif_pkt* tx_pkt;
     u32 tx_len;
-    
+
 flush:
 
     tx_len = 0;
@@ -748,12 +748,12 @@ int ble_coexist_stop(void)
 }
 
 
-static int socket_accept(int serv_fd) 
+static int socket_accept(int serv_fd)
 {
     struct timeval tv;
     fd_set fds;
     int fd, rc;
- 
+
     /* Wait 20 seconds for a connection, then give up. */
     tv.tv_sec = 0;
     tv.tv_usec = 10000;
@@ -770,7 +770,7 @@ static int socket_accept(int serv_fd)
     if (fd < 0) {
         return -1;
     }
- 
+
     return fd;
 }
 
@@ -829,7 +829,7 @@ void* get_command_func(void* arg)
             break;
         }
     }
-	
+
     close(hif_cmd_socket_fd);
 }
 
@@ -838,7 +838,7 @@ int hif_ioctl_init()
     atbm_fp = -1;
     sem_init(&sem_ioctl_stat, 0, 1);
     sem_init(&sem_sock_sync, 0, 0);
-	sem_init(&sem_status, 0, 0);	
+	sem_init(&sem_status, 0, 0);
 	g_is_quit = 0;
 	pthread_create(&fsread_tid, NULL, fs_read_func, NULL);
     signal(SIGIO, ioctl_msg_func);
@@ -863,7 +863,7 @@ int hif_ioctl_loop()
 		    while(!g_is_quit)
 		    	{
 				usleep(100);
-				
+
 		    	}
             break;
         }
@@ -871,7 +871,7 @@ int hif_ioctl_loop()
             cli_set_event(cmd_line, strlen(cmd_line));
         }
     }
-	
+
 config_err:
     pthread_join(sock_tid, NULL);
 	pthread_detach(fsread_tid);

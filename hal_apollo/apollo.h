@@ -96,7 +96,7 @@ static inline u32 atbm_uapsd_virtual_linkid(void)
 }
 static inline u32 atbm_dtim_virtual_linkid(void)
 {
-	return ATBM_DTIM_VIRTUAL_LINKID; 
+	return ATBM_DTIM_VIRTUAL_LINKID;
 }
 
 #define ATBM_APOLLO_MAX_STA_IN_AP_MODE		 ATBMWIFI_MAX_STA_IN_AP_MODE
@@ -136,7 +136,7 @@ static inline u32 atbm_dtim_virtual_linkid(void)
 
 /* Please keep order */
 enum atbm_join_status {
-	ATBM_APOLLO_JOIN_STATUS_PASSIVE = 0,	
+	ATBM_APOLLO_JOIN_STATUS_PASSIVE = 0,
 	ATBM_APOLLO_JOIN_STATUS_STA_LISTEN,
 	ATBM_APOLLO_JOIN_STATUS_MONITOR,
 	ATBM_APOLLO_JOIN_STATUS_IBSS,
@@ -352,7 +352,7 @@ struct atbm_common {
 	*maybe changed by action frame.
 	*/
 	enum nl80211_channel_type channel_type;
-	
+
 	atomic_t				  atbm_pluged;
 	u8				long_frame_max_tx_count;
 	u8				short_frame_max_tx_count;
@@ -460,7 +460,7 @@ struct atbm_common {
 	unsigned long       tx_timestamp;
 	unsigned long       irq_timestamp;
 	/* Scan Timestamp */
-	unsigned long		scan_timestamp; 
+	unsigned long		scan_timestamp;
 #ifndef CONFIG_RATE_HW_CONTROL
 	/* TX rate policy cache */
 	struct tx_policy_cache tx_policy_cache;
@@ -523,7 +523,7 @@ struct atbm_common {
 #endif /*ROAM_OFFLOAD*/
 #endif
 #ifdef CONFIG_ATBM_APOLLO_TESTMODE
-	struct atbm_tsm_stats		tsm_stats;	
+	struct atbm_tsm_stats		tsm_stats;
 	struct atbm_tsm_stats		atbm_tsm_stats[4];
 	struct atbm_tsm_info		tsm_info;
 	spinlock_t			tsm_lock;
@@ -546,10 +546,10 @@ struct atbm_common {
 	u32 etf_channel;
 	u32 etf_channel_type;
 	u32 etf_rate;
-	u32 etf_len;	
+	u32 etf_len;
 	u32 etf_greedfiled;
 	u8 bStartTx;
-	u8 bStartTxWantCancel;	
+	u8 bStartTxWantCancel;
 	u8 etf_test_v2;
 	//struct atbm_timer_list etf_expire_timer;
 	struct atbm_work_struct etf_tx_end_work;
@@ -561,11 +561,11 @@ struct atbm_common {
 	bool stop_prvmgmt_thread;
 	bool start_send_prbresp;
 	bool start_send_action;
-//	struct mutex stop_send_prbresp_lock;	
+//	struct mutex stop_send_prbresp_lock;
 //	struct atbm_vendor_cfg_ie private_ie;
 	struct atbm_ap_vendor_cfg_ie ap_vendor_cfg_ie;
-	struct atbm_customer_action customer_action_ie;  
-#endif	
+	struct atbm_customer_action customer_action_ie;
+#endif
 #ifdef ATBM_P2P_CHANGE
 /*
 *only use when if_id = 1
@@ -583,15 +583,15 @@ struct atbm_common {
 	bool loader_ble;
 /*
 priv->chip_flag :
-	0:6032-X/6031-X  
-	1:6012B-Y  
-	2:6012B-X 
-	3~5:resver 
-	6:6132UB/6132SB 
+	0:6032-X/6031-X
+	1:6012B-Y
+	2:6012B-X
+	3~5:resver
+	6:6132UB/6132SB
 	7:6132NB
 */
 	u32 chip_flag;
-	
+
 /*
 *	ieee80211 rx tasklet schedule
 */
@@ -676,7 +676,7 @@ struct atbm_vif {
 	/* WSM Join */
 	enum atbm_join_status	join_status;
 	u8			join_bssid[ETH_ALEN];
-	
+
 	/* ROC implementation */
 	int			join_dtim_period;
 	bool			delayed_unjoin;
@@ -820,7 +820,7 @@ static inline void atbm_priv_vif_list_write_unlock(spinlock_t *lock)
 #ifndef  ATBM_VIF_LIST_USE_RCU_LOCK
 
 #define ATBM_HW_VIF_SET(vif_list,vif)			vif_list = vif
-#define ATBM_HW_VIF_GET(vif_list)				(vif_list)	
+#define ATBM_HW_VIF_GET(vif_list)				(vif_list)
 
 static inline
 struct atbm_vif *ABwifi_hwpriv_to_vifpriv(struct atbm_common *hw_priv,
@@ -847,9 +847,9 @@ struct atbm_vif *ABwifi_hwpriv_to_vifpriv(struct atbm_common *hw_priv,
 	atbm_hw_vif_read_unlock(&hw_priv->vif_list_lock);
 	return vif;
 }
-#else			
+#else
 
-#define ATBM_HW_VIF_SET(vif_list,vif)			rcu_assign_pointer(vif_list,vif)	
+#define ATBM_HW_VIF_SET(vif_list,vif)			rcu_assign_pointer(vif_list,vif)
 #define ATBM_HW_VIF_GET(vif_list)				rcu_dereference(vif_list)
 
 
@@ -859,7 +859,7 @@ struct atbm_vif *ABwifi_hwpriv_to_vifpriv(struct atbm_common *hw_priv,
 {
 	struct atbm_vif *priv;
 	struct ieee80211_vif *vif;
-	
+
 	atbm_hw_vif_read_lock(&hw_priv->vif_list_lock);
 	if (((-1 == if_id) || (if_id > ATBM_WIFI_MAX_VIFS))){
 		atbm_printk_err("if_id = %d\n", if_id);
@@ -940,7 +940,7 @@ static inline void atbm_stop_active_vif_queues(struct ieee80211_vif *vif)
 	for (i = 0; i < 4; ++i){
 		atbm_queue_lock(&hw_priv->tx_queue[i],priv->if_id);
 	}
-} 
+}
 
 static inline void atbm_wake_active_vif_queues(struct ieee80211_vif *vif)
 {

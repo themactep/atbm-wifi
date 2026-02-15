@@ -48,7 +48,7 @@
 }
 #define ATBM_BUG_ON(cond)  	ATBM_ASSERT(!(cond))
 /*cond ATBM_TRUE will error*/
-#define ATBM_WARN_ON(cond)  		(cond) 
+#define ATBM_WARN_ON(cond)  		(cond)
 //atbm_void dump_mem(const atbm_void* mem, int count);
 
 /*******************************************/

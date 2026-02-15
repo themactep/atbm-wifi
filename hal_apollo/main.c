@@ -64,7 +64,7 @@
 
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(5,10,0))
 
-MODULE_IMPORT_NS(VFS_internal_I_am_really_a_filesystem_and_am_NOT_a_driver); 
+MODULE_IMPORT_NS(VFS_internal_I_am_really_a_filesystem_and_am_NOT_a_driver);
 #endif
 
 MODULE_AUTHOR("wifi_software <wifi_software@altobeam.com>");
@@ -124,7 +124,7 @@ void atbm_wifi_chip_probe_set(u16 idProduct)
 		wifi_chip_probe = 0;
 		atbm_printk_err("reset wifi_chip_probe!\n");
 	}
-	
+
 }
 int atbm_wifi_chip_probe_get(void)
 {
@@ -348,7 +348,7 @@ static struct ieee80211_rate atbm_mcs_rates[] = {
 	.max_antenna_gain	= 0,				\
 	.max_power		= 30,				\
 }
-#if defined (CONFIG_ATBM_5G_PRETEND_2G) || (defined CONFIG_ATBM_APOLLO_5GHZ_SUPPORT) 
+#if defined (CONFIG_ATBM_5G_PRETEND_2G) || (defined CONFIG_ATBM_APOLLO_5GHZ_SUPPORT)
 #define CHAN5G_2G(_channel,hw_channel ,_flags) {				\
 	.band			= IEEE80211_BAND_5GHZ,		\
 	.center_freq	= 5000 + (5 * (_channel)),		\
@@ -375,7 +375,7 @@ static struct ieee80211_channel atbm_2ghz_chantable[] = {
 	CHAN2G(14, 2484, 0),
 };
 
-#ifdef CONFIG_ATBM_APOLLO_5GHZ_SUPPORT 
+#ifdef CONFIG_ATBM_APOLLO_5GHZ_SUPPORT
 static struct ieee80211_channel atbm_5ghz_chantable[] = {
 	CHAN5G(34, 0),		CHAN5G(36, 0),
 	CHAN5G(38, 0),		CHAN5G(40, 0),
@@ -440,7 +440,7 @@ struct ieee80211_channel atbm_5ghz_pretend_2g_chantable[6] = {
 };
 
 #elif defined (CONFIG_ATBM_5G_PRETEND_2G) /* CONFIG_ATBM_APOLLO_5GHZ_SUPPORT */
-#pragma message("ATBM60XX:support 5G channel,but actualy at 2G") 
+#pragma message("ATBM60XX:support 5G channel,but actualy at 2G")
 static struct ieee80211_channel atbm_5ghz_chantable[] = {
 	CHAN5G_2G(34,36,0),//IEEE80211_CHAN_RADAR
 	CHAN5G_2G(36,36,0),//IEEE80211_CHAN_RADAR
@@ -471,7 +471,7 @@ static struct ieee80211_regdomain atbm_request_regdom = {
 
 #endif
 #ifdef ATBM_NOT_SUPPORT_40M_CHW
-#pragma message("ATBM601x:not support 40M chw") 
+#pragma message("ATBM601x:not support 40M chw")
 #else
 #pragma message("ATBM602x/ATBM603x:support 40M chw")
 #endif
@@ -572,7 +572,7 @@ int atbm_set_mac_addr2efuse(struct ieee80211_hw *hw, u8 *macAddr)
 
 	if (wsm_get_mac_address(hw_priv, &EfusemacAddr[0]) == 0)
 	{
-		
+
 		if (EfusemacAddr[0]| EfusemacAddr[1]|EfusemacAddr[2]|EfusemacAddr[3]|EfusemacAddr[4]|EfusemacAddr[5])
 		{
 			atbm_printk_err("MAC addr Writed\n");
@@ -588,7 +588,7 @@ int atbm_set_mac_addr2efuse(struct ieee80211_hw *hw, u8 *macAddr)
 	{
 		if (macAddr[0]| macAddr[1]|macAddr[2]|macAddr[3]|macAddr[4]|macAddr[5])
 		{
-			memcpy(hw_priv->addresses[0].addr,macAddr,ETH_ALEN);		
+			memcpy(hw_priv->addresses[0].addr,macAddr,ETH_ALEN);
 			atbm_set_p2p_vif_addr(hw_priv);
 		}
 	}else
@@ -597,7 +597,7 @@ int atbm_set_mac_addr2efuse(struct ieee80211_hw *hw, u8 *macAddr)
 		return -1;
 	}
 
-	
+
 	if (hw_priv->addresses[0].addr[3] == 0 &&
 		hw_priv->addresses[0].addr[4] == 0 &&
 		hw_priv->addresses[0].addr[5] == 0) {
@@ -663,7 +663,7 @@ static int atbm_set_frame_filter(struct ieee80211_hw *hw,struct ieee80211_vif *v
 		}
 
 		table.numOfIEs = __cpu_to_le32(n_filters);
-		
+
 		ret = wsm_set_beacon_filter_table(hw_priv,&table,priv->if_id);
 
 		if(ret != 0)
@@ -780,7 +780,7 @@ void atbm_get_mac_address(struct atbm_common *hw_priv)
 		atbm_set_p2p_vif_addr(hw_priv);
 	}
 #endif
-	
+
 	if (hw_priv->addresses[0].addr[3] == 0 &&
 		hw_priv->addresses[0].addr[4] == 0 &&
 		hw_priv->addresses[0].addr[5] == 0) {
@@ -802,10 +802,10 @@ static   struct ieee80211_regdomain atbm_regd = {
 	.dfs_region = NL80211_DFS_FCC,
 	.reg_rules = {
 		REG_RULE_EXT(2402, 2482, 40, 0, 20, 0, 0),
-		REG_RULE_EXT(5170, 5250, 80, 0, 23, 0, 
+		REG_RULE_EXT(5170, 5250, 80, 0, 23, 0,
 			NL80211_RRF_AUTO_BW | 0),
-		REG_RULE_EXT(5250, 5330, 80, 0, 23, 0, 
-			NL80211_RRF_DFS | 
+		REG_RULE_EXT(5250, 5330, 80, 0, 23, 0,
+			NL80211_RRF_DFS |
 			NL80211_RRF_AUTO_BW | 0),
 		REG_RULE_EXT(5735, 5835, 80, 0, 30, 0, 0),
 		REG_RULE_EXT(57240, 59400, 2160, 0, 28, 0, 0),
@@ -830,7 +830,7 @@ struct ieee80211_hw *atbm_init_common(size_t hw_priv_data_len)
 	hw_priv = hw->priv;
 	/* TODO:COMBO this debug message can be removed */
 	atbm_printk_init("Allocated hw_priv @ %p\n", hw_priv);
-	
+
 	hw_priv->if_id_slot = 0;
 #ifdef CONFIG_ATBM_SUPPORT_P2P
 	hw_priv->roc_if_id = -1;
@@ -896,13 +896,13 @@ struct ieee80211_hw *atbm_init_common(size_t hw_priv_data_len)
 					  BIT(NL80211_IFTYPE_P2P_GO) |
 #endif
 					  BIT(NL80211_IFTYPE_AP);
-					  
+
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,0,0))
 	hw->wiphy->software_iftypes |= BIT(NL80211_IFTYPE_MONITOR);
 #endif
 #ifdef CONFIG_ATBM_SUPPORT_P2P
 	hw->wiphy->software_iftypes |= BIT(NL80211_IFTYPE_P2P_CLIENT) |
-					  BIT(NL80211_IFTYPE_P2P_GO); 
+					  BIT(NL80211_IFTYPE_P2P_GO);
 #endif
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,3,0))
 #ifdef CONFIG_ATBM_SUPPORT_P2P
@@ -961,7 +961,7 @@ struct ieee80211_hw *atbm_init_common(size_t hw_priv_data_len)
 		if (atbm_band_2ghz.ht_cap.cap &  IEEE80211_HT_CAP_SUP_WIDTH_20_40)
 			atbm_band_2ghz.ht_cap.cap |=  IEEE80211_HT_CAP_SGI_40;
 	}else
-	{		
+	{
 		atbm_band_2ghz.ht_cap.cap &=  ~(IEEE80211_HT_CAP_SGI_20|IEEE80211_HT_CAP_SGI_40);
 	}
 	if (stbc)
@@ -974,7 +974,7 @@ struct ieee80211_hw *atbm_init_common(size_t hw_priv_data_len)
 	}
 	hw->wiphy->bands[IEEE80211_BAND_2GHZ] = &atbm_band_2ghz;
 #if defined (CONFIG_ATBM_APOLLO_5GHZ_SUPPORT) || defined (CONFIG_ATBM_5G_PRETEND_2G)
-	
+
 
 	hw->wiphy->bands[IEEE80211_BAND_5GHZ] = &atbm_band_5ghz;
 #endif /* CONFIG_ATBM_APOLLO_5GHZ_SUPPORT */
@@ -1061,11 +1061,11 @@ struct ieee80211_hw *atbm_init_common(size_t hw_priv_data_len)
 #ifdef CONFIG_IEEE80211_SEND_SPECIAL_MGMT
 
 	atbm_send_private_mgmt_init(hw_priv);
-#endif	
+#endif
 
 //#ifdef CONFIG_WIRELESS_EXT
 	ATBM_INIT_WORK(&hw_priv->etf_tx_end_work, etf_scan_end_work);
-	//init_timer(&hw_priv->etf_expire_timer);	
+	//init_timer(&hw_priv->etf_expire_timer);
 	//hw_priv->etf_expire_timer.expires = jiffies+1000*HZ;
 	//hw_priv->etf_expire_timer.data = (unsigned long)hw_priv;
 	//hw_priv->etf_expire_timer.function = atbm_etf_test_expire_timer;
@@ -1093,13 +1093,13 @@ struct ieee80211_hw *atbm_init_common(size_t hw_priv_data_len)
 	ATBM_INIT_WORK(&hw_priv->scan.smartwork, atbm_smart_scan_work);
 	ATBM_INIT_WORK(&hw_priv->scan.smartsetChanwork, atbm_smart_setchan_work);
 	ATBM_INIT_WORK(&hw_priv->scan.smartstopwork, atbm_smart_stop_work);
-	atbm_init_timer(&hw_priv->smartconfig_expire_timer);	
+	atbm_init_timer(&hw_priv->smartconfig_expire_timer);
 	hw_priv->smartconfig_expire_timer.data = (unsigned long)hw_priv;
 	hw_priv->smartconfig_expire_timer.function = atbm_smartconfig_expire_timer;
 #endif
 #ifdef ATBM_ANKER_WTD
 
-	atbm_init_timer(&hw_priv->anker_expire_timer);	
+	atbm_init_timer(&hw_priv->anker_expire_timer);
 	hw_priv->anker_expire_timer.data = (unsigned long)hw_priv;
 	hw_priv->anker_expire_timer.function = atbm_anker_expire_timer;
 	hw_priv->anker_expire_timer.expires = jiffies + 3*HZ;
@@ -1133,7 +1133,7 @@ struct ieee80211_hw *atbm_init_common(size_t hw_priv_data_len)
 	atomic_set(&hw_priv->go_bssid_set,0);
 	atomic_set(&hw_priv->receive_go_resp,0);
 	atomic_set(&hw_priv->p2p_oper_channel,0);
-	atomic_set(&hw_priv->combination,0);	
+	atomic_set(&hw_priv->combination,0);
 	atomic_set(&hw_priv->operating_channel_combination,0);
 #endif
 #endif
@@ -1181,7 +1181,7 @@ int atbm_register_common(struct ieee80211_hw *dev)
 
 void atbm_free_common(struct ieee80211_hw *dev)
 {
-	 struct atbm_common *hw_priv = dev->priv; 
+	 struct atbm_common *hw_priv = dev->priv;
 	/* struct atbm_common *hw_priv = dev->priv; */
 	/* unsigned int i; */
 #ifdef CONFIG_IEEE80211_SEND_SPECIAL_MGMT
@@ -1189,14 +1189,14 @@ void atbm_free_common(struct ieee80211_hw *dev)
 	atbm_printk_err("atbm_free_common : stop send_prbresp_work ++++++++++\n");
 
 	atbm_send_private_mgmt_uninit(hw_priv);
-#endif	
+#endif
 	atbm_flush_workqueue(hw_priv->workqueue);
 	atbm_destroy_workqueue(hw_priv->workqueue);
 	hw_priv->workqueue = NULL;
 #ifdef ATBM_ANKER_WTD
 	atbm_del_timer(&hw_priv->anker_expire_timer);
 #endif
-	
+
 	atbm_printk_err("atbm_free_common : stop send_prbresp_work ----------\n");
 #ifdef CONFIG_HAS_WAKELOCK
 	hw_priv->wakelock_hw_counter = 0;
@@ -1218,14 +1218,14 @@ void atbm_unregister_common(struct ieee80211_hw *dev)
 #endif
 	atbm_printk_exit("atbm_unregister_common.++\n");
 	ieee80211_unregister_hw(dev);
-	
+
 	hw_priv->sbus_ops->irq_unsubscribe(hw_priv->sbus_priv);
 
 	if(hw_priv->sbus_ops->sbus_xmit_func_deinit)
 		hw_priv->sbus_ops->sbus_xmit_func_deinit(hw_priv->sbus_priv);
-	if(hw_priv->sbus_ops->sbus_rev_func_deinit)	
+	if(hw_priv->sbus_ops->sbus_rev_func_deinit)
 		hw_priv->sbus_ops->sbus_rev_func_deinit(hw_priv->sbus_priv);
-	
+
 	hw_priv->init_done = 0;
 	atbm_unregister_bh(hw_priv);
 	atbm_rx_bh_flush(hw_priv);
@@ -1240,9 +1240,9 @@ void atbm_unregister_common(struct ieee80211_hw *dev)
 		atbm_release_suspend(hw_priv);
 	}
 	spin_unlock_bh(&hw_priv->wsm_pm_spin_lock);
-#endif	
+#endif
 
-	
+
 #ifdef MCAST_FWDING
 	for (i = 0; i < WSM_MAX_BUF; i++)
 		wsm_buf_deinit(&hw_priv->wsm_release_buf[i]);
@@ -1305,7 +1305,7 @@ static void ABwifi_set_ifce_comb(struct atbm_common *hw_priv,
 	hw_priv->if_combs[0].num_different_channels = 2;
 
 	hw_priv->if_combs[0].max_interfaces = 2;
-	
+
 	hw_priv->if_combs[0].limits = hw_priv->if_limits1;
 	hw_priv->if_combs[0].n_limits = 2;
 
@@ -1390,7 +1390,7 @@ int get_rate_delta_gain(s8 *dst)
 		atbm_printk_err("Invalid parameter,file == NULL\n");
 		return -1;
 	}
-	
+
 	if((readnum = access_file(file,readbuf,sizeof(readbuf),1)) > 0)
 	{
 		pdata[count] = readbuf;
@@ -1399,7 +1399,7 @@ int get_rate_delta_gain(s8 *dst)
 		for(i = 0;i < readnum;i++)
 		{
 			if((readbuf[i]=='\n') && (count<=22))
-			{	
+			{
 				if(readnum != (i+1)){
 					pdata[count] = readbuf+i+1;
 					count++;
@@ -1415,17 +1415,17 @@ int get_rate_delta_gain(s8 *dst)
 				pstr=strchr(pdata[i],'=');
 				if(pstr)
 				{
-				
+
 					sscanf(pstr,"=%d",&val);
 					dst[i] = val;
 					//atbm_printk_err("%d,%s\n",i,pstr);
 					pstr = NULL;
 				}
 			}
-				
+
 		}
 	}
-		
+
 	return 0;
 }
 void atbm_get_delta_gain(char *srcData,int *allgain,int *bgain,int *gngain)
@@ -1451,7 +1451,7 @@ void atbm_get_delta_gain(char *srcData,int *allgain,int *bgain,int *gngain)
 			allgain[0], allgain[1], allgain[2], allgain[3],
 			bgain[0], bgain[1], bgain[2],gngain[0], gngain[1], gngain[2]);*/
 
-	
+
 }
 
 void atbm_get_delta_gain_V2(char *srcData,int *allgain,int *bgain,int *gngain)
@@ -1473,7 +1473,7 @@ void atbm_get_delta_gain_V2(char *srcData,int *allgain,int *bgain,int *gngain)
 	for(i = 0;i < readnum;i++)
 	{
 		if((srcData[i] == '\n') && (count < nItem))
-		{	
+		{
 			if(readnum != (i+1)){
 				pdata[count] = srcData+i+1;
 				if(srcData[i+1] != '\n')
@@ -1622,7 +1622,7 @@ reload_fw:
 			schedule_timeout_interruptible(msecs_to_jiffies(20));
 			if(loop++>100)
 			{
-				atbm_printk_init(" wsm_startup_done timeout ERROR !!\n");		
+				atbm_printk_init(" wsm_startup_done timeout ERROR !!\n");
 				atbm_monitor_pc(hw_priv);
 				if(hw_priv->sbus_ops->sbus_reset_chip){
 						atbm_printk_err("reload fw\n");
@@ -1637,7 +1637,7 @@ reload_fw:
 			}
 		}
 	}
-	
+
 	atbm_firmware_cap_int(hw_priv);
 //#ifdef CONFIG_ATBM_PHY_REG_INIT
 	if(hw_priv->chip_version == ARES_LITE){
@@ -1662,7 +1662,7 @@ reload_fw:
 		}
 	}
 	atbm_set_fw_ver(hw_priv);
-	
+
 	if (efuse)
 	{
 		char buffer[15];
@@ -1693,21 +1693,21 @@ reload_fw:
 	only support HT20 when chip is ATBM6012B
 */
 
-	if(hw_priv->chip_version == ARES_6012B || 
-		(hw_priv->chip_version == ARES_LITE && 
+	if(hw_priv->chip_version == ARES_6012B ||
+		(hw_priv->chip_version == ARES_LITE &&
 			(hw_priv->chip_flag == 1 || hw_priv->chip_flag == 2))){
 
 		memcpy(&atbm_6012B_band,&atbm_band_2ghz,sizeof(struct ieee80211_supported_band));
 		hw_priv->hw->wiphy->bands[IEEE80211_BAND_2GHZ] = &atbm_6012B_band;
-		hw_priv->hw->wiphy->bands[IEEE80211_BAND_2GHZ]->ht_cap.cap = 
-				  IEEE80211_HT_CAP_GRN_FLD 
-				| IEEE80211_HT_CAP_SGI_20	
+		hw_priv->hw->wiphy->bands[IEEE80211_BAND_2GHZ]->ht_cap.cap =
+				  IEEE80211_HT_CAP_GRN_FLD
+				| IEEE80211_HT_CAP_SGI_20
 				| (1 << IEEE80211_HT_CAP_RX_STBC_SHIFT);
 		atbm_printk_init("chip is 6012B not support HT40! \n");
 	}else{
 		hw_priv->hw->wiphy->bands[IEEE80211_BAND_2GHZ] = &atbm_band_2ghz;
 	}
-	
+
 	//use delta_gain and dcxo value in config file,when file is exist
 	//if(hw_priv->chip_version >= ARES_B){
 #ifdef CONFIG_ATBM_GET_GPIO4
@@ -1722,7 +1722,7 @@ reload_fw:
 				memset(readbuf, 0, sizeof(readbuf));
 				sprintf(readbuf, "set_txpwr_and_dcxo,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d ",deltagain[0], deltagain[1], deltagain[2], deltagain[3],
 					bgain[0], bgain[1], bgain[2],gngain[0], gngain[1], gngain[2]);
-				
+
 				atbm_printk_init("cmd: %s\n", readbuf);
 				err = wsm_write_mib(hw_priv, WSM_MIB_ID_FW_CMD, readbuf, strlen(readbuf), if_id);
 				if(err < 0){
@@ -1750,12 +1750,12 @@ reload_fw:
 		}
 		*/
 			wsm_set_rate_power(hw_priv,1);
-	}	
+	}
 
 
-	
+
 	{
-		
+
 		// open Automatic calibration ppm
 		open_auto_cfo(hw_priv,1);
 #if 0
@@ -1765,16 +1765,16 @@ reload_fw:
 			atbm_printk_err("open cfo fail!!!. \n");
 		}
 #endif
-		
+
 	}
 
-	
+
 
 	{
 		atbm_printk_err("get chip id [%x][%x][%x] \n",
 							hw_priv->wsm_caps.firmeareExCap,
 							hw_priv->wsm_caps.firmeareExCap >> 7,
-							(hw_priv->wsm_caps.firmeareExCap >> 7) & 0x7 
+							(hw_priv->wsm_caps.firmeareExCap >> 7) & 0x7
 						);
 #if (PROJ_TYPE>=ARES_A)
 	if(hw_priv->chip_version == Mercurius){
@@ -1793,12 +1793,12 @@ reload_fw:
 	if (err) {
 		goto err3;
 	}
-	
+
 #ifdef CONFIG_PM
 	atbm_pm_stay_awake(&hw_priv->pm_state, 6 * HZ);
 #endif  //#ifdef CONFIG_PM
 	*pself = dev->priv;
-#ifdef ATBM_ANKER_WTD	
+#ifdef ATBM_ANKER_WTD
 	atbm_add_timer(&hw_priv->anker_expire_timer);
 #endif
 	atbm_wifi_insmod_stat_set(1);
@@ -1817,7 +1817,7 @@ err1:
 	if(hw_priv->sbus_ops->sbus_xmit_func_deinit)
 		hw_priv->sbus_ops->sbus_xmit_func_deinit(hw_priv->sbus_priv);
 	if(hw_priv->sbus_ops->sbus_rev_func_deinit)
-		hw_priv->sbus_ops->sbus_rev_func_deinit(hw_priv->sbus_priv);	
+		hw_priv->sbus_ops->sbus_rev_func_deinit(hw_priv->sbus_priv);
 	wsm_buf_deinit(&hw_priv->wsm_cmd_buf);
 	for (i = 0; i < 4; ++i)
 		atbm_queue_deinit(&hw_priv->tx_queue[i]);
@@ -1825,7 +1825,7 @@ err1:
 	#ifdef CONFIG_PM
 	atbm_pm_deinit(&hw_priv->pm_state);
 	#endif
-	
+
 //	atbm_unregister_common(dev);
 	atbm_free_common(dev);
 err:
@@ -1868,7 +1868,7 @@ int access_file(char *path, char *buffer, int size, int isRead)
 			atbm_printk_err("apollo wifi : Not allow to read\n");
 			return -2;
 		}
-		else 
+		else
 #endif
 		{
 			fp->f_pos = 0;

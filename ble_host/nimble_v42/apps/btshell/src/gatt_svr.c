@@ -648,12 +648,12 @@ gatt_svr_init(void)
         return rc;
     }
 
-    
+
 	rc = ble_gatts_count_cfg(gatt_svr_inc_svcs);
 	if (rc != 0) {
 		return rc;
 	}
-	
+
 	rc = ble_gatts_add_svcs(gatt_svr_inc_svcs);
 	if (rc != 0) {
 		return rc;

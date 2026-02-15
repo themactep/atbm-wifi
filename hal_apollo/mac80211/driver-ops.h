@@ -77,7 +77,7 @@ static inline int drv_add_interface(struct ieee80211_local *local,
 
 	trace_drv_add_interface(local, vif_to_sdata(vif));
 	ret = local->ops->add_interface(&local->hw, vif);
-	trace_drv_return_int(local, ret);	
+	trace_drv_return_int(local, ret);
 	return ret;
 }
 

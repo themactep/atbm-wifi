@@ -23,7 +23,7 @@ void ble_scan_test_start(char *pLine)
 {
 	struct ble_gap_disc_params params = {0};
 	int rc;
-	
+
 	params.limited = 0;
 	params.passive = 1;
 	params.itvl = 300;

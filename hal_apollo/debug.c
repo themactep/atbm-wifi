@@ -715,7 +715,7 @@ int atbm_debug_init_common(struct atbm_common *hw_priv)
 	if (!debugfs_create_file("ht", S_IRUSR, d->debugfs_phy,
 			hw_priv, &fops_ht_info))
 		goto err;
-	
+
 	if (!debugfs_create_file("run_sta", S_IRUSR, d->debugfs_phy,
 			hw_priv, &fops_wifi_run_status))
 		goto err;

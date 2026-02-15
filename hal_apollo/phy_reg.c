@@ -25,18 +25,18 @@ static void *phy_alloc_mem(u32 size)
 {
 	void *mem = NULL;
 	u32 tries = 0;
-	
+
 	do{
 		mem = atbm_kzalloc(size,GFP_KERNEL);
-		
+
 		if(mem)
 			break;
-		
+
 		tries ++ ;
-		
+
 		if(tries > 5)
 			break;
-		
+
 		msleep(100);
 	}while(mem == NULL);
 
@@ -50,13 +50,13 @@ static void phy_free_mem(void *mem)
 static int phy_reg_table_set(struct wsm_phy_regval_sets *psets)
 {
 	int ret = -1;
-	
-	
+
+
 	if(sets == NULL){
 		sets = psets;
 		ret = 0;
 	}
-	
+
 	return ret;
 }
 
@@ -87,17 +87,17 @@ static void phy_reg_muxunlock(void)
 void ROM_HW_WRITE_REG_BIT(u32 addr, u8 end, u8 start, u32 data)
 {
 	struct wsm_phy_regval_sets *phy_sets = phy_reg_table_get();
-	
+
 	BUG_ON(phy_sets == NULL);
 	BUG_ON(phy_sets->table_index >= phy_sets->table_size);
-	
+
 	phy_sets->table[phy_sets->table_index].addr = __cpu_to_le32(addr);
 	phy_sets->table[phy_sets->table_index].endBit = __cpu_to_le16(end);
 	phy_sets->table[phy_sets->table_index].startBit = __cpu_to_le16(start);
 	phy_sets->table[phy_sets->table_index].data = __cpu_to_le32(data);
 	phy_sets->table_index++;
 	/*
-	g_PhyRegInitBuf[g_PhyRegInitIndex].addr = __cpu_to_le32(addr); 
+	g_PhyRegInitBuf[g_PhyRegInitIndex].addr = __cpu_to_le32(addr);
 	g_PhyRegInitBuf[g_PhyRegInitIndex].endBit = __cpu_to_le16(end);
 	g_PhyRegInitBuf[g_PhyRegInitIndex].startBit = __cpu_to_le16(start);
 	g_PhyRegInitBuf[g_PhyRegInitIndex].data = __cpu_to_le32(data);
@@ -112,10 +112,10 @@ void ROM_lmac_Wait(u32 us)
 u16 *PHY_Init_ChooseAgcRegTable(void)
 {
 	struct wsm_phy_regval_sets *phy_sets = phy_reg_table_get();
-	
+
 	if (GET_LMAC_ATE_MODE(__le32_to_cpu(phy_sets->phy_params.compileMacro))) {
 		return (u16 *)PHY_INIT_AGC_REG_TABLE_1;
-	} else { 
+	} else {
 		return (u16 *)PHY_INIT_AGC_REG_TABLE_3;
 	}
 
@@ -127,7 +127,7 @@ void PHY_Initial_Agc_Table(void)
 	u32 reg_idx;
 	u16 *PHY_INIT_AGC_REG_TABLE = PHY_Init_ChooseAgcRegTable();
 	struct wsm_phy_regval_sets *phy_sets = phy_reg_table_get();
-	
+
 	reg_addr = 0xAC80800;
 	for (reg_idx=0; reg_idx<40; reg_idx++)
 	{
@@ -146,7 +146,7 @@ void PHY_Initial_Agc_Table(void)
 			} else { //RICHWAVE_OUTERPA_SW_TYPE
 				PHY_BB_HW_WRITE_REG(reg_addr, 0x196E);//50dB
 			}
-			reg_addr = reg_addr + 0x4;	
+			reg_addr = reg_addr + 0x4;
 		}
 	}
 
@@ -188,14 +188,14 @@ void PHY_Initial_Memory_Table(u8 set_agc_reg)
 
 	reg_addr = 0xACBD180;
 	for (reg_idx=0; reg_idx<48; reg_idx++)
-	{		
+	{
 		PHY_BB_HW_WRITE_REG(reg_addr,0x7623c);
 		reg_addr = reg_addr + 0x4;
 	}
 	PHY_BB_HW_WRITE_REG(0xAC389AC, 0x4);
 	PHY_BB_HW_WRITE_REG(0xAC389AC, 0x5);
 #endif
-	
+
 	// ***********init agc table*************
 	if (set_agc_reg)
 	{
@@ -208,7 +208,7 @@ void PHY_Initial_Memory_Table(u8 set_agc_reg)
 void PHY_Initial_RegBitTable(void)
 {
 	struct wsm_phy_regval_sets *phy_sets = phy_reg_table_get();
-	
+
 	if (GET_LMAC_ATE_MODE(__le32_to_cpu(phy_sets->phy_params.compileMacro))) {
 		/* params_gain_shift_c2_20M 	0218		3:0 	AC80218 7
 		   params_gain_shift_c1_20M 	0218		7:4 	AC80218 8
@@ -219,8 +219,8 @@ void PHY_Initial_RegBitTable(void)
 		ROM_HW_WRITE_REG_BIT(0xAC80218, 	11, 	8,		0x5 	);
 		ROM_HW_WRITE_REG_BIT(0xAC80218, 	15, 	12, 	0x6 	);
 	}
-	
-	
+
+
 	ROM_HW_WRITE_REG_BIT(0xac880e0, 	7,		7,		0x1 	); // /params_co_clock_lock
 
 	if (GET_LMAC_MODEM_TX_RX_ETF(__le32_to_cpu(phy_sets->phy_params.compileMacro))) {
@@ -329,22 +329,22 @@ void PHY_Initial_RegBitTable(void)
 	ROM_HW_WRITE_REG_BIT(0xacb8900, 	3,		3,		0x1 	); // bypass 40M dc for rifs case;
 	ROM_HW_WRITE_REG_BIT(0xacb8900, 	0,		0,		0x1 	); // params_precomp_enable
  // ROM_HW_WRITE_REG_BIT(0xacb89a4, 	9,		0,		(0x4 | (2<<10)) ); // params_precomp_enable
- // ROM_HW_WRITE_REG_BIT(0xacb89a4, 	19, 	10, 	0x2 	); // params_precomp_coeffs1 
+ // ROM_HW_WRITE_REG_BIT(0xacb89a4, 	19, 	10, 	0x2 	); // params_precomp_coeffs1
 	ROM_HW_WRITE_REG_BIT(0xacb89a4, 	19, 	0,		(0x4 | (2<<10)) );
 	ROM_HW_WRITE_REG_BIT(0xacb89a4, 	29, 	20, 	 0x3f6	); // params_precomp_coeffs2
 	ROM_HW_WRITE_REG_BIT(0xacb89a8, 	9,		0,		0x3e7	); // params_precomp_coeffs3
 	ROM_HW_WRITE_REG_BIT(0xacb89a8, 	19, 	10, 	0x13e	); // params_precomp_coeffs4
-	ROM_HW_WRITE_REG_BIT(0xac88220, 	4,		2,		0x2 	); // rnn_scale    
+	ROM_HW_WRITE_REG_BIT(0xac88220, 	4,		2,		0x2 	); // rnn_scale
 	ROM_HW_WRITE_REG_BIT(0xac80e20, 	0,		0,		0x0 	); // rifs on;
 
-	if (GET_LMAC_TX_CFO_PPM_CORRECTION(__le32_to_cpu(phy_sets->phy_params.compileMacro)) || 
+	if (GET_LMAC_TX_CFO_PPM_CORRECTION(__le32_to_cpu(phy_sets->phy_params.compileMacro)) ||
 		GET_LMAC_CFO_DCXO_CORRECTION(__le32_to_cpu(phy_sets->phy_params.compileMacro))) {
 		ROM_HW_WRITE_REG_BIT(0xac88220, 	1,		1,		0x1 	); // when ofdm, 1 -> cfo out of dpll, 0 -> cfo out of sync
 		ROM_HW_WRITE_REG_BIT(0xAca806c, 	14, 	7,		0x30	);
 	}
 
 	// based channel busy/sync fail decide agc gain and sync reg;
-	ROM_HW_WRITE_REG_BIT(0xac80e44, 	5,		0,		0x1a	); // bit3:use_sat_flag; bit2: snd_channel_busy_mode_1; bit[1:0]:channel_busy_mode; 
+	ROM_HW_WRITE_REG_BIT(0xac80e44, 	5,		0,		0x1a	); // bit3:use_sat_flag; bit2: snd_channel_busy_mode_1; bit[1:0]:channel_busy_mode;
 		// bit4:params_reset_cca_decide_agc_gain; bit5:params_enable_cca_decide_agc_gain;
 	 // ROM_HW_WRITE_REG_BIT(0x0ac80e50,	31, 	0,		0x430c2620 );		// dsss reg
 		/*	params_digital_snd_defer_threshold_after_sync_low2_1		0E3C		5:0 	AC80E3C 14
@@ -364,8 +364,8 @@ void PHY_Initial_RegBitTable(void)
 		ROM_HW_WRITE_REG_BIT(0xac80e3c, 	23, 	18, 	0x1c	); // digital_snd_defer_thr_after_sync_low1_1
 		ROM_HW_WRITE_REG_BIT(0xac80e3c, 	29, 	24, 	0x1f	); // params_digital_defer_thr_dB_1
 
-		ROM_HW_WRITE_REG_BIT(0xac80e40, 	5,		0,		0x18	); // digital_snd_defer_thr_before_sync_low2_2�� 33dB , U(6, 0) 
-		ROM_HW_WRITE_REG_BIT(0xac80e40, 	11, 	6,		0x15	); // digital_snd_defer_thr_before_sync_low1_2�� 30dB , U(6, 0) 
+		ROM_HW_WRITE_REG_BIT(0xac80e40, 	5,		0,		0x18	); // digital_snd_defer_thr_before_sync_low2_2�� 33dB , U(6, 0)
+		ROM_HW_WRITE_REG_BIT(0xac80e40, 	11, 	6,		0x15	); // digital_snd_defer_thr_before_sync_low1_2�� 30dB , U(6, 0)
 		ROM_HW_WRITE_REG_BIT(0xac80e40, 	17, 	12, 	0x18	); // digital_snd_defer_thr_after_sync_low2_2�� 33dB , U(6, 0)
 		ROM_HW_WRITE_REG_BIT(0xac80e40, 	23, 	18, 	0x15	); // digital_snd_defer_thr_after_sync_low1_2
 		ROM_HW_WRITE_REG_BIT(0xac80e40, 	29, 	24, 	0x18	); // params_digital_defer_thr_dB_1
@@ -373,7 +373,7 @@ void PHY_Initial_RegBitTable(void)
 
 	/*
 #if ADAPTIVE_TEST
-		ROM_HW_WRITE_REG_BIT(0xac80d44, 	24, 	19, 	0x1a	); // digital_delta_thr_dB 26-45.5-60 = 
+		ROM_HW_WRITE_REG_BIT(0xac80d44, 	24, 	19, 	0x1a	); // digital_delta_thr_dB 26-45.5-60 =
 		ROM_HW_WRITE_REG_BIT(0xAC80D48, 	18, 	17, 	0x0 	); // params_channel_busy_mode
 		ROM_HW_WRITE_REG_BIT(0xac80d48, 	8,		1,		0x10	); // digital_validate_sync_channel_busy_thr_dB
 		ROM_HW_WRITE_REG_BIT(0xac80da4, 	10, 	3,		0x10	); // digital_frame_detected_channel_busy_thr_dB
@@ -392,7 +392,7 @@ void PHY_Initial_RegBitTable(void)
 	#elif USE_OUTER_PA
 		ROM_HW_WRITE_REG_BIT(0xac80d44, 	24, 	19, 	0x23	); // 0x1e);
 		ROM_HW_WRITE_REG_BIT(0xAC80D48, 	18, 	17, 	0x2 	); // 0x0);
-		ROM_HW_WRITE_REG_BIT(0xac80d48, 	8,		1,		0x60	); 
+		ROM_HW_WRITE_REG_BIT(0xac80d48, 	8,		1,		0x60	);
 		ROM_HW_WRITE_REG_BIT(0xac80da4, 	10, 	3,		0x60	);
 		ROM_HW_WRITE_REG_BIT(0xac80dc4, 	7,		0,		0x60	);
 		ROM_HW_WRITE_REG_BIT(0xac80d50, 	5,		0,		0x28	);
@@ -419,11 +419,11 @@ void PHY_Initial_RegBitTable(void)
 		ROM_HW_WRITE_REG_BIT(0xac80d5c, 	11, 	6,		0x1e	);
 		ROM_HW_WRITE_REG_BIT(0xac80d58, 	5,		0,		0x21	);
 		ROM_HW_WRITE_REG_BIT(0xac80d58, 	11, 	6,		0x1e	);
-		ROM_HW_WRITE_REG_BIT(0xac80c94, 	25, 	20, 	0x16	); 
+		ROM_HW_WRITE_REG_BIT(0xac80c94, 	25, 	20, 	0x16	);
 #endif
 	*/
 
-	// the follow registors all bits set 1, this means close clock gated 
+	// the follow registors all bits set 1, this means close clock gated
 
 	 /* ROM_HW_WRITE_REG_BIT(0xaca0108, 	4,		0,		0x1f	); // params_tsg_clk
 		ROM_HW_WRITE_REG_BIT(0xac8814c, 	6,		0,		0x7f	); // params_ce_clk
@@ -438,7 +438,7 @@ void PHY_Initial_RegBitTable(void)
 		ROM_HW_WRITE_REG_BIT(0x16100040,	31, 	0,		0xffffffff);
 		ROM_HW_WRITE_REG_BIT(0x16100044,	31, 	0,		0xffffffff); */
 
-	// the follow registors means open clock gated 
+	// the follow registors means open clock gated
 	 /* ROM_HW_WRITE_REG_BIT(0xaca0108, 	4,		0,		0x0 	); // params_tsg_clk
 		ROM_HW_WRITE_REG_BIT(0xac8814c, 	6,		0,		0x0 	); // params_ce_clk
 		ROM_HW_WRITE_REG_BIT(0xac9017c, 	5,		0,		0x20	); // params_rdc_clk
@@ -453,7 +453,7 @@ void PHY_Initial_RegBitTable(void)
 
 
 		/* 补偿Rx 40M带内的不平坦特性，补偿之后40M性能会变好 */
-		ROM_HW_WRITE_REG_BIT(0xacb8900, 	0,		0,		0x1 	);		
+		ROM_HW_WRITE_REG_BIT(0xacb8900, 	0,		0,		0x1 	);
 		ROM_HW_WRITE_REG_BIT(0xacb8900, 	11, 	8,		0x4 	); // ofdm_sync_initial_estimate_dc_window
 		ROM_HW_WRITE_REG_BIT(0xacb8a70, 	12, 	12, 	0x0 	); // ofdm_sync_use_dc
 		ROM_HW_WRITE_REG_BIT(0xacb89a4, 	9,		0,		0x4 	);
@@ -489,17 +489,17 @@ void ROM_PHY_UTL_WriteTable(const wsm_regval *pTable)
 	u32 iRegAddr;
 	u32 iRegVal;
 	u32 const *p;
-	
+
 	p = (u32*)pTable;
 
 	while (*p != PHY_EOT)
 	{
 		iRegAddr = *p++;
-		iRegVal  = *p++; 
+		iRegVal  = *p++;
 		PHY_BB_HW_WRITE_REG(iRegAddr, iRegVal);
 	}
 
-	return;	
+	return;
 }
 
 void ROM_PHY_UTL_WriteReg_Bit_u16(const wsm_regval_bit* pTable)
@@ -507,8 +507,8 @@ void ROM_PHY_UTL_WriteReg_Bit_u16(const wsm_regval_bit* pTable)
 	//uint32	uiRegValue=0;
 	//uint32  regmask=0;
 	wsm_regval_bit *pReg;
-	
-	
+
+
 	pReg = (wsm_regval_bit*)pTable;
 
 	while (pReg->addr != PHY_EOT)
@@ -532,11 +532,11 @@ void PHY_11b_shape_filter(u8 modem_ramp_flag)
 	if (modem_ramp_flag == 1)
 	{// ramp coefs
 
-		HW_WRITE_REG(0xacb0068, 0xd800); //BTDRAMPBK01:bit[19:10], bit[9:0]		
+		HW_WRITE_REG(0xacb0068, 0xd800); //BTDRAMPBK01:bit[19:10], bit[9:0]
 		HW_WRITE_REG(0xacb006c, 0x1b06c); //BTDRAMPBK23
 		HW_WRITE_REG(0xacb0070, 0x1b06c); //BTDRAMPBK45
 		HW_WRITE_REG(0xacb0074, 0x1b06c); //BTDRAMPBK67
-		HW_WRITE_REG(0xacb0078, 0x480035); 
+		HW_WRITE_REG(0xacb0078, 0x480035);
 	}
 	else
 	{
@@ -545,30 +545,30 @@ void PHY_11b_shape_filter(u8 modem_ramp_flag)
 			HW_WRITE_REG(0xacb006c, 0x1b06c); //BTDRAMPBK23
 			HW_WRITE_REG(0xacb0070, 0x1b06c); //BTDRAMPBK45
 			HW_WRITE_REG(0xacb0074, 0x1b06c); //BTDRAMPBK67
-			HW_WRITE_REG(0xacb0078, 0x480035); 
+			HW_WRITE_REG(0xacb0078, 0x480035);
 		} else {
-			HW_WRITE_REG(0xacb0068, 0x1801); 
-			HW_WRITE_REG(0xacb006c, 0x8010); 
-			HW_WRITE_REG(0xacb0070, 0x14038); 
-			HW_WRITE_REG(0xacb0074, 0x1b060); 
+			HW_WRITE_REG(0xacb0068, 0x1801);
+			HW_WRITE_REG(0xacb006c, 0x8010);
+			HW_WRITE_REG(0xacb0070, 0x14038);
+			HW_WRITE_REG(0xacb0074, 0x1b060);
 			HW_WRITE_REG(0xacb0078, 0x5800ff); // power on:0x58; power off: 0x ff;
 		}
-	
+
 	}
 	if (0)//(modem_shape_filter == 1)
 	{
-		// 11b tx shape filter	 ,default value 
-		HW_WRITE_REG(0xACB0010, 0x3FE); 
-		HW_WRITE_REG(0xACB0014, 0x3F7); 
-		HW_WRITE_REG(0xACB0018, 0x3EC); 
-		HW_WRITE_REG(0xACB001C, 0x3E8); 
-		HW_WRITE_REG(0xACB0020, 0x002); 
-		HW_WRITE_REG(0xACB0024, 0x04D); 
-		HW_WRITE_REG(0xACB0028, 0x0BD); 
-		HW_WRITE_REG(0xACB002C, 0x126); 
-		HW_WRITE_REG(0xACB0030, 0x151); 
+		// 11b tx shape filter	 ,default value
+		HW_WRITE_REG(0xACB0010, 0x3FE);
+		HW_WRITE_REG(0xACB0014, 0x3F7);
+		HW_WRITE_REG(0xACB0018, 0x3EC);
+		HW_WRITE_REG(0xACB001C, 0x3E8);
+		HW_WRITE_REG(0xACB0020, 0x002);
+		HW_WRITE_REG(0xACB0024, 0x04D);
+		HW_WRITE_REG(0xACB0028, 0x0BD);
+		HW_WRITE_REG(0xACB002C, 0x126);
+		HW_WRITE_REG(0xACB0030, 0x151);
 	}
-	
+
 	/*
 	else
 	{
@@ -582,7 +582,7 @@ void PHY_11b_shape_filter(u8 modem_ramp_flag)
 		HW_WRITE_REG(0xACB002C, 0x12e );
 		HW_WRITE_REG(0xACB0030, 0x19f );
 	}*/
-	
+
 }
 
 void PHY_Initial_Common_Reg(void)
@@ -593,7 +593,7 @@ void PHY_Initial_Common_Reg(void)
 	if(initial_phy == 0){
 		return;
 	}
-	
+
 	ROM_PHY_UTL_WriteTable(PHY_INIT_COMMON_REG_TABLE);
 	// ROM_PHY_UTL_WriteReg_Bit_u16(PHY_INIT_REG_BIT_TABLE);
 	PHY_Initial_RegBitTable();
@@ -603,7 +603,7 @@ void PHY_Initial_Common_Reg(void)
 	} else {
 		PHY_11b_shape_filter(1);
 	}
-	
+
 	{
 		HW_WRITE_REG(0xac80458,0x101020); //  //byte[2:3]:ofdm_margin_40M1; byte[4:5]:dsss_margin_40M1; byte[0:1]:dsss_margin_20M
 		HW_WRITE_REG(0xac80454,0x10200c); //8/4=2;
@@ -628,14 +628,14 @@ void PHY_Initial_Common_Reg(void)
 	} else {
 		ROM_HW_WRITE_REG_BIT( 0xac90194, 3, 0,	0); //bit[0]: 0: legacy 40M llr need combine; bit[1]: 0: mcs32 llr need combine;
 	}
-	
+
 	if (GET_LMAC_FPGA(__le32_to_cpu(phy_sets->phy_params.compileMacro)) == 1) {
 		//ROM_HW_WRITE_REG_BIT(0xACB8914	,19,10, 	 0x0	  ); // tx phi 20m
 		//ROM_HW_WRITE_REG_BIT(0xACB8918	,19,10, 	 0x0	  ); // tx phi 40m
 		//ROM_HW_WRITE_REG_BIT(0xacb891c	,19,10, 	 0x0	  ); // // tx phi 20UL
 		//HW_WRITE_REG(0xac80234,  0x0   );	//params_imb_gain[9:0], params_imb_phase[19:10]
 		ROM_HW_WRITE_REG_BIT(0xacb8900	,2,0,	 0x0   ); // bit0 is precomp_enable;bit1 is bypass_freq_shift_40m; bit2 is bypass_freq_shift_80m
-	
+
 
 		ROM_HW_WRITE_REG_BIT(0xac8048c	,10,5,	 0x1e	   ); //sat_loop_delay_20M
 		ROM_HW_WRITE_REG_BIT(0xac8048c	,16,11,  0x21	   ); //bit[16:11] is sat_loop_delay_40M;
@@ -644,7 +644,7 @@ void PHY_Initial_Common_Reg(void)
 		HW_WRITE_REG(0xac80454,  0xc200c   ); //bit[16:23]: ofdm_margin_20M
 		ROM_HW_WRITE_REG_BIT(0xac8019c	,6, 0,	0x5a   ); //params_det_saturate_offset
 
-		ROM_HW_WRITE_REG_BIT(0xac8044c	,7,0,		 0x5a	   ); //agc_pwr_hist, CHIP IS 30  
+		ROM_HW_WRITE_REG_BIT(0xac8044c	,7,0,		 0x5a	   ); //agc_pwr_hist, CHIP IS 30
 		ROM_HW_WRITE_REG_BIT(0xac801cc	,11,0,		 0x3f); //sync_noise_thr
 	}
 }
@@ -663,27 +663,27 @@ void ROM_PHY_RF_TX_WriteToGainTbl(u8 u8PowerIdx, s16 DigGainValue_dB_multile10,u
 // Input: DigGainValue_dB_multile10: 10 means 1dB; 100 means 10dB;
 // u8PowerIdx: 0~1: 11b rate; 2~8: 11g rate; 9: 65M 11n rate;
 
-		
+
 	u32 AddrOffset;
 	s16 s16DigGainVal;
 	u16 uiRegValue;
 
 	s16DigGainVal = (DigGainValue_dB_multile10*4 + 5)/10 + DigGain_Table_0dB_Index;
-	s16DigGainVal = max(min((s16)DigGain_Table_Max_Index, s16DigGainVal), 0);	
+	s16DigGainVal = max(min((s16)DigGain_Table_Max_Index, s16DigGainVal), 0);
 	uiRegValue = (ROM_ro_txdigital_gain_magic_table[s16DigGainVal]<<1);
-		
+
 	AddrOffset = (u8PowerIdx << 2);
-	
+
 	HW_WRITE_REG(0xAC389AC, 0x2);
 	if (bw_40m_flag == 0)
 	{
-		//20M/20U/20L	
+		//20M/20U/20L
 		ROM_HW_WRITE_REG_BIT(0xACBD000+AddrOffset,14,6,uiRegValue);
 		ROM_HW_WRITE_REG_BIT(0xACBD040+AddrOffset,14,6,uiRegValue);
 	}
-	else		
+	else
 	{
-		//40M	
+		//40M
 		ROM_HW_WRITE_REG_BIT(0xACBD080+AddrOffset,14,6,uiRegValue);
 	}
 	HW_WRITE_REG(0xAC389AC, 0x4);
@@ -694,7 +694,7 @@ static void PHY_Initial_DigScaler_Table(void)
 {
 	s16 DigGainValue;
 	u8 index;
-	
+
 	if(initial_phy == 0){
 		return;
 	}
@@ -710,15 +710,15 @@ static void PHY_Initial_DigScaler_Table(void)
 static void ROM_PHY_RF_TX_WriteToPPATbl(u8 u8PowerIdx, u32 uiRegValue)
 {
 	u32 AddrOffset;
-	
+
 	AddrOffset = (u8PowerIdx << 2);
 	HW_WRITE_REG(0xAC389AC, 0x2);
-	//20M/20U/20L	
+	//20M/20U/20L
 	//ROM_DBG_Printf("idx%d,0x%x=%x,%x\n",u8PowerIdx, uiRegValue, ROM_HW_READ_REG_BIT(0xACBD0c0+AddrOffset,9,0));
 	ROM_HW_WRITE_REG_BIT(0xACBD0c0+AddrOffset,9,0,uiRegValue);
 	ROM_HW_WRITE_REG_BIT(0xACBD100+AddrOffset,9,0,uiRegValue);
 	ROM_HW_WRITE_REG_BIT(0xACBD140+AddrOffset,9,0,uiRegValue);
-		
+
 	HW_WRITE_REG(0xAC389AC, 0x4);
 	HW_WRITE_REG(0xAC389AC, 0x5);
 }
@@ -727,18 +727,18 @@ static void PHY_Initial_Ppa_Table(void)
 {
     u32 uiRegValue;
 	u8 	index;
-	const u8  *u16PpaGainValTbl;	
+	const u8  *u16PpaGainValTbl;
 	if(initial_phy == 0){
 		return;
 	}
-	u16PpaGainValTbl = u16PpaGainValTbl_20M_40M;	
+	u16PpaGainValTbl = u16PpaGainValTbl_20M_40M;
 
 	for (index = 0; index < MAX_POWER_INDEX_ENTRIES; index ++)
 	{
-		uiRegValue = u16PpaGainValTbl[index];	
+		uiRegValue = u16PpaGainValTbl[index];
 		ROM_PHY_RF_TX_WriteToPPATbl(index, uiRegValue);
-	}		
-	
+	}
+
 }
 
 void ROM_TX_PM_Setup_LongFilter_A1_OwnMac(void)
@@ -763,7 +763,7 @@ void ROM_TX_PM_Setup_LongFilter_A1_OwnMac(void)
 	    HW_WRITE_REG(PAC_RXF_LFILTER_A1_OWNMAC_1_CTL, PAC_RXD_MAKE_LONG_FILTER_CTL(PAC_LF__USE_EXTRACTOR_A1,PAC_LF__MATCH_PATTERN_DEFAULT) );    /* mask for address match, ofs in frame */
 
 		//interfaceID 1 mac addr , used by chiper model
-		HW_WRITE_REG(SECOND_INFADDR_0_31, ((u32)__le16_to_cpu(pAddr[0])) | ((u32)__le16_to_cpu(pAddr[1]))<<16);	
+		HW_WRITE_REG(SECOND_INFADDR_0_31, ((u32)__le16_to_cpu(pAddr[0])) | ((u32)__le16_to_cpu(pAddr[1]))<<16);
 		HW_WRITE_REG(SECOND_INFADDR_32_47, (u32)__le16_to_cpu(pAddr[2]));
 	}
 
@@ -935,7 +935,7 @@ static void TX_PM_Setup_All_STA_Filters(void)
             (D11_FROM_DS_TO_DS_MASK<<6)   | (D11_SUB_QTYPE_MASK>>2),     // mask (shifted by 2 as hw is checking b2-b9 and not b0-b7)
             0,                                          // dynamic ofset for  extractors enabled for offset 0: for fields SeqCtl and before
             6,                                          // dynamic ofset for target byte filter and extractors enabled for offset 1: QOS field
-                                                        // CW1250 PAS ECO bypasses it when taking dynamic offset for A2 
+                                                        // CW1250 PAS ECO bypasses it when taking dynamic offset for A2
             ENABLE_DYNAMIC_FILTER));                    // enable dynamic filter
 
     // Control Wrapper frame // value to match =   xx 0111 01
@@ -978,7 +978,7 @@ static void TX_PM_Setup_All_STA_RX_Events(void)
     //Rx Conditions / Events (generate rx event N when all the filters given here match)
 
     // RxEvent 0: Match for AggregateEnd-Respond-BA for our MAC Address-0 event
-	if (GET_LMAC_ASIC_1250_CUT_1(__le32_to_cpu(phy_sets->phy_params.compileMacro)) && 
+	if (GET_LMAC_ASIC_1250_CUT_1(__le32_to_cpu(phy_sets->phy_params.compileMacro)) &&
 		GET_LMAC_ENABLE_AGG_END_ECO(__le32_to_cpu(phy_sets->phy_params.compileMacro))) {
 	    HW_WRITE_REG(PAC_RXD_CONDITION_AGGREND_RESPONDBA_MA_0,
 	                    PAC_RXD_LFILTER__A1_OWNMAC_0 |
@@ -990,7 +990,7 @@ static void TX_PM_Setup_All_STA_RX_Events(void)
      //HW_WRITE_REG(PAC_RXD_CONDITIONB_AGGREND_RESPONDBA_MA_0, 0 );
 
     // RxEvent 1: Match for AggregateEnd-Respond-BA for our MAC Address-1 event
-	if (GET_LMAC_ASIC_1250_CUT_1(__le32_to_cpu(phy_sets->phy_params.compileMacro)) && 
+	if (GET_LMAC_ASIC_1250_CUT_1(__le32_to_cpu(phy_sets->phy_params.compileMacro)) &&
 		GET_LMAC_ENABLE_AGG_END_ECO(__le32_to_cpu(phy_sets->phy_params.compileMacro))) {
 	    HW_WRITE_REG(PAC_RXD_CONDITION_AGGREND_RESPONDBA_MA_1,
 	                    PAC_RXD_LFILTER__A1_OWNMAC_1 |
@@ -1111,7 +1111,7 @@ static void TX_PM_Setup_All_STA_RX_Events(void)
 	} else if (GET_LMAC_STA_MONITOR(__le32_to_cpu(phy_sets->phy_params.compileMacro))) {
 		HW_WRITE_REG(PAC_RXD_CONDITION_NOT_FOR_US_UPDATENAV, 0);
 		HW_WRITE_REG(PAC_RXD_CONDITIONB_NOT_FOR_US_UPDATENAV,0);
-	} else {	
+	} else {
 	    HW_WRITE_REG(PAC_RXD_CONDITION_NOT_FOR_US_UPDATENAV, 0);
 	}
     //HW_WRITE_REG(PAC_RXD_CONDITIONB_NOT_FOR_US_UPDATENAV, 0);
@@ -1212,18 +1212,18 @@ void atbm_phy_init(struct atbm_common *hw_priv)
 		return;
 	}
 	phy_reg_muxlock();
-	
-	phy_sets = phy_alloc_mem(sizeof(struct wsm_phy_regval_sets) + 
+
+	phy_sets = phy_alloc_mem(sizeof(struct wsm_phy_regval_sets) +
 							 sizeof(wsm_regval_bit) * ATBM_PHY_REG_INIT_BUF_MAX_SIZE);
 	sendBuf  = phy_alloc_mem(sizeof(wsm_regval_bit) * (ATBM_PHY_REG_INIT_SEND_BUF_EACH_TIME + 1));
-	
+
 	BUG_ON(phy_sets == NULL);
 	BUG_ON(sendBuf == NULL);
-	
+
 	phy_sets->table_index = 0;
 	phy_sets->table_size  = ATBM_PHY_REG_INIT_BUF_MAX_SIZE;
 	phy_sets->table       = (wsm_regval_bit *)(phy_sets + 1);
-	
+
 	atbm_printk_init("Start to phy reg init.");
 	WARN_ON(wsm_phy_init_get_global_flag(hw_priv, &phy_sets->phy_params));
 	atbm_printk_init("rfSubtypeDefine[%d][%d][%d]\n",phy_sets->phy_params.rfSubtypeDefine,
@@ -1247,7 +1247,7 @@ void atbm_phy_init(struct atbm_common *hw_priv)
 	/*Init Ppa Gain table*/
 	PHY_Initial_Ppa_Table();
 	atbm_printk_init("PHY_Initial_Ppa_Tableindex: %d\n", phy_sets->table_index);
-	
+
 	/* Initial FEM Reg */
 	PHY_Initial_FEM_Reg();
 	atbm_printk_init("PHY_Initial_FEM_Regindex: %d\n", phy_sets->table_index);
@@ -1258,7 +1258,7 @@ void atbm_phy_init(struct atbm_common *hw_priv)
 	/* Initial RFIP Reg*/
 	PHY_RF_ConfigRFIP();
 	atbm_printk_init("PHY_RF_ConfigRFIPindex: %d\n", phy_sets->table_index);
-	
+
 	/* final */
 	ROM_HW_WRITE_REG_BIT(PHY_EOT, 0, 0, HB_EOT);
 
@@ -1276,7 +1276,7 @@ void atbm_phy_init(struct atbm_common *hw_priv)
 					memcpy(sendBuf, phy_sets->table + i,sizeof(wsm_regval_bit) * 120);
 					sendBuf[120].addr = __cpu_to_le32(0xffffffff);
 	//				dump_reg_table(1452, (char *)recv_buf);
-					wsm_phy_read_reg_bit_u32(hw_priv, sendBuf, sizeof(wsm_regval_bit) * (120 + 1));				
+					wsm_phy_read_reg_bit_u32(hw_priv, sendBuf, sizeof(wsm_regval_bit) * (120 + 1));
 				}
 				else
 				{
@@ -1304,9 +1304,9 @@ void atbm_phy_init(struct atbm_common *hw_priv)
 		i += ATBM_PHY_REG_INIT_SEND_BUF_EACH_TIME;
 	}
 	phy_reg_table_free();
-	
+
 	phy_reg_muxunlock();
-	
+
 	phy_free_mem(phy_sets);
 	phy_free_mem(sendBuf);
 	return;

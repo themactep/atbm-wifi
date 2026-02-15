@@ -41,11 +41,11 @@ int atbm_ep0_write_cmd(struct atbm_common *hw_priv, struct wsm_hdr_tx * wsm_h)
 	u32 addr = hw_priv->wsm_caps.HiHwCnfBufaddr;
 	u32 size = wsm_h->len;
 	u8 *data =(u8 *) wsm_h;
-	
+
 	wsm_h->flag = USB_EP0_FLAG;
 	wsm_h->id &= __cpu_to_le32(~WSM_TX_SEQ(WSM_TX_SEQ_MAX));
 	wsm_h->id |= cpu_to_le32(WSM_TX_SEQ(hw_priv->wsm_tx_seq_ep0));
-	
+
 	//printk("wsm_cmd_send:wsm->len=%d,id:0x%x,seq:0x%x\n",__le32_to_cpu(wsm_h->len),wsm_h->id,hw_priv->wsm_tx_seq_ep0);
 	//frame_hexdump(__func__, (u8 *)wsm_h,wsm_h->len);
 	//printk("\n");
@@ -79,7 +79,7 @@ int atbm_ep0_write_cmd(struct atbm_common *hw_priv, struct wsm_hdr_tx * wsm_h)
 				goto error;
 			}
 		} /* End of bootloader download loop */
-		
+
 		memcpy(buf, &data[0], DOWNLOAD_BLOCK_SIZE);
 		/* send the block to sram */
 		ret = atbm_ep0_write(hw_priv,addr,buf, DOWNLOAD_BLOCK_SIZE); // last step write first block
@@ -132,7 +132,7 @@ int atbm_direct_read_reg_32(struct atbm_common *hw_priv, u32 addr, u32 *val)
 {
     int ret;
 	u32 local_val = 0;
-	
+
 	ret= atbm_ep0_read(hw_priv, addr, &local_val, sizeof(local_val));
 
 	if (ret <= 0) {
@@ -152,7 +152,7 @@ int atbm_direct_write_reg_32(struct atbm_common *hw_priv, u32 addr, u32 val)
 {
 	u32 local_val = cpu_to_le32(val);
 	int ret = 0;
-	
+
 	ret = atbm_ep0_write(hw_priv, addr, &local_val, sizeof(local_val));
 	if (ret < 0) {
 		atbm_dbg(ATBM_APOLLO_DBG_ERROR,
@@ -172,18 +172,18 @@ out:
 
 int atbm_usb_write_bit(struct atbm_common *hw_priv,u32 addr,u8 endBit,
 	u8 startBit,u32 data )
-{                                                              
-	u32	uiRegValue=0;                                        
+{
+	u32	uiRegValue=0;
 	u32 regmask=0;
 	int ret = 0;
-	ret=atbm_direct_read_reg_32(hw_priv,addr,&uiRegValue); 
+	ret=atbm_direct_read_reg_32(hw_priv,addr,&uiRegValue);
 	if(ret<0){
 		goto rw_end;
-	}                             
-	regmask = ~((1<<startBit) -1);                               
-	regmask &= ((1<<endBit) -1)|(1<<endBit);                     
-	uiRegValue &= ~regmask;                                      
-	uiRegValue |= (data <<startBit)&regmask;                     
+	}
+	regmask = ~((1<<startBit) -1);
+	regmask &= ((1<<endBit) -1)|(1<<endBit);
+	uiRegValue &= ~regmask;
+	uiRegValue |= (data <<startBit)&regmask;
 	ret = atbm_direct_write_reg_32(hw_priv,addr,uiRegValue);
 	if(ret<0)
 	{
@@ -192,7 +192,7 @@ int atbm_usb_write_bit(struct atbm_common *hw_priv,u32 addr,u8 endBit,
 
 rw_end:
 	return ret;
-}  
+}
 #if ATBM_READ_REG_TEST
 struct atbm_reg_bit_s
 {
@@ -202,43 +202,43 @@ struct atbm_reg_bit_s
 	u32 val;
 };
 static struct atbm_reg_bit_s atbm_debug_bus_reg_bit[]=
-{	
-	{0x161000A0,	31,0, 0x13071307}, 
-	{0x161000A4,	31,0,	0x13071307}, 
-	{0x161000A8,	31,0,	0x13071307}, 
-	{0x161000AC,	31,0, 0x13071307}, 
-	{0x161000B0,	31,0,	0x13071307}, 
-	{0x161000B4,	31,0,	0x13071307}, 
-	{0x161000B8,	31,0,	0x13071307}, 
-	{0x161000BC,	31,0,	0x13071307}, 
-	{0x161000C0,	31,0,	0x13071307}, 
-	{0x161000C4,	31,0,	0x13071307}, 
-	{0x161000C8,	31,0,	0x13071307}, 
-	{0x161000CC,	31,0,	0x13001307}, 
-	{0x161000D0,	31,0,	0x13071300}, 
-	{0x161000D4,	31,0,	0x13071307}, 
-	{0x161000D8,	31,0, 0x13071307}, 
-	{0x161000DC,	31,0,	0x13071307}, 
-	{0x161000E0,	31,0, 0x13071307}, 
-	{0x161000E4,	31,0, 0x13071307}, 
-	{0x16100174,	31,0, 0x13071307}, 
-	{0xffffffff,	31, 0 , 0}		 	
+{
+	{0x161000A0,	31,0, 0x13071307},
+	{0x161000A4,	31,0,	0x13071307},
+	{0x161000A8,	31,0,	0x13071307},
+	{0x161000AC,	31,0, 0x13071307},
+	{0x161000B0,	31,0,	0x13071307},
+	{0x161000B4,	31,0,	0x13071307},
+	{0x161000B8,	31,0,	0x13071307},
+	{0x161000BC,	31,0,	0x13071307},
+	{0x161000C0,	31,0,	0x13071307},
+	{0x161000C4,	31,0,	0x13071307},
+	{0x161000C8,	31,0,	0x13071307},
+	{0x161000CC,	31,0,	0x13001307},
+	{0x161000D0,	31,0,	0x13071300},
+	{0x161000D4,	31,0,	0x13071307},
+	{0x161000D8,	31,0, 0x13071307},
+	{0x161000DC,	31,0,	0x13071307},
+	{0x161000E0,	31,0, 0x13071307},
+	{0x161000E4,	31,0, 0x13071307},
+	{0x16100174,	31,0, 0x13071307},
+	{0xffffffff,	31, 0 , 0}
 };
 
 int atbm_usb_write_bit(struct atbm_common *hw_priv,u32 addr,u8 endBit,
 	u8 startBit,u32 data )
-{                                                              
-	u32	uiRegValue=0;                                        
+{
+	u32	uiRegValue=0;
 	u32 regmask=0;
 	int ret = 0;
-	ret=atbm_direct_read_reg_32(hw_priv,addr,&uiRegValue); 
+	ret=atbm_direct_read_reg_32(hw_priv,addr,&uiRegValue);
 	if(ret<0){
 		goto rw_end;
-	}                             
-	regmask = ~((1<<startBit) -1);                               
-	regmask &= ((1<<endBit) -1)|(1<<endBit);                     
-	uiRegValue &= ~regmask;                                      
-	uiRegValue |= (data <<startBit)&regmask;                     
+	}
+	regmask = ~((1<<startBit) -1);
+	regmask &= ((1<<endBit) -1)|(1<<endBit);
+	uiRegValue &= ~regmask;
+	uiRegValue |= (data <<startBit)&regmask;
 	ret = atbm_direct_write_reg_32(hw_priv,addr,uiRegValue);
 	if(ret<0)
 	{
@@ -247,7 +247,7 @@ int atbm_usb_write_bit(struct atbm_common *hw_priv,u32 addr,u8 endBit,
 
 rw_end:
 	return ret;
-}                                                              
+}
 
 int atbm_usb_write_bit_table(struct atbm_common *hw_priv,struct atbm_reg_bit_s *reg_table)
 {
@@ -260,7 +260,7 @@ int atbm_usb_write_bit_table(struct atbm_common *hw_priv,struct atbm_reg_bit_s *
 	preg_table = reg_table;
 
 	while(preg_table->addr != 0xffffffff){
-		
+
 		retval = atbm_usb_write_bit(hw_priv,preg_table->addr,
 			preg_table->end_bit,preg_table->start_bit,preg_table->val);
 
@@ -269,7 +269,7 @@ int atbm_usb_write_bit_table(struct atbm_common *hw_priv,struct atbm_reg_bit_s *
 		}
 
 		preg_table++;
-		
+
 	}
 
 exit:
@@ -284,8 +284,8 @@ struct atbm_reg_val_s{
 
 #if ATBM_DEBUG_BUS_TEST
 static struct atbm_reg_val_s atbm_debugbus_reg[]=
-{	
-	{0x1610009c,0x1a3b},	
+{
+	{0x1610009c,0x1a3b},
 	{0x161000A0,0x13071300},
 	{0x161000AC,0x13071307},
 	{0x161000B8,0x13071307},
@@ -345,7 +345,7 @@ int atbm_write_reg_table(struct atbm_common *hw_priv,struct atbm_reg_val_s *reg_
 	preg_table = reg_table;
 	//printk(KERN_ERR "atbm_write_reg_table++++++++\n");
 	while(preg_table->addr != 0xffffffff){
-		
+
 		retval = atbm_direct_write_reg_32(hw_priv,preg_table->addr,preg_table->val);
 
 		if(retval<0){
@@ -353,7 +353,7 @@ int atbm_write_reg_table(struct atbm_common *hw_priv,struct atbm_reg_val_s *reg_
 		}
 
 		preg_table++;
-		
+
 	}
 exit:
 	//printk(KERN_ERR "atbm_write_reg_table-----------\n");
@@ -368,9 +368,9 @@ exit:
 
 int atbm_before_load_firmware(struct atbm_common *hw_priv)
 {
-	
+
 	#define ATBM_VOL_L					(11)
-	
+
 	u32 val;
 	int ret = 0;
 #if ATBM_READ_REG_TEST
@@ -422,7 +422,7 @@ int atbm_before_load_firmware(struct atbm_common *hw_priv)
 		atbm_printk_err("atbm_write_reg_table err \n");
 	}
 	#endif
-	
+
 	#ifdef HW_DOWN_FW
 	/*
 	*disable irq
@@ -433,7 +433,7 @@ int atbm_before_load_firmware(struct atbm_common *hw_priv)
 #endif
 	val = 1;
 	ret = 0;
-	
+
 #if ATBM_READ_REG_TEST
 	/*
 	*read reg test
@@ -443,9 +443,9 @@ int atbm_before_load_firmware(struct atbm_common *hw_priv)
 	ret = atbm_direct_write_reg_32(hw_priv,MEMENDADDR,MEMVAL);
 	if(ret<0)
 		atbm_printk_err("write mem err\n");
-	 
+
     atbm_printk_init("write mem MEMENDADDR\n");
-	
+
 	for(index=0;index<100000;index++)
 	{
 		ret = atbm_direct_read_reg_32(hw_priv,MEMENDADDR,&val);
@@ -537,9 +537,9 @@ int atbm_after_load_firmware(struct atbm_common *hw_priv)
 			"%s: can't register IRQ handler.\n", __func__);
 		return ret;
 	}
-	
+
 	if(hw_priv->chip_version>=ARES_A){
-		
+
 		int ret;
 		u32 val32;
 
@@ -554,7 +554,7 @@ int atbm_after_load_firmware(struct atbm_common *hw_priv)
 				"%s: 0x1610102c: can't read register.\n", __func__);
 		}
 		atbm_printk_init("0x1610102c=0x%x\n",val32);
-		
+
 		val32 &= ~(0xffff0000);
 		val32 |= BIT(0) | BIT(1) | (0x1 << 16);
 		ret=atbm_direct_write_reg_32(hw_priv,0x1610102c,val32);
@@ -562,12 +562,12 @@ int atbm_after_load_firmware(struct atbm_common *hw_priv)
 			atbm_dbg(ATBM_APOLLO_DBG_ERROR,
 				"%s: 0x1610102c: can't write register.\n", __func__);
 		}
-		
+
 		ret=atbm_direct_read_reg_32(hw_priv,0x1610102c,&val32);
 		if(ret<0){
 			atbm_dbg(ATBM_APOLLO_DBG_ERROR,
 				"%s: 0x1610102c: can't read register.\n", __func__);
-		}	
+		}
 		atbm_printk_init("0x1610102c=0x%x\n",val32);
 
 #ifdef USB_HOLD_CPU_FUNC
@@ -578,9 +578,9 @@ int atbm_after_load_firmware(struct atbm_common *hw_priv)
 			atbm_dbg(ATBM_APOLLO_DBG_ERROR,
 				"%s: 0x1610102c: can't read register.\n", __func__);
 		}
-		
+
 		val32 &= ~( BIT(8));
-		
+
 		atbm_printk_init("0x16101000=0x%x\n",val32);
 		ret=atbm_direct_write_reg_32(hw_priv,0x16101000,val32);
 		if(ret<0){
@@ -606,16 +606,16 @@ int atbm_after_load_firmware(struct atbm_common *hw_priv)
         /*release cpu*/
         atbm_direct_write_reg_32(hw_priv,0x16101000,0x0);
 
-#endif  //#if HARDWARE_USB_JUMP	
+#endif  //#if HARDWARE_USB_JUMP
 	}else if (hw_priv->chip_version==ATHENA_LITE){
 		//
 		u32 val32;
-		u32 regdata ;	
+		u32 regdata ;
 		// PC  jump to address ICCM
 #ifndef HW_DOWN_FW
 		hw_priv->sbus_ops->lmac_start(hw_priv->sbus_priv);
 #else
-		atbm_write_reg_table(hw_priv,atbm_usb_all_irq_en);	
+		atbm_write_reg_table(hw_priv,atbm_usb_all_irq_en);
 		val32 = 0x100;
 		regdata = 0x100;
 		/*reset cpu*/
@@ -624,10 +624,10 @@ int atbm_after_load_firmware(struct atbm_common *hw_priv)
 		atbm_direct_write_reg_32(hw_priv,0x1610102c,0x3);
 		/*release cpu*/
 		atbm_direct_write_reg_32(hw_priv,0x16101000,0x0);
-		
+
 #endif  //#if HARDWARE_USB_JUMP
 	}else if (hw_priv->chip_version==ATHENA_B){
-		u32 regdata ;	
+		u32 regdata ;
 #ifdef HW_DOWN_FW
 		atbm_write_reg_table(hw_priv,atbm_usb_all_irq_en);
 #endif
@@ -636,7 +636,7 @@ int atbm_after_load_firmware(struct atbm_common *hw_priv)
 		//hw_priv->sbus_ops->lmac_start(hw_priv->sbus_priv);
 		atbm_direct_read_reg_32(hw_priv,0x1610007c,&regdata);
 		regdata |= BIT(1);
-		atbm_direct_write_reg_32(hw_priv,0x1610007c,regdata);	
+		atbm_direct_write_reg_32(hw_priv,0x1610007c,regdata);
 		atbm_direct_read_reg_32(hw_priv,0x16101000,&regdata);
 		regdata |= BIT(8);
 		atbm_direct_write_reg_32(hw_priv,0x16101000,regdata);
@@ -650,20 +650,20 @@ int atbm_after_load_firmware(struct atbm_common *hw_priv)
 	hw_priv->sbus_ops->lock(hw_priv->sbus_priv);
 	hw_priv->sbus_ops->sbus_memcpy_fromio(hw_priv->sbus_priv,0x2,NULL,RX_BUFFER_SIZE);
 	hw_priv->sbus_ops->unlock(hw_priv->sbus_priv);
-	
-	return hw_priv->sbus_ops->sbus_wait_data_xmited ? 
-		   hw_priv->sbus_ops->sbus_wait_data_xmited(hw_priv->sbus_priv) : 
+
+	return hw_priv->sbus_ops->sbus_wait_data_xmited ?
+		   hw_priv->sbus_ops->sbus_wait_data_xmited(hw_priv->sbus_priv) :
 		   0;
 }
 
 void atbm_firmware_init_check(struct atbm_common *hw_priv)
 {
-	int status =0;	
+	int status =0;
 	struct sk_buff *skb = atbm_dev_alloc_skb(1600);
 	struct wsm_hdr_tx * hdr ;
-	
+
 	//printk("atbm_firmware_init_check send data %p\n",	hw_priv->save_buf );
-	
+
 	//spin_lock_bh(&hw_priv->wsm_cmd.lock);
 	mutex_lock(&hw_priv->wsm_cmd_mux);
 	hw_priv->save_buf =  skb->data;
@@ -687,7 +687,7 @@ void atbm_firmware_init_check(struct atbm_common *hw_priv)
 
 	if(hw_priv->sbus_ops->sbus_wait_data_xmited)
 		hw_priv->sbus_ops->sbus_wait_data_xmited(hw_priv->sbus_priv);
-	else 
+	else
 		mdelay(100);//delay 100ms may be not safely,but have no idea
 	atbm_dev_kfree_skb(skb);
 }

@@ -74,7 +74,7 @@ void os_msys_init(void)
 	else{
 		block_count = MYNEWT_VAL(MSYS_1_BLOCK_COUNT);
 	}
-	
+
 	iot_printf("msys block_count:%d\n", block_count);
 
 	os_msys_init_1_data = atbm_kmalloc(OS_MEMPOOL_SIZE(block_count, SYSINIT_MSYS_1_MEMBLOCK_SIZE) * OS_ALIGNMENT, GFP_KERNEL);

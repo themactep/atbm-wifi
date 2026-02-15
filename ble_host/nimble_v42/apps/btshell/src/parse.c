@@ -340,15 +340,15 @@ uint8_t to_hex(uint8_t sval)
 {
     if(sval >= '0' && sval<= '9')
     {
-        return (sval - '0');	 
+        return (sval - '0');
     }
     else if(sval >= 'a' && sval<= 'f')
     {
-	return (sval - 'a' + 0x0a );	 
+	return (sval - 'a' + 0x0a );
     }
     else if(sval >= 'A' && sval<= 'F')
     {
-        return (sval - 'A' + 0x0a);	 
+        return (sval - 'A' + 0x0a);
     }
 }
 
@@ -363,7 +363,7 @@ parse_arg_to_hex(char *name, int max_len, uint8_t *dst, int *out_len)
         return ENOENT;
     }
 	printf("data : %s \n",sval);
-		
+
     if(max_len < ((strlen(sval)-1)/2) + 1)
 	return -1;
 
@@ -371,8 +371,8 @@ parse_arg_to_hex(char *name, int max_len, uint8_t *dst, int *out_len)
     {
         dst[i] = to_hex(sval[2*i]) << 4;
         dst[i] |= to_hex(sval[2*i+1]);
-    }    
-    
+    }
+
     *out_len = i;
     return 0;
 }
@@ -394,7 +394,7 @@ parse_arg_byte_stream_delim(char *sval, char *delims, int max_len,
         if (i >= max_len) {
             return EINVAL;
         }
-        ul = strtoul(token, &endptr, 16);		
+        ul = strtoul(token, &endptr, 16);
         if (sval[0] == '\0' || *endptr != '\0' || ul > UINT8_MAX) {
             return -1;
         }

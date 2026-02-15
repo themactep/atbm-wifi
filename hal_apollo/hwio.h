@@ -49,10 +49,10 @@
 #endif
 #ifdef SDIO_BUS
 #include "hwio_sdio.h"
-#endif 
+#endif
 #ifdef SPI_BUS
 #include "hwio_spi.h"
-#endif 
+#endif
 
 int atbm_fw_write(struct atbm_common *priv, u32 addr, const void *buf,u32 buf_len);
 int atbm_before_load_firmware(struct atbm_common *hw_priv);

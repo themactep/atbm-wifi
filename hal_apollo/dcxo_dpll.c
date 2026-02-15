@@ -6,7 +6,7 @@ bool debugMode;
 
 #define READ_DPLL_VALUE
 #define READ_DCXO_VALUE
-#define SMU_BASE_ADDR 0x16100000 
+#define SMU_BASE_ADDR 0x16100000
 #define SMU_DCXO_TRIM_ADDR SMU_BASE_ADDR+0x100c
 #define SMU_DCXO_CRTRL_ADDR SMU_BASE_ADDR+0x1010
 #define SMU_DPLL_PARAM_1_ADDR SMU_BASE_ADDR+0x1018
@@ -127,7 +127,7 @@ int atbm_dcxo_read_default_value(struct atbm_common *hw_priv,const char * test)
 				} \
 			} \
 		}while(0)
-	
+
 #define DCXO_CHANGE_DEFAULT_NAME(dcxo_data_val,dcxo_reg_val,start_bit,end_bit,name) do { \
 			if(dcxo_data_val!=0xff){ \
 				u8 regmask =0; \
@@ -141,14 +141,14 @@ int atbm_dcxo_read_default_value(struct atbm_common *hw_priv,const char * test)
 				atbm_dbg(ATBM_APOLLO_DBG_DCXO_DPLL,"**change reg 0x%x\n",dcxo_reg_val);\
 			}\
 		}while(0)
-	
-	
+
+
 #define DCXO_REG_WRITE(start_bit,value) do { \
 					atbm_reg_write_8(hw_priv,0x18,0x80 + start_bit/8);		 \
 					ret=atbm_reg_write_8(hw_priv,0x19,value); \
 					atbm_dbg(ATBM_APOLLO_DBG_DCXO_DPLL,"**write reg%2d bit[%d] value 0x%x\n", start_bit/8,start_bit,value);\
 				}while(0)
-			
+
 
 int  atbm_dcxo_init_default_apolloc(int dpllClock)
 {
@@ -908,7 +908,7 @@ int atbm_dcxo_test_value(struct atbm_common *hw_priv,const char *dcxo_value,int 
 		    atbm_dbg(ATBM_APOLLO_DBG_DCXO_DPLL,"**change reg 0x%x\n",dpll_reg_val);\
 		}\
 	}while(0)
- 
+
 
 
 #define DPLL_REG_READ_DBG_NAME(dpll_reg_val,start_bit,end_bit,name) do { \
@@ -1018,7 +1018,7 @@ int  atbm_dpll_init_default(int prjType,int dpllClock)
 		DPLL_INIT_DEFAULT(dpll_nfrac_3,80,87,0x0);
 	}
 	DPLL_INIT_DEFAULT(sdio_dpll_iso_en,88,88,0x0);
-	//these bits is not used by apolloB,so it is not need to add apolloC 
+	//these bits is not used by apolloB,so it is not need to add apolloC
 	DPLL_INIT_DEFAULT(dpll_sel_external,92,92,0x0);
 	DPLL_INIT_DEFAULT(dpll_test_pd,93,93,0x1);
 	return 0;
@@ -1214,7 +1214,7 @@ static int atbm_dcxo_reg_realVal_to_sdioVal(struct atbm_common*hw_priv)
 		if (ret<0){
 			atbm_dbg(ATBM_APOLLO_DBG_DCXO_DPLL,"%d:write finish Dcxo_init_dcxo_sdio error",__LINE__);
 		}
-	}
+	}
 	return ret;
 
 }
@@ -1243,7 +1243,7 @@ static int atbm_wait_dcxo_idel(struct atbm_common*hw_priv,u8 successBit,u8 failB
 }
 static int atbm_wait_dcxo_success(struct atbm_common*hw_priv,u8 successBit,u8 failBit)
 {
-	int ret ;	
+	int ret ;
 	u8 Dcxo_val_suc_fail;
 	while(1){
 		ret=atbm_reg_write_8(hw_priv,0x18,0x00+successBit/8);
@@ -1301,14 +1301,14 @@ dcxo_again:
 	/*set register value for timming--- Dcxo_val_retry ==1*/
 	pinfo = &dcxo_default.info[DCXO_VAL_RETRY_POSITION];
 	dcxo_signal_config(hw_priv,pinfo->name,pinfo->start_bit,pinfo->end_bit,~pinfo->data);
-	
+
 	/*wait for dcxo idel success bit is 2& fail bit is 3*/
 	atbm_wait_dcxo_idel(hw_priv,2,3);
 
 	/*set register value for timming---dcxo cfg vld==1 */
     pinfo = &dcxo_default.info[DCXO_CFG_VAL_POSITION];
     dcxo_signal_config(hw_priv,pinfo->name,pinfo->start_bit,pinfo->end_bit,~pinfo->data);
-	
+
 	/*set register value for timming--- Dcxo_val_retry===0*/
 	pinfo = &dcxo_default.info[DCXO_VAL_RETRY_POSITION];
 	dcxo_signal_config(hw_priv,pinfo->name,pinfo->start_bit,pinfo->end_bit,pinfo->data);
@@ -1404,45 +1404,45 @@ static int atbm_write_dpll_value_to_smu(struct atbm_common *hw_priv,u32 register
 			atbm_smu_reg_clear_bit(hw_priv,&sys_dpll_smu_reg,0,2);
 			getData=atbm_dpll_reg_get_bit(hw_priv,&dpll_regdata_tbl[1],11,13);
 			sys_dpll_smu_reg|=getData;
-	
+
 			atbm_smu_reg_clear_bit(hw_priv,&sys_dpll_smu_reg,8,13);
 			getData=atbm_dpll_reg_get_bit(hw_priv,&dpll_regdata_tbl[7],58,63);
 			sys_dpll_smu_reg|=getData<<8;
-			
+
 			atbm_printk_bus("register_addr=%x,change_value=%x\n",register_addr,sys_dpll_smu_reg);
 			break;
 		case 0x1610101c:
 			atbm_smu_reg_clear_bit(hw_priv,&sys_dpll_smu_reg,0,5);
 			getData=atbm_dpll_reg_get_bit(hw_priv,&dpll_regdata_tbl[6],52,55);
 			sys_dpll_smu_reg|=getData;
-			
+
 			getData=atbm_dpll_reg_get_bit(hw_priv,&dpll_regdata_tbl[7],56,57);
 			sys_dpll_smu_reg|=getData<<4;
-			
+
 			atbm_smu_reg_clear_bit(hw_priv,&sys_dpll_smu_reg,8,9);
 			getData=atbm_dpll_reg_get_bit(hw_priv,&dpll_regdata_tbl[6],50,51);
 			sys_dpll_smu_reg|=getData<<4;
-			
+
 			atbm_smu_reg_clear_bit(hw_priv,&sys_dpll_smu_reg,16,18);
 			getData=atbm_dpll_reg_get_bit(hw_priv,&dpll_regdata_tbl[5],47,47);
 			sys_dpll_smu_reg|=getData<<16;
 			getData=atbm_dpll_reg_get_bit(hw_priv,&dpll_regdata_tbl[6],48,49);
 			sys_dpll_smu_reg|=getData<<17;
 
-					
+
 			atbm_smu_reg_clear_bit(hw_priv,&sys_dpll_smu_reg,24,26);
 			getData=atbm_dpll_reg_get_bit(hw_priv,&dpll_regdata_tbl[5],44,46);
 			sys_dpll_smu_reg|=getData<<24;
 			atbm_printk_bus("register_addr=%x,change_value=%x\n",register_addr,sys_dpll_smu_reg);
 			break;
-			
+
 		case 0x16101020:
 			atbm_smu_reg_clear_bit(hw_priv,&sys_dpll_smu_reg,0,7);
 			getData=atbm_dpll_reg_get_bit(hw_priv,&dpll_regdata_tbl[4],36,39);
 			sys_dpll_smu_reg|=getData;
 			getData=atbm_dpll_reg_get_bit(hw_priv,&dpll_regdata_tbl[5],40,43);
 			sys_dpll_smu_reg|=getData<<4;
-			
+
 			atbm_smu_reg_clear_bit(hw_priv,&sys_dpll_smu_reg,8,31);
 			getData=atbm_dpll_reg_get_bit(hw_priv,&dpll_regdata_tbl[8],64,71);
 			sys_dpll_smu_reg|=getData<<8;
@@ -1494,7 +1494,7 @@ static int atbm_write_dpll_value_to_smu(struct atbm_common *hw_priv,u32 register
 			atbm_printk_bus("invalid regaddr=%x\n",register_addr);
 			break;
 		}
-	
+
 	ret=atbm_ahb_write_32(hw_priv,register_addr,sys_dpll_smu_reg);
 	return 0;
 }
@@ -1523,7 +1523,7 @@ static int atbm_write_dcxo_value_to_smu(struct atbm_common *hw_priv,u32 register
 
 			getData=atbm_dpll_reg_get_bit(hw_priv,&dcxo_regdata_tbl[4],36,39);
 			sys_dcxo_smu_reg|=getData<<11;
-			
+
 			getData=atbm_dpll_reg_get_bit(hw_priv,&dcxo_regdata_tbl[5],40,46);
 			sys_dcxo_smu_reg|=getData<<15;
 			atbm_printk_bus("register_addr=%x,change_value=%x\n",register_addr,sys_dcxo_smu_reg);
@@ -1533,12 +1533,12 @@ static int atbm_write_dcxo_value_to_smu(struct atbm_common *hw_priv,u32 register
 			atbm_smu_reg_clear_bit(hw_priv,&sys_dcxo_smu_reg,0,26);
 			getData=atbm_dpll_reg_get_bit(hw_priv,&dcxo_regdata_tbl[3],29,29);
 			sys_dcxo_smu_reg|=getData;
-		
+
 			getData=atbm_dpll_reg_get_bit(hw_priv,&dcxo_regdata_tbl[3],27,27);
 			sys_dcxo_smu_reg|=getData<<1;
-			
+
 			getData=atbm_dpll_reg_get_bit(hw_priv,&dcxo_regdata_tbl[2],21,21);
-			sys_dcxo_smu_reg|=getData<<2;			
+			sys_dcxo_smu_reg|=getData<<2;
 
 			getData=atbm_dpll_reg_get_bit(hw_priv,&dcxo_regdata_tbl[2],19,19);
 			sys_dcxo_smu_reg|=getData<<3;
@@ -1547,22 +1547,22 @@ static int atbm_write_dcxo_value_to_smu(struct atbm_common *hw_priv,u32 register
 			sys_dcxo_smu_reg|=getData<<4;
 			getData=atbm_dpll_reg_get_bit(hw_priv,&dcxo_regdata_tbl[2],23,23);
 			sys_dcxo_smu_reg|=getData<<6;
-			
+
 			getData=atbm_dpll_reg_get_bit(hw_priv,&dcxo_regdata_tbl[2],22,22);
 			sys_dcxo_smu_reg|=getData<<7;
-			
+
 			getData=atbm_dpll_reg_get_bit(hw_priv,&dcxo_regdata_tbl[2],20,20);
 			sys_dcxo_smu_reg|=getData<<8;
-			
+
 			getData=atbm_dpll_reg_get_bit(hw_priv,&dcxo_regdata_tbl[0],6,7);
 			sys_dcxo_smu_reg|=getData<<9;
-			
+
 			getData=atbm_dpll_reg_get_bit(hw_priv,&dcxo_regdata_tbl[1],8,10);
 			sys_dcxo_smu_reg|=getData<<11;
-			
+
 			getData=atbm_dpll_reg_get_bit(hw_priv,&dcxo_regdata_tbl[0],5,5);
 			sys_dcxo_smu_reg|=getData<<14;
-			
+
 			getData=atbm_dpll_reg_get_bit(hw_priv,&dcxo_regdata_tbl[0],4,4);
 			sys_dcxo_smu_reg|=getData<<15;
 			atbm_printk_bus("register_addr=%x,change_value=%x\n",register_addr,sys_dcxo_smu_reg);
@@ -1586,9 +1586,9 @@ void atbm_set_config_to_smu_apolloB(struct atbm_common *hw_priv,int dpllClock)
 	int ret;
 
 	struct dcxo_reg_info *pinfo;
-	
+
 	struct reg_info *dpllinfo;
-	
+
 	/*The first step:dcxo changed value write to smu*/
 
 	/*sys_dcxo_ictrl*/
@@ -1602,7 +1602,7 @@ void atbm_set_config_to_smu_apolloB(struct atbm_common *hw_priv,int dpllClock)
 	pinfo=&dcxo_default.info[4];
 	sys_dcxo_ictrl_trim|=pinfo->data<<3;
 	ret=atbm_ahb_write_32(hw_priv,SMU_DCXO_TRIM_ADDR,sys_dcxo_ictrl_trim);
-	
+
 	if (ret<0){
 		atbm_dbg(ATBM_APOLLO_DBG_ERROR,"%s:cant write sys_dcxo_trim\n",__func__);
 	 }
@@ -1613,12 +1613,12 @@ void atbm_set_config_to_smu_apolloB(struct atbm_common *hw_priv,int dpllClock)
 	if (ret<0){
 		atbm_dbg(ATBM_APOLLO_DBG_ERROR,"%s:cant read sys_dpll_ldo_trim\n",__func__);
 	 }
-	
+
 	dpllinfo = &dpll_default.info[0];
 	sys_dpll_ldo_trim&=~0x7;
 	sys_dpll_ldo_trim|=dpllinfo->data;
 	ret=atbm_ahb_write_32(hw_priv,SMU_DPLL_PARAM_1_ADDR,sys_dpll_ldo_trim);
-	
+
 	if (ret<0){
 		atbm_dbg(ATBM_APOLLO_DBG_ERROR,"%s:cant write sys_dpll_ldo_trim\n",__func__);
 	 }
@@ -1634,7 +1634,7 @@ void atbm_set_config_to_smu_apolloB(struct atbm_common *hw_priv,int dpllClock)
 	dpllinfo = &dpll_default.info[21];
 	sys_dpll_pc_vctrl|=dpllinfo->data<<17;
 	ret=atbm_ahb_write_32(hw_priv,SMU_DPLL_PARAM_2_ADDR,sys_dpll_pc_vctrl);
-	
+
 	if (ret<0){
 		atbm_dbg(ATBM_APOLLO_DBG_ERROR,"%s:cant write sys_dpll_ldo_trim\n",__func__);
 	 }
@@ -1646,9 +1646,9 @@ void atbm_set_config_to_smu_apolloB(struct atbm_common *hw_priv,int dpllClock)
 	dpllinfo = &dpll_default.info[9];
 	sys_dpll_close_pll_loop&=~0x80;
 	sys_dpll_close_pll_loop|=dpllinfo->data<<7;
-	
+
 	ret=atbm_ahb_write_32(hw_priv,SMU_DPLL_CTRL_ADDR,sys_dpll_close_pll_loop);
-	
+
 	if (ret<0){
 		atbm_dbg(ATBM_APOLLO_DBG_ERROR,"%s:cant write sys_dpll_close_pll_loop\n",__func__);
 	 }
@@ -1661,14 +1661,14 @@ void atbm_set_config_to_smu_apolloB(struct atbm_common *hw_priv,int dpllClock)
 	sys_dpll_en_sdm&=~0x8;
 	sys_dpll_en_sdm|=dpllinfo->data<<3;
 	ret=atbm_ahb_write_32(hw_priv,SMU_DPLL_CTRL_ADDR,sys_dpll_en_sdm);
-	
+
 	if (ret<0){
 		atbm_dbg(ATBM_APOLLO_DBG_ERROR,"%s:cant write sys_dpll_close_pll_loop\n",__func__);
 	 }
 
 	/*sys_dpll_nint*/
 	ret=atbm_ahb_read_32(hw_priv,SMU_DPLL_FRAC_ADDR,&sys_dpll_nint_nfrac);
-	
+
 	if (ret<0){
 		atbm_dbg(ATBM_APOLLO_DBG_ERROR,"%s:cant read sys_dpll_nint\n",__func__);
 	 }
@@ -1677,7 +1677,7 @@ void atbm_set_config_to_smu_apolloB(struct atbm_common *hw_priv,int dpllClock)
 	sys_dpll_nint_nfrac|=dpllinfo->data;
 	dpllinfo = &dpll_default.info[18];
 	sys_dpll_nint_nfrac|=dpllinfo->data<<4;
-	
+
 	ret=atbm_ahb_write_32(hw_priv,SMU_DPLL_FRAC_ADDR,sys_dpll_nint_nfrac);
 	if (ret<0){
 		atbm_dbg(ATBM_APOLLO_DBG_ERROR,"%s:cant write sys_dpll_nfrac\n",__func__);
@@ -1686,10 +1686,10 @@ void atbm_set_config_to_smu_apolloB(struct atbm_common *hw_priv,int dpllClock)
 	sys_dpll_nint_nfrac|=dpllinfo->data<<8;
 	dpllinfo = &dpll_default.info[27];
 	sys_dpll_nint_nfrac|=dpllinfo->data<<16;
-	
+
 	dpllinfo = &dpll_default.info[28];
 	sys_dpll_nint_nfrac|=dpllinfo->data<<24;
-	
+
 	ret=atbm_ahb_write_32(hw_priv,SMU_DPLL_FRAC_ADDR,sys_dpll_nint_nfrac);
 	if (ret<0){
 		atbm_dbg(ATBM_APOLLO_DBG_ERROR,"%s:cant write sys_dpll_nfrac\n",__func__);
@@ -1718,14 +1718,14 @@ void atbm_set_config_to_smu_apolloC(struct atbm_common *hw_priv,int dpllClock)
 #ifdef TEST_DCXO_CONFIG
 	for (register_addr=SMU_DCXO_TRIM_ADDR;register_addr<=SMU_DCXO_CRTRL_ADDR;)
 	{
-		atbm_write_dcxo_value_to_smu(hw_priv,register_addr);	
+		atbm_write_dcxo_value_to_smu(hw_priv,register_addr);
 		register_addr+=0x4;
 	}
 #endif
 #ifdef TEST_DPLL_CONFIG
 	for (register_addr=SMU_DPLL_PARAM_1_ADDR;register_addr<=SMU_DPLL_CTRL_ADDR;)
 	{
-		atbm_write_dpll_value_to_smu(hw_priv,register_addr);	
+		atbm_write_dpll_value_to_smu(hw_priv,register_addr);
 		register_addr+=0x4;
 	}
 	while(1){
@@ -1780,7 +1780,7 @@ void atbm_register_init(struct atbm_common *hw_priv)
 
 		atbm_ahb_read_32(hw_priv,RFIP_ADDR+0x17c,&uRegValue);
 		atbm_dbg(ATBM_APOLLO_DBG_DCXO_DPLL,"++++17c+++uRegValue=%x\n",uRegValue);
-		#endif	
+		#endif
 
 
 		//atbm_ahb_read_32(hw_priv,RFIP_ADDR+0x184,&uRegValue);

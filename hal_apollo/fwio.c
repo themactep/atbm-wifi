@@ -109,7 +109,7 @@ int atbm_set_firmare(struct firmware_altobeam *fw)
 		return -1;
 	}
 	memcpy(&atbm_fw.hdr,&fw->hdr,sizeof(struct firmware_headr));
-	
+
 	if(atbm_fw.hdr.iccm_len)
 	{
 		atbm_fw.fw_iccm = vmalloc(atbm_fw.hdr.iccm_len);
@@ -125,7 +125,7 @@ int atbm_set_firmare(struct firmware_altobeam *fw)
 	if(atbm_fw.hdr.dccm_len)
 	{
 		atbm_fw.fw_dccm= vmalloc(atbm_fw.hdr.dccm_len);
-		
+
 		atbm_printk_err("%s:fw_dccm(%p)\n",__func__,atbm_fw.fw_dccm);
 		if(!atbm_fw.fw_dccm)
 		{
@@ -139,7 +139,7 @@ int atbm_set_firmare(struct firmware_altobeam *fw)
 
 		if(atbm_fw.hdr.sram_len){
 			atbm_fw.fw_sram = vmalloc(atbm_fw.hdr.sram_len);
-			
+
 			atbm_printk_err("%s:fw_sram(%p)\n",__func__,atbm_fw.fw_sram);
 			if(!atbm_fw.fw_sram)
 			{
@@ -164,7 +164,7 @@ err:
 		vfree(atbm_fw.fw_dccm);
 		atbm_fw.fw_dccm = NULL;
 	}
-	
+
 #ifdef CONFIG_ATBM_BLE_CODE_SRAM
 	if(atbm_wifi_bt_comb_get() == 1){
 
@@ -229,7 +229,7 @@ static int atbm_load_firmware_generic(struct atbm_common *priv, const u8 *data,u
 		ret = -ENOMEM;
 		goto error;
 	}
-	
+
 #ifndef HW_DOWN_FW
 	if(priv->sbus_ops->bootloader_debug_config)
 		priv->sbus_ops->bootloader_debug_config(priv->sbus_priv,0);
@@ -265,8 +265,8 @@ error:
 void  atbm_efuse_read_byte(struct atbm_common *priv,u32 byteIndex, u32 *value)
 {
 	//HW_WRITE_REG(0x16b00000, (byteIndex<<8));
-	//*value = HW_READ_REG(0x16b00004);	
-	
+	//*value = HW_READ_REG(0x16b00004);
+
 	atbm_direct_write_reg_32(priv,0x16b00000, (byteIndex<<8));
 	atbm_direct_read_reg_32(priv,0x16b00004,value);
 }
@@ -289,12 +289,12 @@ extern void atbm_wifi_chip_probe_set(u16 idProduct);
 
 bool atbm_check_aresLite_type(struct atbm_common *priv)
 {
-//	
-	
-		
+//
+
+
 #ifdef USB_BUS
 	if(atbm_wifi_chip_probe_get() == 2){
-		
+
 		if ((atbm_efuse_read_bit(priv,8) == 1) && (atbm_efuse_read_bit(priv,10) == 1))
 		{
 			if(atbm_efuse_read_bit(priv,3) == 1){
@@ -308,7 +308,7 @@ bool atbm_check_aresLite_type(struct atbm_common *priv)
 					priv->loader_ble = 1;
 			}
 		//	priv->chip_version = ARES_6012B;
-		}else if((atbm_efuse_read_bit(priv,8) == 0) && 
+		}else if((atbm_efuse_read_bit(priv,8) == 0) &&
 				(atbm_efuse_read_bit(priv,9) == 0) &&
 				(atbm_efuse_read_bit(priv,10) == 0)){
 			atbm_printk_err("Get 6032-X UID Success!!support BLE\n");
@@ -322,7 +322,7 @@ bool atbm_check_aresLite_type(struct atbm_common *priv)
 					priv->loader_ble = 1;
 		}
 	}else if(atbm_wifi_chip_probe_get() == 1){
-	
+
 		if ((atbm_efuse_read_bit(priv,152) == 1) && (atbm_efuse_read_bit(priv,154) == 1)){
 			priv->loader_ble = 0;
 			priv->chip_flag = 0;
@@ -331,8 +331,8 @@ bool atbm_check_aresLite_type(struct atbm_common *priv)
 		}
 
 	}
-#else 
-		if ((atbm_efuse_read_bit(priv,153) == 0) && 
+#else
+		if ((atbm_efuse_read_bit(priv,153) == 0) &&
 				(atbm_efuse_read_bit(priv,9) == 1)){
 			atbm_wifi_chip_probe_set(0x888b);
 			//if(atbm_wifi_bt_comb_get() == 1)
@@ -343,10 +343,10 @@ bool atbm_check_aresLite_type(struct atbm_common *priv)
 			atbm_wifi_chip_probe_set(0x8888);
 			atbm_printk_err("Get UID fail!!!! default use 6031  !!\n");
 			priv->chip_flag = 0;
-		
+
 		}
 #endif
-	
+
 	return 0;
 }
 
@@ -383,49 +383,49 @@ void  atbm_get_chiptype(struct atbm_common *hw_priv)
 
 	atbm_direct_read_reg_32(hw_priv,0x0acc017c,&chipver);
     chipver&=0xff;
-	
+
 	hw_priv->chip_version = ARES_B;
 	switch(chipver)
 	{
-		case 0x14:	
-			hw_priv->chip_version = APOLLO_F;	
+		case 0x14:
+			hw_priv->chip_version = APOLLO_F;
 			break;
-		case 0x24:	
-		case 0x25:	
+		case 0x24:
+		case 0x25:
 			//strHwChipFw = ("AthenaB.bin");
 			hw_priv->chip_version = ATHENA_B;
 			break;
-		case 0x45:	
-		case 0x46:	
-		case 0x47:	
+		case 0x45:
+		case 0x46:
+		case 0x47:
 			hw_priv->chip_version = ARES_A;
-			break;	
+			break;
 		case 0x49:
-			hw_priv->chip_version = ARES_B;	
+			hw_priv->chip_version = ARES_B;
 			atbm_check_aresLite_type(hw_priv);
 			//if(atbm_check_6012B(hw_priv))
 				//hw_priv->chip_version = ARES_6012B;
 			break;
 		case 0x4a:
-			hw_priv->chip_version = ARES_LITE;	
+			hw_priv->chip_version = ARES_LITE;
 			atbm_check_aresLite_type(hw_priv);
 			break;
 		case 0x64:
 		case 0x65:
 		case 0x79:
-			hw_priv->chip_version = HERA;		
+			hw_priv->chip_version = HERA;
 			break;
 		case 0xA0:
 		case 0xA1:
 		case 0xA2:
 		case 0xA3:
-			hw_priv->chip_version = Mercurius;	
+			hw_priv->chip_version = Mercurius;
 			atbm_check_Mercurius_type(hw_priv);
 			break;
 		default:
 			//g_wifi_chip_type = ATHENA_B;
 			atbm_printk_always("%s, <ERROR> cannot read chip id\n",__func__ );
-		
+
 		break;
 	}
 
@@ -447,47 +447,47 @@ char * atbm_HwGetChipFw(struct atbm_common *priv)
 
 #if 0
 	atbm_direct_read_reg_32(priv,0x0acc017c,&chipver);
-	
+
 	switch(chipver)
 	{
-		case 0x0:	
-			strHwChipFw = ("ApolloC0.bin");		
+		case 0x0:
+			strHwChipFw = ("ApolloC0.bin");
 			break;
-		case 0x1:	
-			strHwChipFw = ("ApolloC0_TC.bin");	
+		case 0x1:
+			strHwChipFw = ("ApolloC0_TC.bin");
 			break;
-		case 0x3:	
-			strHwChipFw = ("ApolloC1_TC.bin");	
+		case 0x3:
+			strHwChipFw = ("ApolloC1_TC.bin");
 			break;
-		case 0xc:	
-			strHwChipFw = ("ApolloD.bin");		
+		case 0xc:
+			strHwChipFw = ("ApolloD.bin");
 			break;
-		case 0xd:	
-			strHwChipFw = ("ApolloD_TC.bin");	
+		case 0xd:
+			strHwChipFw = ("ApolloD_TC.bin");
 			break;
-		case 0x10:	
-			strHwChipFw = ("ApolloE.bin");		
+		case 0x10:
+			strHwChipFw = ("ApolloE.bin");
 			break;
-		case 0x20:	
-			strHwChipFw = ("AthenaA.bin");		
+		case 0x20:
+			strHwChipFw = ("AthenaA.bin");
 			break;
-		case 0x14:	
-			strHwChipFw = ("ApolloF.bin");		
+		case 0x14:
+			strHwChipFw = ("ApolloF.bin");
 			break;
-		case 0x15:	
-			strHwChipFw = ("ApolloF_TC.bin");	
+		case 0x15:
+			strHwChipFw = ("ApolloF_TC.bin");
 			break;
-		case 0x24:	
-			strHwChipFw = ("AthenaB.bin");		
+		case 0x24:
+			strHwChipFw = ("AthenaB.bin");
 			break;
-		case 0x25:	
-			strHwChipFw = ("AthenaBX.bin");		
+		case 0x25:
+			strHwChipFw = ("AthenaBX.bin");
 			break;
-		case 0x18:	
-			strHwChipFw = ("Apollo_FM.bin");		
+		case 0x18:
+			strHwChipFw = ("Apollo_FM.bin");
 			break;
 		default:
-			strHwChipFw = FIRMWARE_DEFAULT_PATH;		
+			strHwChipFw = FIRMWARE_DEFAULT_PATH;
 		break;
 	}
 
@@ -540,7 +540,7 @@ int atbm_cache_fw_before_suspend(struct device	 *pdev)
 		atbm_printk_err("atbm_fw ready\n");
 		goto error2;
 	}
-	
+
 	ret = request_firmware(&firmware, fw_path, pdev);
 	if(ret){
 		atbm_printk_err("request_firmware err\n");
@@ -579,17 +579,17 @@ int atbm_cache_fw_before_suspend(struct device	 *pdev)
 			fw_altobeam.hdr.iccm_len = firmware->size;
 			fw_altobeam.hdr.dccm_len = 0;
 			fw_altobeam.fw_iccm = (u8 *)firmware->data;
-			
+
 		}
 
 	}
 	atbm_release_firmware();
-	
+
 	memcpy(&atbm_fw.hdr,&fw_altobeam.hdr,sizeof(struct firmware_headr));
 	if(atbm_fw.hdr.iccm_len)
 	{
 		atbm_fw.fw_iccm = vmalloc(atbm_fw.hdr.iccm_len);
-		
+
 		if(!atbm_fw.fw_iccm)
 		{
 			atbm_printk_err( "alloc atbm_fw.fw_iccm err\n");
@@ -609,7 +609,7 @@ int atbm_cache_fw_before_suspend(struct device	 *pdev)
 		}
 		memcpy(atbm_fw.fw_dccm,fw_altobeam.fw_dccm,atbm_fw.hdr.dccm_len);
 	}
-	
+
 #ifdef CONFIG_ATBM_BLE_CODE_SRAM
 	if(atbm_wifi_bt_comb_get() == 1){
 
@@ -620,16 +620,16 @@ int atbm_cache_fw_before_suspend(struct device	 *pdev)
 				atbm_printk_err("alloc atbm_fw.fw_dccm err\n");
 				goto error1;
 			}
-			memcpy(atbm_fw.fw_sram,fw_altobeam.fw_sram,atbm_fw.hdr.sram_len);		
+			memcpy(atbm_fw.fw_sram,fw_altobeam.fw_sram,atbm_fw.hdr.sram_len);
 		}
 	}
 #endif
-	
+
 	atbm_printk_always("%s:cached fw\n",__func__);
 	release_firmware(firmware);
 	return 0;
 error1:
-	
+
 	atbm_printk_err("%s:error1\n",__func__);
 	release_firmware(firmware);
 	if(atbm_fw.fw_iccm)
@@ -649,7 +649,7 @@ error1:
 		if(atbm_fw.fw_sram)
 		{
 			vfree(atbm_fw.fw_sram);
-			atbm_fw.fw_sram = NULL;		
+			atbm_fw.fw_sram = NULL;
 		}
 	}
 #endif
@@ -744,7 +744,7 @@ loadfw:
 				fw_altobeam.hdr.iccm_len = firmware->size;
 				fw_altobeam.hdr.dccm_len = 0;
 				fw_altobeam.fw_iccm = (u8 *)firmware->data;
-				
+
 			}
 
 		}
@@ -781,53 +781,53 @@ loadfw:
 			case Mercurius:{
 #ifdef CONFIG_ATBM_ONLY_WIFI_BLE_PLATFORM
 				if(priv->loader_ble == 1  && atbm_wifi_bt_comb_get() == 1){
-					
+
 
 					ret = load_usb_wifi_Mercurius_bt_comb_firmware(&fw_altobeam);
 					atbm_printk_err("\n======>>> load WIFI BLE COMB firmware <<<======\n\n");
-			
+
 				}
 #else
 #ifdef CONFIG_ATBM_BLE_CODE_SRAM
 				if(priv->loader_ble == 1  && atbm_wifi_bt_comb_get() == 1){
-					
+
 
 					ret = load_usb_wifi_Mercurius_bt_comb_firmware(&fw_altobeam);
 					atbm_printk_err("\n======>>> load WIFI BLE COMB firmware <<<======\n\n");
-			
-				}else 
+
+				}else
 #endif
 				{
-				
+
 					ret = load_usb_wifi_Mercurius_firmware(&fw_altobeam);
 					atbm_printk_err("\n======>>> load only WIFI firmware <<<======\n\n");
 				}
 //				ret = load_usb_wifi_Mercurius_bt_comb_firmware(&fw_altobeam);
-#endif				
+#endif
 				}break;
 			case ARES_LITE:{
 #ifdef CONFIG_ATBM_ONLY_WIFI_BLE_PLATFORM
 				if(priv->loader_ble == 1  && atbm_wifi_bt_comb_get() == 1){
 					atbm_printk_err("\n======>>> load WIFI BLE COMB firmware <<<======\n\n");
 					ret = load_usb_wifi_bt_comb_firmware(&fw_altobeam);
-					
+
 				}
 #else
 #ifdef CONFIG_ATBM_BLE_CODE_SRAM
 				if(priv->loader_ble == 1  && atbm_wifi_bt_comb_get() == 1){
 					atbm_printk_err("\n======>>> load WIFI BLE COMB firmware <<<======\n\n");
 					ret = load_usb_wifi_bt_comb_firmware(&fw_altobeam);
-					
-				}else 
+
+				}else
 #endif
 				{
 					atbm_printk_err("\n======>>> load only WIFI firmware <<<======\n\n");
 					ret = load_usb_wifi_Lite_firmware(&fw_altobeam);
-					
+
 				}
 
 #endif
-				
+
 #ifdef CONFIG_ATBM_APOLLO_5GHZ_SUPPORT
 				priv->hw->wiphy->bands[IEEE80211_BAND_5GHZ]->channels = atbm_5ghz_pretend_2g_chantable;
 				priv->hw->wiphy->bands[IEEE80211_BAND_5GHZ]->n_channels = ARRAY_SIZE(atbm_5ghz_pretend_2g_chantable);
@@ -856,17 +856,17 @@ loadfw:
 			if(atbm_wifi_bt_comb_get() == 1){
 				ret = load_usb_wifi_bt_comb_firmware(&fw_altobeam);
 
-			}else 
+			}else
 #endif
 				ret = load_usb_wifi_Lite_firmware(&fw_altobeam);
 
 			atbm_printk_err("\n======>>> load %s firmware <<<======\n\n",atbm_wifi_bt_comb_get()?"WIFI BLE COMB":"only WIFI");
-		
+
 		}
 		else if(atbm_wifi_chip_probe_get() == 1){
-			
+
 			ret = load_usb_wifi_firmware(&fw_altobeam);
-			
+
 		}
 		else{
 			atbm_printk_err("WARNING!!!!!!not found firmware!! \n");
@@ -881,7 +881,7 @@ loadfw:
 		}
 
 		//atbm_wifi_bt_comb_set(priv->wifi_ble_comb);
-#if 0		
+#if 0
 		fw_altobeam.hdr.iccm_len = sizeof(fw_code);
 		fw_altobeam.hdr.dccm_len = sizeof(fw_data);
 #ifdef CONFIG_ATBM_BLE_CODE_SRAM
@@ -934,7 +934,7 @@ loadfw:
 	#else
 	if(fw_altobeam.hdr.dccm_len > 0xa000)
 	fw_altobeam.hdr.dccm_len = 0xa000;
-	#endif			
+	#endif
 
 	atbm_dbg(ATBM_APOLLO_DBG_ERROR,"START DOWNLOAD DCCM=========\n");
 	ret = atbm_load_firmware_generic(priv,fw_altobeam.fw_dccm,fw_altobeam.hdr.dccm_len,DOWNLOAD_DTCM_ADDR);
@@ -971,9 +971,9 @@ error:
 int atbm_load_firmware(struct atbm_common *hw_priv)
 {
 	int ret = 0;
-	
+
 	atbm_get_chiptype(hw_priv);
-	
+
 	atbm_printk_init("atbm_before_load_firmware++\n");
 	ret = atbm_before_load_firmware(hw_priv);
 	if(ret <0)

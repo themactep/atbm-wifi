@@ -209,10 +209,10 @@ static void __atbm_queue_gc(struct atbm_queue *queue,
 	bool wakeup_stats = false;
 	struct atbm_txpriv *txpriv;
 	int loop = 0;
-	
+
 	//list_for_each_entry_safe(item, tmp_item, &queue->queue, head) {
 	list_for_each_safe(pos,nx,&queue->queue){
-	
+
 		item = list_entry(pos,struct atbm_queue_item, head);
 		txpriv = &item->txpriv;
 		if_id = txpriv->if_id;
@@ -243,7 +243,7 @@ static void __atbm_queue_gc(struct atbm_queue *queue,
 		list_move_tail(&item->head, &queue->free_pool);
 		item = NULL;
 	}
-	
+
 	if (wakeup_stats)
 		wake_up(&stats->wait_link_id_empty);
 
@@ -254,7 +254,7 @@ static void __atbm_queue_gc(struct atbm_queue *queue,
 			capacity = priv->queue_cap*2/3;
 		else
 			capacity = queue->capacity/4;
-		
+
 		if (queue->num_queued_vif[if_id_clear] <= capacity) {
 			queue->overfull[if_id_clear] = false;
 			if (unlock){
@@ -268,7 +268,7 @@ static void __atbm_queue_gc(struct atbm_queue *queue,
 				atbm_pm_stay_awake(&stats->hw_priv->pm_state,
 						tmo - jiffies);
 				#endif
-			}else {				
+			}else {
 				atbm_printk_err("%s:if_id[%d],id_clear[%d],queued[%d]\n",__func__,item->txpriv.if_id,if_id_clear,queue->num_queued_vif[if_id_clear]);
 			}
 		}
@@ -380,7 +380,7 @@ int atbm_queue_clear(struct atbm_queue *queue, int if_id)
 	spin_lock_bh(&queue->lock);
 	queue->generation++;
 	queue->generation &= 0xf;
-	
+
 	list_for_each_entry_safe(item, pitem,&queue->pending, head){
 		if(ATBM_WIFI_ALL_IFS == if_id || item->txpriv.if_id == if_id){
 			atbm_queue_register_post_gc(&gc_list, item);
@@ -402,7 +402,7 @@ int atbm_queue_clear(struct atbm_queue *queue, int if_id)
 	}
 	BUG_ON(cnt > queue->num_queued);
 	queue->num_queued -= cnt;
-	
+
 	if (ATBM_WIFI_ALL_IFS != if_id) {
 		queue->num_queued_vif[if_id] = 0;
 		queue->num_pending_vif[if_id] = 0;
@@ -616,11 +616,11 @@ int atbm_queue_put(struct atbm_queue *queue,
 				(__queue->num_queued_vif[_if_id] >= (_if_cap - (num_present_cpus())))
 			#define ALLIF_QUEUE_OVERFLOW(__queue) \
 				(__queue->num_queued >= (__queue->capacity - (num_present_cpus())))
-			
+
 			if(queue->overfull[txpriv->if_id]==false){
 			    struct atbm_vif *priv;
 				u32 capacity = 0;
-				
+
 				priv = __ABwifi_hwpriv_to_vifpriv(stats->hw_priv,txpriv->if_id);
 				if(priv)
 					capacity = priv->queue_cap;
@@ -758,7 +758,7 @@ int atbm_queue_requeue(struct atbm_queue *queue, u32 packetID, bool check)
 				&item_generation, &item_id, &if_id, &link_id);
 
 	item = &queue->pool[item_id];
-	
+
 	if (check && item->txpriv.offchannel_if_id == ATBM_WIFI_GENERIC_IF_ID) {
 		atbm_printk_err("Requeued frame dropped for "
 						"generic interface id.\n");
@@ -949,7 +949,7 @@ int atbm_queue_remove(struct atbm_queue *queue, u32 packetID)
 #else
 		{
 			if (unlikely(queue->overfull[if_id])){
-				
+
 				u32 capacity = 0;
 				struct atbm_vif *priv;
 				priv = __ABwifi_hwpriv_to_vifpriv(stats->hw_priv,if_id);
@@ -957,7 +957,7 @@ int atbm_queue_remove(struct atbm_queue *queue, u32 packetID)
 					capacity = priv->queue_cap*2/3;
 				else
 					capacity = queue->capacity/4;
-				
+
 				if(queue->num_queued_vif[if_id] <= capacity) {
 					queue->overfull[if_id] = false;
 					__atbm_queue_unlock(queue,if_id);

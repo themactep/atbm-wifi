@@ -38,10 +38,10 @@ struct atbm_common;
 #define WSM_TRANSMIT_RATE_2		(1)
 
 /* 5.5 Mbps            ERP-CCK, ERP-PBCC (Not supported) */
- #define WSM_TRANSMIT_RATE_5		(2) 
+ #define WSM_TRANSMIT_RATE_5		(2)
 
 /* 11  Mbps            ERP-CCK, ERP-PBCC (Not supported) */
- #define WSM_TRANSMIT_RATE_11		(3) 
+ #define WSM_TRANSMIT_RATE_11		(3)
 
 /* 22  Mbps            ERP-PBCC (Not supported) */
 /* #define WSM_TRANSMIT_RATE_22		(4) */
@@ -737,7 +737,7 @@ struct wsm_hdr_tx {
 #ifdef USB_BUS_BUG
 	__le16 usb_len;
 	__le16 usb_id;
-#endif	
+#endif
 	__le16 len;
 	__le16 id;
 };
@@ -872,7 +872,7 @@ struct wsm_scan_complete {
 
 	/* Duty Ratio for per channel */
 	u8 busy_ratio[14];
-#ifdef CONFIG_ATBM_SUPPORT_SCHED_SCAN	
+#ifdef CONFIG_ATBM_SUPPORT_SCHED_SCAN
 #ifdef ROAM_OFFLOAD
 	u16 reserved;
 #endif /*ROAM_OFFLOAD*/
@@ -1025,7 +1025,7 @@ struct wsm_tx {
 
 	/* WSM_HT_TX_... */
 	/* [in] */ __le32 htTxParameters;
-	
+
 };
 
 /* = sizeof(generic hi hdr) + sizeof(wsm hdr) + sizeof(alignment) */
@@ -1065,7 +1065,7 @@ struct wsm_multi_rx {
 	u16 MsgLen;
 	u16 MsgId;
 	u8  RxFrameNum;
-	u8  reserved[3];	
+	u8  reserved[3];
 };
 /* = sizeof(generic hi hdr) + sizeof(wsm hdr) */
 #define WSM_RX_EXTRA_HEADROOM (16)
@@ -1724,16 +1724,16 @@ struct efuse_headr{
 	u8 topref_ctrl_bias_res_trim;
 	u8 PowerSupplySel;
 	u8 mac[6];
-	u8 delta_gain1_5g; 
+	u8 delta_gain1_5g;
 	u8 delta_gain2_5g;
 	u8 delta_gain3_5g;
-	u8 delta_gain4_5g; 
+	u8 delta_gain4_5g;
 	u8 delta_gain5_5g;
 	u8 delta_gain6_5g;
-	u8 delta_gain7_5g; 
+	u8 delta_gain7_5g;
 	u8 delta_gain8_5g;
 	u8 delta_gain9_5g;
-	u8 delta_gain10_5g; 
+	u8 delta_gain10_5g;
 };
 //wsm_efuse_change_data_cmd  return value
 #define LMC_STATUS_CODE__EFUSE_VERSION_CHANGE	96
@@ -1849,7 +1849,7 @@ static inline int wsm_get_snr(struct atbm_common *hw_priv,void *snr,int len)
 
 struct TIM_Parameters{
 	uint32_t tim_user_control_ena;
-	uint32_t tim_val;	
+	uint32_t tim_val;
 };
 static inline int wsm_get_tim(struct atbm_common *hw_priv,void *tim,int len)
 {
@@ -2030,7 +2030,7 @@ static inline int wsm_set_template_frame(struct atbm_common *hw_priv,
 
 	ret = wsm_write_mib(hw_priv, WSM_MIB_ID_TEMPLATE_FRAME, p,
 			    arg->skb->len, if_id);
-	
+
 	atbm_skb_pull(arg->skb, 4);
 	return ret;
 }
@@ -2459,7 +2459,7 @@ static inline int wsm_set_rts_threshold(struct atbm_common *hw_priv,int if_id)
 struct wsm_rekey_data {
 	u32 flags;
 	u8 kek[16];
-	u8 kck[16];  
+	u8 kck[16];
 };
 static inline int  wsm_set_rekey_data(struct atbm_common *hw_priv,struct wsm_rekey_data *arg,int if_id)
 {
@@ -2469,7 +2469,7 @@ static inline int  wsm_set_rekey_data(struct atbm_common *hw_priv,struct wsm_rek
 #define WSM_GENERIC_REQ_ID 0x0003
 #define WSM_GENERIC_RESP_ID 0x0403
 
-#define WSM_GENERIC_REQ_CHILD__STA_INFO			(4)	
+#define WSM_GENERIC_REQ_CHILD__STA_INFO			(4)
 #define WSM_STA_REQ_FLAGS__TXRATE				BIT(0)
 struct wsm_gen_req{
 	__le32 req_id;
@@ -2487,7 +2487,7 @@ int wsm_generic_req(struct atbm_common *hw_priv,const struct wsm_gen_req *arg,vo
 static inline int atbm_req_sta_info(struct atbm_common *hw_priv,struct wsm_sta_info_req *req,struct wsm_sta_info *info,int if_id)
 {
 	struct wsm_gen_req arg;
-	
+
 	arg.req_id = WSM_GENERIC_REQ_CHILD__STA_INFO;
 	arg.params = (u8*)req;
 	arg.req_len = sizeof(struct wsm_sta_info_req);
@@ -2615,7 +2615,7 @@ struct wsm_bitmap
 	u32 HmacSsn;
 	u32 DataFlag;
 };
-struct atbm_seq_bit_map 
+struct atbm_seq_bit_map
 {
 	struct list_head link;
 	struct wsm_bitmap bitm;
@@ -2623,10 +2623,10 @@ struct atbm_seq_bit_map
 
 void wsm_sync_channl(struct atbm_work_struct *work);
 static inline int ALINE_BYTE(int len,int offset){
-	if(len%offset){ 
+	if(len%offset){
 		len-=(len%offset);
 		len+=offset;
-	} 
+	}
 	return len;
 }
 #endif

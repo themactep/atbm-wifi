@@ -148,7 +148,7 @@ static bool  ieee80211_parase_p2p_action_attrs(u8* ie_start,ssize_t ie_len,struc
 		return false;
 
 	return true;
-	
+
 }
 static void ieee80211_change_p2p_channel_list_to_special_channel(u8* channel_list,u8 channel_num,ssize_t ie_len)
 {
@@ -159,7 +159,7 @@ static void ieee80211_change_p2p_channel_list_to_special_channel(u8* channel_lis
 	// channel_list:operating_class(1)+number_channel(1)+channel_list(x)
 	pos = channel_list+6;
 	end = pos+ATBM_WPA_GET_LE16((const u8*)(&channel_list[1]))-3;
-	
+
 	if(ATBM_WPA_GET_LE16((const u8*)(&channel_list[1]))>=ie_len){
 //		printk(KERN_ERR "%s:len err(%d),ie_len(%d)\n",__func__,ATBM_WPA_GET_LE16((const u8*)(&channel_list[1])),ie_len);
 		return;
@@ -185,7 +185,7 @@ static void ieee80211_change_p2p_channel_list_to_special_channel(u8* channel_lis
 bool ieee80211_check_channel_combination(struct ieee80211_sub_if_data *ignor_sdata)
 {
 	struct ieee80211_sub_if_data *sdata;
-	
+
 	list_for_each_entry_rcu(sdata, &ignor_sdata->local->interfaces, list) {
 		if (!ieee80211_sdata_running(sdata))
 			continue;
@@ -225,7 +225,7 @@ static void ieee80211_parase_p2p_capability(u8 *capability_pos)
 		#define ATBM_P2P_GROUP_CAPAB_PERSISTENT_GROUP BIT(1)
 		#define ATBM_P2P_GROUP_CAPAB_PERSISTENT_RECONN BIT(5)
 		#define ATBM_P2P_DEV_CAPAB_INVITATION_PROCEDURE BIT(5)
-		
+
 		u8 *pos_group_cap = capability_pos+4; // 4 = 1(Attribute ID) + 2(Length) + 1(dev_cap)
 		u8 group_cap = *pos_group_cap;
 		u8 *pos_dev_cap = capability_pos+3;
@@ -310,13 +310,13 @@ bool ieee80211_parase_p2p_action_frame(struct ieee80211_sub_if_data *sdata,struc
 	}
 	p2p_data_len -= p2p_check_offs;
 	p2p_data += p2p_check_offs;
-	
+
 	memset(&p2p_msg,0,sizeof(struct atbm_p2p_message));
-	
+
 
 	if(ieee80211_parase_p2p_action_attrs(&p2p_data[2],p2p_data_len-2,&p2p_msg)==false)
 		return false;
-	
+
 	p2p_msg.dialog_token = p2p_data[1];
 	atbm_printk_p2p("%s:operating_channel(%p),txrx(%d)\n",__func__,p2p_msg.operating_channel,(int)tx);
 	ieee80211_parase_p2p_capability(p2p_msg.capability);
@@ -328,7 +328,7 @@ bool ieee80211_parase_p2p_action_frame(struct ieee80211_sub_if_data *sdata,struc
 		atbm_printk_p2p("%s:status(%d),action(%d)\n",__func__,*(p2p_msg.status+3),p2p_data[0]);
 		break;
 	}
-#ifdef ATBM_CHANGE_LOCAL_REMOUT_ROLE	
+#ifdef ATBM_CHANGE_LOCAL_REMOUT_ROLE
 	/*
 	*change go intend and tie breaker
 	*/
@@ -351,18 +351,18 @@ bool ieee80211_parase_p2p_action_frame(struct ieee80211_sub_if_data *sdata,struc
 	}
 #endif
 	while(p2p_msg.operating_channel){
-		
+
 		u8 operating_channel_num = 0;
 		u8 local_channel = 0;
 		bool combination = false;
-		
-		combination = ieee80211_check_channel_combination(sdata);		
+
+		combination = ieee80211_check_channel_combination(sdata);
 		atbm_printk_p2p("%s:chan_mode(%x)(%d)\n",__func__,(int)combination);
 		// attr_id(1)+len(2)+contry_string(3)+operating_class(1)+channel_num(1)
 		operating_channel_num = p2p_msg.operating_channel[7];
 		local_channel = operating_channel_num >14?6:operating_channel_num;
 		if(combination == true)
-			local_channel = channel_hw_value(chan_state->oper_channel);		
+			local_channel = channel_hw_value(chan_state->oper_channel);
 		atbm_printk_p2p("%s:operating_channel_num(%d),local_channel(%d),action(%d),tx(%d)\n",__func__,
 			operating_channel_num,local_channel,p2p_data[0],(int)tx);
 		/*
@@ -382,7 +382,7 @@ bool ieee80211_parase_p2p_action_frame(struct ieee80211_sub_if_data *sdata,struc
 				atbm_printk_p2p("%s:change_channel_and_list,local_channel(%d)\n",__func__,local_channel);
 				goto change_channel_and_list;
 			}
-				
+
 		}
 		atbm_printk_p2p("%s:tx(%d),action(%d),operating_channel_num(%d)\n",__func__,(int)tx,(int)p2p_data[0],(int)operating_channel_num);
 
@@ -396,8 +396,8 @@ bool ieee80211_parase_p2p_action_frame(struct ieee80211_sub_if_data *sdata,struc
 		else {
 			break;
 		}
-		
-change_channel_and_list:		
+
+change_channel_and_list:
 		p2p_msg.operating_channel[7] = local_channel;
 		if(p2p_msg.channel_list)
 		{
@@ -513,7 +513,7 @@ void ieee80211_offchannel_return(struct ieee80211_local *local,
 
 	mutex_lock(&local->iflist_mtx);
 	list_for_each_entry(sdata, &local->interfaces, list) {
-	
+
 	if (sdata->vif.type != NL80211_IFTYPE_MONITOR) {
 		clear_bit(SDATA_STATE_OFFCHANNEL, &sdata->state);
 	}
@@ -657,7 +657,7 @@ void ieee80211_start_next_roc(struct ieee80211_local *local)
 //			BUG_ON(local->roc_pendding_sdata);
 //			printk(KERN_ERR "%s:start pendding work,roc_pendding(%x)\n",__func__,(unsigned int )local->roc_pendding);
 			ieee80211_queue_work(&local->hw, &local->work_work);
-		}	
+		}
 		ieee80211_run_pending_scan(local);
 #ifdef CONFIG_ATBM_STA_LISTEN
 		__ieee80211_recalc_idle(local);
@@ -909,7 +909,7 @@ void ieee80211_roc_purge(struct ieee80211_sub_if_data *sdata)
 		local->roc_pendding_sdata = NULL;
 	}
 	mutex_unlock(&local->mtx);
-	
+
 	if(pendding_roc != NULL){
 		atbm_printk_mgmt("%s:cancle pendding_roc\n",__func__);
 		ieee80211_roc_notify_destroy(pendding_roc);

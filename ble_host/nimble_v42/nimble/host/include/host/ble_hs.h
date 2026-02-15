@@ -381,7 +381,7 @@ int ble_stop_srrc(void);
  *                                  HAL_RESET_[...] codes or an
  *                                  implementation-defined value.
  *
- * @return                      SYSDOWN_IN_PROGRESS. 
+ * @return                      SYSDOWN_IN_PROGRESS.
  */
 int ble_hs_shutdown(int reason);
 void ble_hs_free(void);

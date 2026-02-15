@@ -43,7 +43,7 @@ void nimble_port_init(void)
 
 	iot_printf("nimble_port_init++\n");
     ble_npl_eventq_init(&g_eventq_dflt);
-	
+
     os_msys_init();
     ble_hs_init();
 
@@ -98,7 +98,7 @@ void nimble_port_atbmos_init(atbm_void(* host_task_fn))
 void nimble_port_atbmos_free(void)
 {
 	struct ble_npl_event ev = {0};
-	
+
 	if(host_thread){
 		nimble_th_exit = 1;
 		ble_npl_eventq_put(&g_eventq_dflt, &ev);

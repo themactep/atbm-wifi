@@ -112,8 +112,8 @@ static inline bool atbm_hw_cancel_delayed_work(struct atbm_delayed_work *dwork,b
 static inline void atbm_ieee80211_rx(struct ieee80211_hw	*hw,struct sk_buff *skb)
 {
 #ifdef IEEE80211_TASKLET
-	ieee80211_rx_irqsafe(hw,skb);	
-#else	
+	ieee80211_rx_irqsafe(hw,skb);
+#else
 	if(skb->pkt_type == ATBM_RX_DERICTLY_DATA_FRAME){
 		ieee80211_rx_irqsafe(hw,skb);
 	}else if(softirq_count() == 0){

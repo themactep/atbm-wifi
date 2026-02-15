@@ -90,7 +90,7 @@ ble_npl_sem_pend(struct ble_npl_sem *sem, uint32_t timeout)
 	if(sem->vaild == 0){
 		return BLE_NPL_OS_NOT_STARTED;
 	}
-	
+
     return (err) ? BLE_NPL_ERROR : BLE_NPL_OK;
 }
 

@@ -172,7 +172,7 @@ minstrel_ht_calc_tp(struct minstrel_priv *mp, struct minstrel_ht_sta *mi,
 		usecs = mi->overhead / MINSTREL_TRUNC(mi->avg_ampdu_len);
 	}
 	usecs += minstrel_mcs_groups[group].duration[rate];
-	
+
 	if(usecs)
 		mr->cur_tp = MINSTREL_TRUNC((1000000 / usecs) * mr->probability);
 	else
@@ -896,8 +896,8 @@ init_sample_table(void)
 	for (col = 0; col < SAMPLE_COLUMNS; col++) {
 		for (i = 0; i < MCS_GROUP_RATES; i++) {
                     if(sample_table[col][i] == 0)
-			{                 
-        	                sample_table[col][i] = 7; 
+			{
+        	                sample_table[col][i] = 7;
 			}
 		}
 	}

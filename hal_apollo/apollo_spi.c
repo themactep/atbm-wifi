@@ -59,10 +59,10 @@ struct sbus_priv {
 	struct atbm_common	*core;
 	const struct atbm_platform_data *pdata;
 	spinlock_t		lock;
-	
+
 	spinlock_t		spi_rwlock;
 	struct sbus_wtd         * wtd;
-	
+
 	int old_channelFlag;
 };
 struct sbus_wtd {
@@ -156,7 +156,7 @@ static int	atbm_spi_read_data(struct sbus_priv *self, void *rx, size_t rx_len)
 	u8 cmdbuff[2] = {0x0b, 0};
 
 	status = spidev_sync_write_then_read(self, cmdbuff, sizeof(cmdbuff), rx, rx_len);
-	
+
 	return status;
 }
 
@@ -177,8 +177,8 @@ static int atbm_spi_read_status(struct sbus_priv *self, u32 *status, size_t tx_l
 	u8 cmdbuff[2] = {0x05, 0};
 
 	ret = spidev_sync_write_then_read(self, cmdbuff, sizeof(cmdbuff), (u8 *)status, tx_len);
-	
-	return ret;	
+
+	return ret;
 }
 static int atbm_spi_read_channelflag(struct sbus_priv *self, u32 *channelflag)
 {
@@ -189,7 +189,7 @@ static int atbm_spi_read_channelflag(struct sbus_priv *self, u32 *channelflag)
 	ret = atbm_spi_read_status(self, &status, sizeof(status));
 	if (ret == 0)
 	{
-	
+
 		spin_lock_irqsave(&self->lock, flags);
 		if ((status & SPI_CHANNEL_FLAG) == self->old_channelFlag)
 		{
@@ -198,11 +198,11 @@ static int atbm_spi_read_channelflag(struct sbus_priv *self, u32 *channelflag)
 		{
 			*channelflag = 1;
 		}
-	
+
 		spin_unlock_irqrestore(&self->lock, flags);
 	}
-	
-	return ret;	
+
+	return ret;
 }
 static int  atbm_spi_update_channelflag(struct sbus_priv *self)
 {
@@ -217,7 +217,7 @@ static int  atbm_spi_update_channelflag(struct sbus_priv *self)
 		self->old_channelFlag = status & SPI_CHANNEL_FLAG;
 		spin_unlock_irqrestore(&self->lock, flags);
 	}
-	return ret;	
+	return ret;
 }
 static int atbm_spi_read_ready(struct sbus_priv *self, u32 *ready)
 {
@@ -235,8 +235,8 @@ static int atbm_spi_read_ready(struct sbus_priv *self, u32 *ready)
 			*ready = 0;
 		}
 	}
-	
-	return ret;	
+
+	return ret;
 }
 static int atbm_spi_reset_cpu(struct sbus_priv *self)
 {
@@ -244,8 +244,8 @@ static int atbm_spi_reset_cpu(struct sbus_priv *self)
 	u8 cmdbuff[4] = {0xaa, 0, 0, 0xaa};
 
 	ret = spidev_sync_write_then_write(self, cmdbuff, 2, &cmdbuff[2], 2);
-	
-	return ret;	
+
+	return ret;
 }
 static int atbm_spi_shutdown_wlan(struct sbus_priv *self)
 {
@@ -253,8 +253,8 @@ static int atbm_spi_shutdown_wlan(struct sbus_priv *self)
 	u8 cmdbuff[4] = {0xaa, 0, 2, 0xac};
 
 	ret = spidev_sync_write_then_write(self, cmdbuff, 2, &cmdbuff[2], 2);
-	
-	return ret;	
+
+	return ret;
 }
 static int atbm_spi_reset_chip(struct sbus_priv *self)
 {
@@ -262,8 +262,8 @@ static int atbm_spi_reset_chip(struct sbus_priv *self)
 	u8 cmdbuff[4] = {0xaa, 0, 1, 0xab};
 
 	ret = spidev_sync_write_then_write(self, cmdbuff, 2, &cmdbuff[2], 2);
-	
-	return ret;	
+
+	return ret;
 }
 
 
@@ -271,15 +271,15 @@ static int atbm_spi_write_firmware(struct sbus_priv *self,unsigned int addr, con
 {
 	ssize_t			ret = 0;
 	u32 status = 0;
-	
+
 	if (addr < DOWNLOAD_DTCM_ADDR)
 	{
-		u8	iccm_cmdbuf[2] = {0x51,0x00};		
+		u8	iccm_cmdbuf[2] = {0x51,0x00};
 		ret = spidev_sync_write_then_write(self, iccm_cmdbuf, sizeof(iccm_cmdbuf), src, count);
 	}
 	else
 	{
-		//dccm		
+		//dccm
 		u8	dccm_cmdbuf[2] = {0x56,0x00};
 		ret = spidev_sync_write_then_write(self, dccm_cmdbuf, sizeof(dccm_cmdbuf), src, count);
 	}
@@ -294,7 +294,7 @@ static int atbm_spi_write_firmware(struct sbus_priv *self,unsigned int addr, con
 		atbm_dbg(ATBM_APOLLO_DBG_ERROR,"[atbm_load_fw]:SPI_STATUS_OVERRUN\n");
 		ret = -2;
 	}
-	
+
 	return ret;
 }
 
@@ -316,13 +316,13 @@ static int atbm_spi_set_block_size(struct sbus_priv *self, u32 size)
 
 static void atbm_spi_lock(struct sbus_priv *self)
 {
-	
+
 
 }
 
 static void atbm_spi_unlock(struct sbus_priv *self)
 {
-	
+
 }
 static int atbm_spi_adjust_wsm(struct sbus_priv *self,void *wsm)
 {
@@ -418,9 +418,9 @@ static int atbm_wtd_process(void *arg)
 			atbm_printk_exit("[atbm_wtd]:1 thread break %d %d\n",status,term);
 			goto __stop;
 		}
-		
+
 		if (spi_read_ready)
-		{		
+		{
 			do
 			{
 				atbm_spi_status_rx_ready(g_wtd.core);
@@ -431,11 +431,11 @@ static int atbm_wtd_process(void *arg)
 				}
 				msleep(1000);
 			}while(atomic_read(&g_wtd.wtd_spi_read_ready));
-			
+
 			atbm_printk_exit("[atbm_wtd]:atbm_spi_status_rx_ready end++\n");
 			continue;
 		}
-		
+
 		atomic_set(&g_wtd.wtd_run, 0);
 		do
 		{
@@ -451,7 +451,7 @@ static int atbm_wtd_process(void *arg)
 	}
 __stop:
 	while(term){
-		
+
 		atbm_printk_bus("[atbm_wtd]:kthread_should_stop\n");
 		if(kthread_should_stop()){
 			break;
@@ -534,9 +534,9 @@ static int  atbm_spi_probe(struct spi_device *spi)
 	int status;
 
 	atbm_dbg(ATBM_APOLLO_DBG_INIT, "Probe called\n");
-	
+
 	atomic_set(&g_wtd.wtd_probe, 0);
-	
+
 	atomic_set(&g_wtd.wtd_spi_read_ready, 0);
 
 	self = atbm_kzalloc(sizeof(*self), GFP_KERNEL);
@@ -559,10 +559,10 @@ static int  atbm_spi_probe(struct spi_device *spi)
 	self->core = g_wtd.core;
 
 	atomic_set(&g_wtd.wtd_probe, 1);
-	atbm_printk_init("[atbm_wtd]:set wtd_probe = 1\n");	
+	atbm_printk_init("[atbm_wtd]:set wtd_probe = 1\n");
 	spi_set_drvdata(spi, self);
 	return 0;
-	
+
 err_status:
 	atbm_kfree(self);
 	atomic_set(&g_wtd.wtd_probe, -1);
@@ -576,7 +576,7 @@ static int atbm_spi_disconnect(struct spi_device *spi)
 	struct sbus_priv *self = spi_get_drvdata(spi);
 
 	if (self) {
-		
+
 		spin_lock_irq(&self->lock);
 		self->spi = NULL;
 		spi_set_drvdata(spi, NULL);
@@ -630,7 +630,7 @@ static int  atbm_spi_init(void)
 	int ret;
 
 	ret=driver_build_info();
-	
+
 	atbm_wtd_init();
 	ret=spi_register_driver(&spi_driver);
 	if (ret)
@@ -661,7 +661,7 @@ static int __init apollo_spi_module_init(void)
 	return atbm_spi_init();
 }
 static void  apollo_spi_module_exit(void)
-{	
+{
 	atomic_set(&g_wtd.wtd_term, 1);
 	atomic_set(&g_wtd.wtd_run, 0);
 	atbm_spi_exit();

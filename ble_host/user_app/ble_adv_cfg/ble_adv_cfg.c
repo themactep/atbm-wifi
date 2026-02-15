@@ -60,7 +60,7 @@ extern bool g_is_quit;
 
 static int ble_adv_cfg_set_sucess(void)
 {
-	u8 mfg_data_br[3] = {0xAB, 0xBA, 0xA0};	
+	u8 mfg_data_br[3] = {0xAB, 0xBA, 0xA0};
 	u8 mfg_data_br_suc[3] = {0xAB, 0xBA, 0xA1};
 	u8 len = 0;
 	u8 adv_data_len = 0;
@@ -87,7 +87,7 @@ static int ble_adv_cfg_set_sucess(void)
 		data += 2;
 		put_le16(data, (u16)BLE_ATBM_GAP_SVR_BR);
 
-	}else{	
+	}else{
 		put_le16(data, (u16)BLE_ATBM_GAP_SVR_BR);
 		data += 2;
 		put_le16(data, (u16)BLE_ATBM_GAP_SVR_BR_SUC);
@@ -259,7 +259,7 @@ static int ble_parse_adv_cfg_data(u8 *adv_data, u8 adv_data_len)
 		}
    }
 	if(fields.name[4] == 0x31)
-	{        
+	{
 		if((broadcast_ssid_pwd_received_mask &0x02) == 0){   //save packet1
 		broadcast_ssid_pwd_received_mask|=0x02;
 		memcpy(&broadcast_ssid_pwd_data[BROADCAST_SMT_PACKET_SIZE+2], &fields.name[7], (fields.name_len-7));
@@ -268,7 +268,7 @@ static int ble_parse_adv_cfg_data(u8 *adv_data, u8 adv_data_len)
 	}
 	}
 	if(fields.name[4] == 0x32)
-	{        
+	{
 		if((broadcast_ssid_pwd_received_mask & 0x04) == 0){   //save packet2
 		broadcast_ssid_pwd_received_mask|=0x04;
 		memcpy(&broadcast_ssid_pwd_data[BROADCAST_SMT_PACKET_SIZE*2 + 2],  &fields.name[7], (fields.name_len-7));
@@ -277,7 +277,7 @@ static int ble_parse_adv_cfg_data(u8 *adv_data, u8 adv_data_len)
 	}
 	}
 	if(fields.name[4] == 0x33)
-	{        
+	{
 		if((broadcast_ssid_pwd_received_mask &0x08 )== 0){   //save packet3
 			broadcast_ssid_pwd_received_mask|=0x08;
 			memcpy(&broadcast_ssid_pwd_data[BROADCAST_SMT_PACKET_SIZE*3 + 2],  &fields.name[7], (fields.name_len-7));
@@ -286,7 +286,7 @@ static int ble_parse_adv_cfg_data(u8 *adv_data, u8 adv_data_len)
 		}
 	}
 	if(fields.name[4] == 0x34)
-	{        
+	{
 		if((broadcast_ssid_pwd_received_mask &0x10 )== 0){   //save packet4
 			broadcast_ssid_pwd_received_mask|=0x10;
 			memcpy(&broadcast_ssid_pwd_data[BROADCAST_SMT_PACKET_SIZE*4 + 2],  &fields.name[6], (fields.name_len-6));
@@ -306,15 +306,15 @@ static int ble_parse_adv_cfg_data(u8 *adv_data, u8 adv_data_len)
 			memcpy(&ble_adv_ind.ssid[0], &broadcast_ssid_pwd_data[2],  ble_adv_ind.ssid_len);
 			memcpy(&ble_adv_ind.pwd[0], &broadcast_ssid_pwd_data[ble_adv_ind.ssid_len+2],  ble_adv_ind.pwd_len);
 			if(ble_adv_ind.status < BLE_ADV_CFG_TRANS_END){
-				ble_adv_ind.status = BLE_ADV_CFG_TRANS_END;           
-				iot_printf("adv cfg done!, total:%d, ssidlen:%d, pwd_len:%d, ssid:%s, pwd:%s\n",	 	
+				ble_adv_ind.status = BLE_ADV_CFG_TRANS_END;
+				iot_printf("adv cfg done!, total:%d, ssidlen:%d, pwd_len:%d, ssid:%s, pwd:%s\n",
 				broadcast_ssid_pwd_data[0],ble_adv_ind.ssid_len, ble_adv_ind.pwd_len, ble_adv_ind.ssid, ble_adv_ind.pwd);
 			}
 		}
 	}
 
 	if(ble_adv_ind.status == BLE_ADV_CFG_TRANS_END)
-	{      
+	{
 		ble_adv_cfg_set_sucess();        //set adv cfg success BLE broadcast data.
 		ble_npl_sem_release(&adv_cfg_sem);
 	}
@@ -322,7 +322,7 @@ static int ble_parse_adv_cfg_data(u8 *adv_data, u8 adv_data_len)
 	{
 		ble_gap_adv_set_data(&adv_data[0], adv_data_len);
   	}
-	
+
 	return 0;
 }
 
@@ -364,7 +364,7 @@ static int ble_cfg_set_cfg_adv_init(void)
 	memcpy(data, device_name, len);
 	adv_data_len += (len + 2);
 	data += len;
-	
+
     rc = ble_gap_adv_set_data(&adv_data[0], adv_data_len);
     if (rc != 0) {
         return rc;
@@ -397,7 +397,7 @@ static int ble_cfg_set_cfg_scan_init(void)
 	disc_params.window = BLE_CFG_SCAN_WINDOW;
     rc = ble_gap_disc(BLE_OWN_ADDR_PUBLIC, BLE_HS_FOREVER, &disc_params,
                       ble_adv_cfg_scan_event, NULL);
-	
+
     if (rc != 0) {
         return rc;
     }
@@ -412,7 +412,7 @@ static void adv_cfg_connect_wifi_ap(u8* ssid, u8 ssidLen, u8* pwd, u8 pwdLen)
 	u8 pwdStr[65] = { 0 };
 	int sret, i;
 	int conn_ap_len;
-	
+
 	if (ssidLen > 32 || pwdLen > 64) {
 		fprintf(stdout, "ssidLen(%d) pwdLen(%d) error!\n", ssidLen, pwdLen);
 		return;
@@ -441,9 +441,9 @@ static int adv_cfg_wpa_status()
 {
 	int wpa_success = 0;
 	char buff[32];
-	
+
 	cmd_system("iwpriv wlan0 common get_conn_state > /tmp/wpa_status.txt",NULL,0);
-	cmd_system("cat /tmp/wpa_status.txt | grep wifi",buff,32); 
+	cmd_system("cat /tmp/wpa_status.txt | grep wifi",buff,32);
 	sscanf(buff,"wifi_status=%d",&wpa_success);
 	printf("wpa_success %d\n", wpa_success);
 	return wpa_success;
@@ -496,11 +496,11 @@ static int ble_adv_cfg_task(void* param)
 
 	ble_gap_adv_stop();		//close adv
 	ble_gap_disc_cancel();	//close scan
-	
+
 	strcpy(cmd_line,"quit");
-	g_is_quit=1;	
+	g_is_quit=1;
 	sem_post(&sem_sock_sync);
-	
+
 	adv_cfg_start = 0;
 
 	return 0;

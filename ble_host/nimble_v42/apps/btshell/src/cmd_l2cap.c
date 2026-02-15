@@ -38,13 +38,13 @@ cmd_l2cap_mtu(int argc, char **argv)
 {
 	int rc;
 	uint16_t mtu;
-	
+
     rc = parse_arg_all(argc - 1, argv + 1);
     if (rc != 0) {
         return rc;
-    }	
-	
-    mtu = parse_arg_uint16_dflt("mtu", 100, &rc);	
+    }
+
+    mtu = parse_arg_uint16_dflt("mtu", 100, &rc);
     if (rc != 0) {
         iot_printf("invalid 'mtu' parameter\n");
         return rc;
@@ -52,7 +52,7 @@ cmd_l2cap_mtu(int argc, char **argv)
 
 	iot_printf("set mtu:%d\n", mtu);
 	ble_l2cap_coc_mtu_set(mtu);
-	
+
 	return 0;
 }
 
@@ -195,7 +195,7 @@ cmd_l2cap_connect(int argc, char **argv)
     if (rc != 0) {
         iot_printf("btshell_l2cap_connect err:%d\n", rc);
     }
-	
+
     return rc;
 }
 
@@ -264,7 +264,7 @@ cmd_l2cap_send(int argc, char **argv)
        iot_printf("invalid 'bytes' parameter\n");
        return rc;
     }
-	
+
 	rc = btshell_l2cap_send(conn, idx, bytes);
 	if (rc != 0) {
         iot_printf("btshell_l2cap_send err:%d\n", rc);
@@ -273,7 +273,7 @@ cmd_l2cap_send(int argc, char **argv)
     return rc;
 }
 
-SRAM_CODE int 
+SRAM_CODE int
 cmd_l2cap_send_inc(int argc, char **argv)
 {
     uint16_t conn;
@@ -312,7 +312,7 @@ cmd_l2cap_send_inc(int argc, char **argv)
 	    }
 		ble_npl_time_delay(ble_npl_time_ms_to_ticks32(1000));
 	}
-	
+
     return rc;
 }
 

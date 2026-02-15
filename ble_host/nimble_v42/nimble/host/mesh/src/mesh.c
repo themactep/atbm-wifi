@@ -242,7 +242,7 @@ int bt_mesh_provisioner_enable(bt_mesh_prov_bearer_t bearers)
 				//bt_mesh_scan_enable();
         //provisioner_pb_gatt_enable();
     }
-			
+
     if (bt_mesh_beacon_get() == BT_MESH_BEACON_ENABLED) {
         bt_mesh_beacon_enable();
     }
@@ -295,7 +295,7 @@ static int bt_mesh_gap_event(struct ble_gap_event *event, void *arg)
 }
 
 int bt_mesh_init(uint8_t own_addr_type, const struct bt_mesh_prov *prov,
-		 		const struct bt_mesh_comp *comp, 
+		 		const struct bt_mesh_comp *comp,
 		 		const struct bt_mesh_provisioner *provisioner)
 {
 	int err;

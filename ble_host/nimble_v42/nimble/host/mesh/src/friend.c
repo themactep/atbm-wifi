@@ -195,14 +195,14 @@ static void friend_clear(struct bt_mesh_friend *frnd)
 
 	for (i = 0; i < ARRAY_SIZE(frnd->seg); i++) {
 		struct bt_mesh_friend_seg *seg = &frnd->seg[i];
-		
+
 		while (!net_buf_slist_is_empty(&seg->queue)) {
 			struct os_mbuf *buf;
 			buf = (void *)net_buf_slist_get(&seg->queue);
 			BT_MESH_ADV(buf)->flags &= ~NET_BUF_FRAGS;
 			net_buf_unref(buf);
 		}
-		
+
 		seg->seg_count = 0;
 	}
 
@@ -782,7 +782,7 @@ static void enqueue_offer(struct bt_mesh_friend *frnd, s8_t rssi)
 	frnd->send_last = 1;
 
 done:
-	os_mbuf_free_chain(sdu);	
+	os_mbuf_free_chain(sdu);
 }
 #define BIT_MASK(n) (BIT(n) - 1)
 #define RECV_WIN                  CONFIG_BT_MESH_FRIEND_RECV_WIN
@@ -957,7 +957,7 @@ static struct bt_mesh_friend_seg *get_seg(struct bt_mesh_friend *frnd,
 			unassigned = seg;
 		}
 	}
-	
+
 	if (unassigned) {
 		unassigned->seg_count = seg_count;
 	}
@@ -1124,9 +1124,9 @@ static void friend_timeout(struct ble_npl_event *work)
 	md = (uint8_t)(net_buf_slist_peek_head(&frnd->queue) != NULL);
 	update_overwrite(frnd->last, md);
 
-	
+
 	BT_MESH_ADV(frnd->last)->flags &= ~NET_BUF_FRAGS;
-	BT_MESH_ADV(frnd->last)->flags = 0;	
+	BT_MESH_ADV(frnd->last)->flags = 0;
 	frnd->queue_size--;
 
 	BT_INFO("Sending buf %p from Friend Queue of LPN 0x%04x, queue_size:%d",
@@ -1149,7 +1149,7 @@ int bt_mesh_friend_init(void)
     if (friend_init == true) {
         return -EALREADY;
     }
-	
+
 	rc = os_mempool_init(&friend_buf_mempool, FRIEND_BUF_COUNT,
 			BT_MESH_ADV_DATA_SIZE + BT_MESH_MBUF_HEADER_SIZE,
 			friend_buf_mem, "friend_buf_pool");
@@ -1177,7 +1177,7 @@ int bt_mesh_friend_init(void)
 			net_buf_slist_init(&frnd->seg[j].queue);
 		}
 	}
-	
+
     friend_init = true;
 
 	return 0;
@@ -1186,11 +1186,11 @@ int bt_mesh_friend_init(void)
 int bt_mesh_friend_deinit(void)
 {
 	int i;
-	
+
     if (friend_init == false) {
         BT_WARN("Already");
         return -EALREADY;
-    }	
+    }
 	bt_mesh_friend_clear_net_idx(BT_MESH_KEY_ANY);
 
 	for (i = 0; i < ARRAY_SIZE(bt_mesh.frnd); i++) {
@@ -1349,7 +1349,7 @@ static bool friend_lpn_matches(struct bt_mesh_friend *frnd, u16_t net_idx,
 bool bt_mesh_friend_match(u16_t net_idx, u16_t addr)
 {
 	int i;
-    
+
 	for (i = 0; i < ARRAY_SIZE(bt_mesh.frnd); i++) {
 		struct bt_mesh_friend *frnd = &bt_mesh.frnd[i];
 
@@ -1491,10 +1491,10 @@ void bt_mesh_friend_enqueue_rx(struct bt_mesh_net_rx *rx,
 					rx->ctx.recv_dst)) {
 			continue;
 		}
-		
-		if (friend_lpn_matches(frnd, rx->sub->net_idx,	
-					rx->ctx.addr)) {	
-			continue;	
+
+		if (friend_lpn_matches(frnd, rx->sub->net_idx,
+					rx->ctx.addr)) {
+			continue;
 		}
 
 		if (!friend_queue_prepare_space(frnd, rx->ctx.addr, seq_auth,
@@ -1523,14 +1523,14 @@ bool bt_mesh_friend_enqueue_tx(struct bt_mesh_net_tx *tx,
 
 	for (i = 0; i < ARRAY_SIZE(bt_mesh.frnd); i++) {
 		struct bt_mesh_friend *frnd = &bt_mesh.frnd[i];
-		
+
 		if (!friend_lpn_matches(frnd, tx->sub->net_idx, tx->ctx->addr)) {
 			continue;
 		}
 		if (!friend_queue_prepare_space(frnd, tx->src, seq_auth, seg_count)) {
 			continue;
 		}
-		
+
 		friend_lpn_enqueue_tx(frnd, tx, type, seq_auth, seg_count, sbuf);
 		matched = true;
 	}

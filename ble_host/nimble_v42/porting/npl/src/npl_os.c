@@ -60,7 +60,7 @@ void npl_atbmos_eventq_remove(struct ble_npl_eventq *evq,
 	do{
 		ret = atbm_os_MsgQ_Recv(&evq->q, &tmp_ev, sizeof(atbm_void *), 0);
 	}while(ret == WIFI_OK);
-  
+
     ev->queued = 0;
 }
 
@@ -69,7 +69,7 @@ ble_npl_error_t npl_atbmos_mutex_init(struct ble_npl_mutex *mu)
     if (!mu) {
         return BLE_NPL_INVALID_PARAM;
     }
-	
+
 	atbm_os_mutexLockInit(&mu->handle);
 
     return BLE_NPL_OK;
@@ -156,7 +156,7 @@ void npl_atbmos_sem_free(struct ble_npl_sem *sem)
     if (!sem) {
         return;
     }
-	
+
 	atbm_os_DeleteSem(&sem->handle);
 }
 
@@ -212,7 +212,7 @@ ble_npl_error_t npl_atbmos_callout_reset(struct ble_npl_callout *co, ble_npl_tim
 
 void npl_atbmos_callout_stop(struct ble_npl_callout *co)
 {
-	atbm_CancelTimer(&co->handle);	
+	atbm_CancelTimer(&co->handle);
 }
 
 void npl_atbmos_callout_free(struct ble_npl_callout *co)

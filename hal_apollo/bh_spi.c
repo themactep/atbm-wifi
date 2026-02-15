@@ -62,7 +62,7 @@ void atbm_unregister_bh(struct atbm_common *hw_priv)
 	struct task_struct *thread = hw_priv->bh_thread;
 	if (WARN_ON(!thread))
 		return;
-	
+
 	hw_priv->bh_thread = NULL;
 	bh_printk( "[BH] unregister.\n");
 	atomic_add(1, &hw_priv->bh_term);
@@ -202,7 +202,7 @@ static struct sk_buff *atbm_spi_get_skb(struct atbm_common *hw_priv, u32 len)
 	atbm_skb_reserve(skb, WSM_TX_EXTRA_HEADROOM
 			+ 8 /* TKIP IV */
 			- WSM_RX_EXTRA_HEADROOM);
-	
+
 	return skb;
 }
 
@@ -270,7 +270,7 @@ nextfrag:
 			goto error;
 
 	}
-	
+
 	//printk("atbm_spi_rx_bh start read_len:%d\n", read_len);
 	if (WARN_ON(atbm_read_data(hw_priv, data + totalLen, read_len)))
 		goto error;
@@ -279,7 +279,7 @@ nextfrag:
 		wsm = (struct wsm_hdr *)data;
 		wsm_len = __le32_to_cpu(wsm->len);
 	}
-	
+
 	atbm_printk_bus("atbm_spi_rx_bh start wsm_len:%d, read_len:%d\n", wsm_len, read_len);
 {
 	int i;
@@ -289,12 +289,12 @@ nextfrag:
 	}
 	atbm_printk_bus("\n");
 }
-	
+
 	totalLen += read_len;
 	if (wsm_len > totalLen)
 	{
 readyflagchange:
-		
+
 		msleep(500);
 		ret = atbm_read_status_ready(hw_priv, &ready);
 		if (ret !=0)
@@ -308,7 +308,7 @@ readyflagchange:
 			msleep(100);
 			count++;
 			if (count > 100)
-			{	
+			{
 				atbm_printk_err("[BH]RX SPI read status ready count > 100 error.\n");
 				goto error;
 			}
@@ -376,8 +376,8 @@ static int atbm_spi_xmit_data(struct atbm_common *hw_priv)
 		}
 #endif
 nextflag:
-		
-		ret = atbm_update_status_channelflag(hw_priv);	
+
+		ret = atbm_update_status_channelflag(hw_priv);
 		if ((ret !=0))
 		{
 			wsm_release_tx_buffer(hw_priv, 1);
@@ -385,10 +385,10 @@ nextflag:
 			bh_printk( "[BH] SPI update_status_channelflag error.\n");
 			goto error;
 		}
-		
+
 		{
 			int i;
-			
+
 			atbm_printk_bus("tx prev\n");
 			for (i = 0; i < 28; i++)
 			{
@@ -396,7 +396,7 @@ nextflag:
 			}
 			atbm_printk_bus("\n");
 		}
-		
+
 		bh_printk("[TX] WSM:id=0x%x,txlen %d,seq %x , totalLen=%d\n",wsm->id,tx_len,hw_priv->wsm_tx_seq , totalLen);
 		if (WARN_ON(atbm_write_data(hw_priv,data + totalLen, SPI_WRITE_BLOCK_SIZE))) {
 			wsm_release_tx_buffer(hw_priv, 1);
@@ -404,7 +404,7 @@ nextflag:
 		}
 		{
 			int i;
-			
+
 			atbm_printk_bus("tx after\n");
 			for (i = 0; i < 28; i++)
 			{
@@ -429,7 +429,7 @@ flagchange:
 			{
 				count++;
 				if (count > 10)
-				{	
+				{
 					wsm_release_tx_buffer(hw_priv, 1);
 					status=-6;
 					atbm_printk_bus( "[BH]TX SPI channelflag count > 10 error.\n");
@@ -455,7 +455,7 @@ flagchange:
 		hw_priv->wsm_tx_seq = (hw_priv->wsm_tx_seq + 1)	& WSM_TX_SEQ_MAX;
 
 	}
-	
+
 error:
 	return status;
 }
@@ -480,7 +480,7 @@ static int spi_atbm_bh(void *arg)
 		atbm_printk_bus("%s BH thread break %ld %d %d\n",__func__,status,term,hw_priv->bh_error);
 		goto out;
 	}
-	
+
 #define __ALL_HW_BUFS_USED (hw_priv->hw_bufs_used)
 
 
@@ -552,7 +552,7 @@ static int spi_atbm_bh(void *arg)
 					WSM_CMD_LAST_CHANCE_TIMEOUT +
 					1 * HZ  -
 					jiffies;
-			
+
 
 			/* And terminate BH tread if the frame is "stuck" */
 			if (pending && timeout < 0) {
@@ -620,7 +620,7 @@ out:
 			atbm_monitor_pc(hw_priv);
 			msleep(10);
 		}
-		
+
 		atbm_hw_vif_read_lock(&hw_priv->vif_list_lock);
 		atbm_for_each_vif_safe(hw_priv, priv, i) {
 			if (!priv)

@@ -252,7 +252,7 @@ void hal_uart_start_tx(u8 uartx)
 void hal_uart_close(u8 uartx){
 }
 static void ble_uart_rx_ev_func(struct ble_npl_event *ev)
-{		
+{
 	int i =0;
 	int len = ble_uart_rx_buf[3] + 4;
 	for(i = 0;i<len;i++){
@@ -262,7 +262,7 @@ static void ble_uart_rx_ev_func(struct ble_npl_event *ev)
 	iot_printf("\n");
 }
 static void ble_uart_tx_ev_func(struct ble_npl_event *ev)
-{	
+{
 	int data;
 	while(1){
 		data = ble_hci_uart_tx_char(NULL);
@@ -270,7 +270,7 @@ static void ble_uart_tx_ev_func(struct ble_npl_event *ev)
 			break;
 		}
 		hal_uart_send(uart3,&data,1);
-	} 
+	}
 }
 #endif
 /**

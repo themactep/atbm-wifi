@@ -61,7 +61,7 @@ struct atbm_debug_param{
 
 #ifdef CONFIG_ATBM_APOLLO_DEBUGFS
 typedef struct seq_file *P_VDEBUG_SEQFILE;
-#define VDEBUG_SEQFILE         struct seq_file 
+#define VDEBUG_SEQFILE         struct seq_file
 #define VDEBUG_PRINTF(...)  	seq_printf(__VA_ARGS__)
 #define VDEBUG_PUTS(a,b)		seq_puts(a,b)
 #define VDEBUG_PRIV(seq)		((seq)->private)

@@ -1282,7 +1282,7 @@ ble_sm_ltk_start_exec(struct ble_sm_proc *proc, struct ble_sm_result *res,
                       void *arg)
 {
     BLE_HS_DBG_ASSERT(!(proc->flags & BLE_SM_PROC_F_INITIATOR));
-	
+
     res->app_status = ble_sm_ltk_req_reply_tx(proc->conn_handle, proc->ltk);
     if (res->app_status == 0) {
         proc->state = BLE_SM_PROC_STATE_ENC_START;
@@ -1299,7 +1299,7 @@ ble_sm_ltk_restore_exec(struct ble_sm_proc *proc, struct ble_sm_result *res,
 
     BLE_HS_DBG_ASSERT(!(proc->flags & BLE_SM_PROC_F_INITIATOR));
     value_sec = arg;
-    
+
     if (value_sec != NULL) {
         /* Store provided a key; send it to the controller. */
         res->app_status = ble_sm_ltk_req_reply_tx(
@@ -1391,7 +1391,7 @@ ble_sm_ltk_req_rx(struct hci_le_lt_key_req *evt)
     if (proc == NULL) {
         return res.app_status;
     }
-    
+
 
     if (res.app_status == 0) {
         if (restore) {
@@ -1673,7 +1673,7 @@ ble_sm_pair_exec(struct ble_sm_proc *proc, struct ble_sm_result *res,
 
     is_req = proc->flags & BLE_SM_PROC_F_INITIATOR;
 
-#if (CONFIG_BLE_PTS_TEST_MOD == 1) 
+#if (CONFIG_BLE_PTS_TEST_MOD == 1)
     if(proc->flags == 0){
 	    struct ble_sm_pair_fail *err_cmd;
 	    err_cmd = ble_sm_cmd_get(BLE_SM_OP_PAIR_FAIL, sizeof(*err_cmd), &txom);
@@ -1684,9 +1684,9 @@ ble_sm_pair_exec(struct ble_sm_proc *proc, struct ble_sm_result *res,
 	    err_cmd->reason = BLE_SM_ERR_PAIR_NOT_SUPP;
 
 	    res->app_status = ble_sm_tx(proc->conn_handle, txom);
-	    return ;    
+	    return ;
     }//return ble_sm_tx(handle, txom);
-#endif    
+#endif
     cmd = ble_sm_cmd_get(is_req ? BLE_SM_OP_PAIR_REQ : BLE_SM_OP_PAIR_RSP,
                          sizeof(*cmd), &txom);
     if (cmd == NULL) {
@@ -2435,7 +2435,7 @@ ble_sm_timer(void)
 
         STAILQ_REMOVE_HEAD(&exp_list, next);
         ble_sm_proc_free(proc);
-    } 
+    }
 
     return ticks_until_exp;
 }

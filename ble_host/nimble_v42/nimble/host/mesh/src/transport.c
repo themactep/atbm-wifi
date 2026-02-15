@@ -152,7 +152,7 @@ static int send_unseg(struct bt_mesh_net_tx *tx, struct os_mbuf *sdu,
 			return 0;
 		}
 	}
-	
+
 send:
 	return bt_mesh_net_send(tx, buf, cb, cb_data);
 }
@@ -485,7 +485,7 @@ int bt_mesh_trans_send(struct bt_mesh_net_tx *tx, struct os_mbuf *msg,
 		{
 			key = bt_mesh.dev_key;
 		}
-		
+
 		tx->aid = 0;
 	} else {
 		struct bt_mesh_app_key *app_key;
@@ -494,10 +494,10 @@ int bt_mesh_trans_send(struct bt_mesh_net_tx *tx, struct os_mbuf *msg,
 			app_key = provisioner_app_key_find(tx->ctx->app_idx);
 		}else
 #endif
-		{	
+		{
 			app_key = bt_mesh_app_key_find(tx->ctx->app_idx);
 		}
-		
+
 		if (!app_key) {
 			return -EINVAL;
 		}
@@ -675,7 +675,7 @@ static int sdu_recv(struct bt_mesh_net_rx *rx, u32_t seq, u8_t hdr,
 #if MYNEWT_VAL(BLE_MESH_PROVISIONER)
 	if (bt_mesh_is_provisioner_en()) {
 		array_size = ARRAY_SIZE(bt_mesh.p_app_keys);
-	}else	
+	}else
 #endif
 	{
 		array_size = ARRAY_SIZE(bt_mesh.app_keys);
@@ -1248,7 +1248,7 @@ static int trans_seg(struct os_mbuf *buf, struct bt_mesh_net_rx *net_rx,
 		     enum bt_mesh_friend_pdu_type *pdu_type, u64_t *seq_auth, u8_t *seg_count)
 {
 	struct seg_rx *rx;
-    u8_t *hdr = buf->om_data;	
+    u8_t *hdr = buf->om_data;
 	u16_t seq_zero;
 	u8_t seg_n;
 	u8_t seg_o;
@@ -1587,7 +1587,7 @@ void bt_mesh_trans_init(void)
 void bt_mesh_trans_deinit(void)
 {
 	int i;
-	
+
 	bt_mesh_rx_reset();
 	bt_mesh_tx_reset();
 
@@ -1597,7 +1597,7 @@ void bt_mesh_trans_deinit(void)
 
 	for (i = 0; i < ARRAY_SIZE(seg_rx); i++) {
 		k_delayed_work_free(&seg_rx[i].ack);
-		os_mbuf_free_chain(seg_rx[i].buf);	
+		os_mbuf_free_chain(seg_rx[i].buf);
 	}
 }
 

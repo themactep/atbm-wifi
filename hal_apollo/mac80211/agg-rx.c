@@ -46,7 +46,7 @@
 static int ieee80211_rx_ba_alloc_hw_token(struct ieee80211_local *local)
 {
 	int token = -1;
-	
+
 	spin_lock_bh(&local->aggr_lock);
 
 	if(ieee80211_hw_setup_ba(&local->hw)){
@@ -69,7 +69,7 @@ exit:
 static void ieee80211_rx_ba_free_hw_token(struct ieee80211_local *local,int token)
 {
 	spin_lock_bh(&local->aggr_lock);
-	
+
 	if(ieee80211_hw_setup_ba(&local->hw)){
 		goto exit;
 	}
@@ -328,7 +328,7 @@ void ieee80211_process_addba_request(struct ieee80211_local *local,
 		goto end;
 
 
-	
+
 	atbm_printk_init("%s:mac[%pM],tid[%d]\n",__func__,sta->sta.addr,tid);
 	spin_lock_init(&tid_agg_rx->reorder_lock);
 
@@ -355,7 +355,7 @@ void ieee80211_process_addba_request(struct ieee80211_local *local,
 	}
 
 	hw_token = ieee80211_rx_ba_alloc_hw_token(local);
-	
+
 	if (hw_token == -1){
 		atbm_kfree(tid_agg_rx->reorder_buf);
 		atbm_kfree(tid_agg_rx->reorder_time);
@@ -364,7 +364,7 @@ void ieee80211_process_addba_request(struct ieee80211_local *local,
 		goto end;
 	}
 
-		
+
 	ret = drv_ampdu_action(local, sta->sdata, IEEE80211_AMPDU_RX_START,
 			       &sta->sta, tid, &start_seq_num, 0, hw_token);
 #ifdef CONFIG_MAC80211_ATBM_HT_DEBUG

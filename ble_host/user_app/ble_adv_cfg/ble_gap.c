@@ -1068,7 +1068,7 @@ ble_gap_disc_ext_validate(uint8_t own_addr_type)
 #endif
 
 
-#if NIMBLE_BLE_SCAN 
+#if NIMBLE_BLE_SCAN
 SRAM_CODE static void
 ble_gap_disc_fill_dflts(struct ble_gap_disc_params *disc_params)
 {

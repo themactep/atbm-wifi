@@ -224,11 +224,11 @@ static void gen_onoff_get(struct bt_mesh_model *model,
 static void gen_onoff_set(struct bt_mesh_model *model,
                           struct bt_mesh_msg_ctx *ctx,
                           struct os_mbuf *buf)
-{ 
+{
     gen_on_off_state = buf->om_data[0];
 	MODLOG_DFLT(INFO, "#mesh-onoff SET:%d\n", gen_on_off_state);
 
-#if 0	
+#if 0
 	if(gen_on_off_state){
 		rt_pin_write(MESH_LED_PIN, MESH_LED_ON);
 	}else{
@@ -276,7 +276,7 @@ static const struct bt_mesh_model_op gen_onoff_op_srv[] = {
 
 static const struct bt_mesh_model_op gen_onoff_op_cli[] = {
     { BT_MESH_MODEL_OP_2(0x82, 0x04), 1, gen_onoff_status_cli },
-    BT_MESH_MODEL_OP_END,	
+    BT_MESH_MODEL_OP_END,
 };
 
 
@@ -515,19 +515,19 @@ static void blemesh_keypress_handle(struct ble_npl_event *ev)
 	int err;
 
 	MODLOG_DFLT(INFO, "blemesh_keypress_handle\n");
-	
+
 	if(primary_addr == BT_MESH_ADDR_UNASSIGNED){
 		MODLOG_DFLT(INFO, "model unprovisioned\n");
 		return;
 	}
-	
+
 	mod_cli = &root_models[3];
 	pub_cli = mod_cli->pub;
 
     if (pub_cli->addr == BT_MESH_ADDR_UNASSIGNED) {
 		MODLOG_DFLT(INFO, "model unset publish address\n");
         return;
-    }	
+    }
 	if(press_state){
 		press_state = 0;
 	}else{
@@ -544,7 +544,7 @@ static void blemesh_keypress_handle(struct ble_npl_event *ev)
     err = bt_mesh_model_publish(mod_cli);
     if (err) {
         MODLOG_DFLT(INFO, "bt_mesh_model_publish err %d", err);
-    }		
+    }
 	os_mbuf_free_chain(pub_cli->msg);
 }
 
@@ -552,7 +552,7 @@ static void blemesh_keypress_handle(struct ble_npl_event *ev)
 int ble_mesh_demo(void)
 {
 	iot_printf("ble_mesh_demo\n");
-	
+
     ble_npl_event_init(&mesh_demo_key_event, blemesh_keypress_handle, NULL);
 
     ble_svc_gap_init();
@@ -560,14 +560,14 @@ int ble_mesh_demo(void)
 
     bt_mesh_register_gatt();
     ble_mesh_thread_startup();
-	
+
 	return 0;
 }
 
 static void cli_btmesh(char *pLine)
 {
 	char * str;
-	
+
 	str = cli_get_token(&pLine);
 	if(cli_string_cmmpare(str, "onofftest")){
 		ble_npl_eventq_put(nimble_port_get_dflt_eventq(), &mesh_demo_key_event);

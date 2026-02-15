@@ -77,7 +77,7 @@ const u32 Rf_Tx_Psm_value_outerpa[]=
 	0x0003c227,
 	0x00007bdf,
 	0x0003c237
-#else 
+#else
 	//1_PSM reg bit[3] must be 0;
 	0x00000821,
 	0x00020801,
@@ -96,56 +96,56 @@ const u32 Rf_Tx_Psm_value_outerpa[]=
 #endif
 };
 const u32  Rf_Tx_Psm_valueAresAZLC[] = {
-	0x00000821, //PHY_RFIP_TX_OFF0_PSM,		              
-	0x00020819, //PHY_RFIP_TX_OFF1_PSM,		              
-	0x00000821, //PHY_RFIP_TX_LDO_ON0_PSM,	            
-	0x00020819, //PHY_RFIP_TX_LDO_ON1_PSM,	            
-	0x00001905, //PHY_RFIP_TX_BIAS_ON0_PSM,             
-	0x00030a3f, //PHY_RFIP_TX_BIAS_ON1_PSM, /ACC01EC    
-	0x00001bdd, //PHY_RFIP_TX_ANA_ON0_PSM,	            
-	0x0003ca27, //PHY_RFIP_TX_ANA_ON1_PSM,	            
-	0x00007bdf, //PHY_RFIP_TX_LDO_LQ0_PSM,	            
-	0x0003c227, //PHY_RFIP_TX_LDO_LQ1_PSM,	            
-	0x00007bdf, //PHY_RFIP_TX_ACTIVE0_PSM,	            
-	0x0003c227, //PHY_RFIP_TX_ACTIVE1_PSM,	            
-	0x00007bdf, //PHY_RFIP_TX_RF_OFF0_PSM,	            
-	0x0003c237 //PHY_RFIP_TX_RF_OFF1_PSM,	   
+	0x00000821, //PHY_RFIP_TX_OFF0_PSM,
+	0x00020819, //PHY_RFIP_TX_OFF1_PSM,
+	0x00000821, //PHY_RFIP_TX_LDO_ON0_PSM,
+	0x00020819, //PHY_RFIP_TX_LDO_ON1_PSM,
+	0x00001905, //PHY_RFIP_TX_BIAS_ON0_PSM,
+	0x00030a3f, //PHY_RFIP_TX_BIAS_ON1_PSM, /ACC01EC
+	0x00001bdd, //PHY_RFIP_TX_ANA_ON0_PSM,
+	0x0003ca27, //PHY_RFIP_TX_ANA_ON1_PSM,
+	0x00007bdf, //PHY_RFIP_TX_LDO_LQ0_PSM,
+	0x0003c227, //PHY_RFIP_TX_LDO_LQ1_PSM,
+	0x00007bdf, //PHY_RFIP_TX_ACTIVE0_PSM,
+	0x0003c227, //PHY_RFIP_TX_ACTIVE1_PSM,
+	0x00007bdf, //PHY_RFIP_TX_RF_OFF0_PSM,
+	0x0003c237 //PHY_RFIP_TX_RF_OFF1_PSM,
 };
 const u32 Rf_Tx_Psm_valueAres[] = {
-	//1_PSM reg bit[3] must be 0;	
-	0x00000821,//PHY_RFIP_TX_OFF0_PSM,		           
-	0x00020801,//PHY_RFIP_TX_OFF1_PSM,		           
-	0x00000821,//PHY_RFIP_TX_LDO_ON0_PSM,	           
-	0x00020801,//PHY_RFIP_TX_LDO_ON1_PSM,	           
-	0x00001905,//PHY_RFIP_TX_BIAS_ON0_PSM,           
-	(0x00030a27 | BIT(18)),//PHY_RFIP_TX_BIAS_ON1_PSM, /ACC01EC  
-	0x00001bdd,//PHY_RFIP_TX_ANA_ON0_PSM,	           
-	(0x0003ca3f | BIT(18)),//PHY_RFIP_TX_ANA_ON1_PSM,	  //ACC01EC,BIT(18): psm decide auxadc clock;         
-	0x00007bdf,//PHY_RFIP_TX_LDO_LQ0_PSM,	           
-	(0x0003c23f | BIT(18)),//PHY_RFIP_TX_LDO_LQ1_PSM,	           
-	0x00007bdf,//PHY_RFIP_TX_ACTIVE0_PSM,	           
-	(0x0003c23f | BIT(18)),//PHY_RFIP_TX_ACTIVE1_PSM,	           
-	0x00007bdf,//PHY_RFIP_TX_RF_OFF0_PSM,	           
-	0x0003c22f//PHY_RFIP_TX_RF_OFF1_PSM,	  
+	//1_PSM reg bit[3] must be 0;
+	0x00000821,//PHY_RFIP_TX_OFF0_PSM,
+	0x00020801,//PHY_RFIP_TX_OFF1_PSM,
+	0x00000821,//PHY_RFIP_TX_LDO_ON0_PSM,
+	0x00020801,//PHY_RFIP_TX_LDO_ON1_PSM,
+	0x00001905,//PHY_RFIP_TX_BIAS_ON0_PSM,
+	(0x00030a27 | BIT(18)),//PHY_RFIP_TX_BIAS_ON1_PSM, /ACC01EC
+	0x00001bdd,//PHY_RFIP_TX_ANA_ON0_PSM,
+	(0x0003ca3f | BIT(18)),//PHY_RFIP_TX_ANA_ON1_PSM,	  //ACC01EC,BIT(18): psm decide auxadc clock;
+	0x00007bdf,//PHY_RFIP_TX_LDO_LQ0_PSM,
+	(0x0003c23f | BIT(18)),//PHY_RFIP_TX_LDO_LQ1_PSM,
+	0x00007bdf,//PHY_RFIP_TX_ACTIVE0_PSM,
+	(0x0003c23f | BIT(18)),//PHY_RFIP_TX_ACTIVE1_PSM,
+	0x00007bdf,//PHY_RFIP_TX_RF_OFF0_PSM,
+	0x0003c22f//PHY_RFIP_TX_RF_OFF1_PSM,
 };
 //TXPA config
 const  rf_reg_bit_u16 Rf_TxPa_TableAresAy[] = {
-	{PHY_RFIP_TXPA_REG0_ADDR,	2,	   0,	  7 	},	   
-	{PHY_RFIP_TXPA_REG0_ADDR,	5,	   3,	  0 	},	   
+	{PHY_RFIP_TXPA_REG0_ADDR,	2,	   0,	  7 	},
+	{PHY_RFIP_TXPA_REG0_ADDR,	5,	   3,	  0 	},
 	{PHY_RFIP_TXPA_REG0_ADDR,	8, 6, 3 	},
-	{PHY_RFIP_TXPA_REG0_ADDR,	11, 9, 3   },	  
-	{PHY_RFIP_TXPA_REG0_ADDR,	14, 12, 3  },	  
-	{PHY_RFIP_TXPA_REG0_ADDR,	17, 15, 3  },	  
-	{PHY_RFIP_TXPA_REG0_ADDR,	18, 18, 1  },	  
-	{PHY_RFIP_TXPA_REG0_ADDR,	20, 20, 0  }, 
-	{PHY_RFIP_TXPA_REG0_ADDR,	24, 21, 6  }, 
+	{PHY_RFIP_TXPA_REG0_ADDR,	11, 9, 3   },
+	{PHY_RFIP_TXPA_REG0_ADDR,	14, 12, 3  },
+	{PHY_RFIP_TXPA_REG0_ADDR,	17, 15, 3  },
+	{PHY_RFIP_TXPA_REG0_ADDR,	18, 18, 1  },
+	{PHY_RFIP_TXPA_REG0_ADDR,	20, 20, 0  },
+	{PHY_RFIP_TXPA_REG0_ADDR,	24, 21, 6  },
 	{PHY_RFIP_TXPA_REG1_ADDR,	0,	   0,	  0 	},
-	{PHY_RFIP_TXPA_REG1_ADDR,	5,	   1,	  0xb },	  
-	{PHY_RFIP_TXPA_REG1_ADDR,	7,	   7,	  1 },	 
-	{PHY_RFIP_TXPA_REG1_ADDR,	8,	   8,	  1 },	 
-	{PHY_RFIP_TXPA_REG1_ADDR,	9,	   9,	  1 },	 
-	{PHY_RFIP_TXPA_REG1_ADDR,	10,   10,	0 },   
-	{PHY_RFIP_TXPA_REG1_ADDR,	13, 11, 4  },	  
+	{PHY_RFIP_TXPA_REG1_ADDR,	5,	   1,	  0xb },
+	{PHY_RFIP_TXPA_REG1_ADDR,	7,	   7,	  1 },
+	{PHY_RFIP_TXPA_REG1_ADDR,	8,	   8,	  1 },
+	{PHY_RFIP_TXPA_REG1_ADDR,	9,	   9,	  1 },
+	{PHY_RFIP_TXPA_REG1_ADDR,	10,   10,	0 },
+	{PHY_RFIP_TXPA_REG1_ADDR,	13, 11, 4  },
 	{PHY_RFIP_TXPA_REG2_ADDR,	0,	   0,	  0 	},
 	{PHY_RFIP_TXPA_REG2_ADDR,	3,	   2,	  3 	},
 	{PHY_RFIP_TXPA_REG2_ADDR,	8,	   6,	  5 	},
@@ -160,27 +160,27 @@ const  rf_reg_bit_u16 Rf_TxPa_TableAresAy[] = {
 	{PHY_RFIP_TXPA_VSWR,		12,9,0x8},
 	{PHY_RFIP_TXPA_VSWR,		13,13,1},
 	{PHY_RFIP_TXPA_VSWR,		14,14,1},
-	{PHY_RFIP_TXCFG_ADDR,		0,0,0}, 
+	{PHY_RFIP_TXCFG_ADDR,		0,0,0},
 	{PHY_RFIP_INVALID,			31, 0,		0xffff}
 
 };
 const  rf_reg_bit_u16 Rf_TxPa_TableAresAZLC[]={
-	{PHY_RFIP_TXPA_REG0_ADDR,	2,	0,	0	},	
-	{PHY_RFIP_TXPA_REG0_ADDR,	5,	3,	0	},	
+	{PHY_RFIP_TXPA_REG0_ADDR,	2,	0,	0	},
+	{PHY_RFIP_TXPA_REG0_ADDR,	5,	3,	0	},
 	{PHY_RFIP_TXPA_REG0_ADDR,	8, 6,	0	},
-	{PHY_RFIP_TXPA_REG0_ADDR,	11, 9, 0	},	
-	{PHY_RFIP_TXPA_REG0_ADDR,	14, 12, 0	},	
-	{PHY_RFIP_TXPA_REG0_ADDR,	17, 15, 0	},	
-	{PHY_RFIP_TXPA_REG0_ADDR,	18, 18, 0	},	
-	{PHY_RFIP_TXPA_REG0_ADDR,	20, 20, 0	}, 
-	{PHY_RFIP_TXPA_REG0_ADDR,	24, 21, 0xf	}, 
+	{PHY_RFIP_TXPA_REG0_ADDR,	11, 9, 0	},
+	{PHY_RFIP_TXPA_REG0_ADDR,	14, 12, 0	},
+	{PHY_RFIP_TXPA_REG0_ADDR,	17, 15, 0	},
+	{PHY_RFIP_TXPA_REG0_ADDR,	18, 18, 0	},
+	{PHY_RFIP_TXPA_REG0_ADDR,	20, 20, 0	},
+	{PHY_RFIP_TXPA_REG0_ADDR,	24, 21, 0xf	},
 	{PHY_RFIP_TXPA_REG1_ADDR,	0,	0,	1	},
-	{PHY_RFIP_TXPA_REG1_ADDR,	5,	1,	0xf },	
-	{PHY_RFIP_TXPA_REG1_ADDR,	7,	7,	1 },	
-	{PHY_RFIP_TXPA_REG1_ADDR,	8,	8,	1 },	
-	{PHY_RFIP_TXPA_REG1_ADDR,	9,	9,	1 },	
-	{PHY_RFIP_TXPA_REG1_ADDR,	10,	10,	0 },	
-	{PHY_RFIP_TXPA_REG1_ADDR,	13, 11, 4	},	
+	{PHY_RFIP_TXPA_REG1_ADDR,	5,	1,	0xf },
+	{PHY_RFIP_TXPA_REG1_ADDR,	7,	7,	1 },
+	{PHY_RFIP_TXPA_REG1_ADDR,	8,	8,	1 },
+	{PHY_RFIP_TXPA_REG1_ADDR,	9,	9,	1 },
+	{PHY_RFIP_TXPA_REG1_ADDR,	10,	10,	0 },
+	{PHY_RFIP_TXPA_REG1_ADDR,	13, 11, 4	},
 	{PHY_RFIP_TXPA_REG2_ADDR,	0,	0,	1	},
 	{PHY_RFIP_TXPA_REG2_ADDR,	3,	2,	3	},
 	{PHY_RFIP_TXPA_REG2_ADDR,	8,	6,	0	},
@@ -192,34 +192,34 @@ const  rf_reg_bit_u16 Rf_TxPa_TableAresAZLC[]={
 	{PHY_RFIP_TXPA_VSWR,		3,0,0xf},
 	{PHY_RFIP_TXPA_VSWR,		7,4,0xf},
 	{PHY_RFIP_TXPA_VSWR,		8,8,1},
-	{PHY_RFIP_TXCFG_ADDR,		0,0,0}, 	
+	{PHY_RFIP_TXCFG_ADDR,		0,0,0},
 	{PHY_RFIP_INVALID,			31, 0,	0xffff}
 };
 
 const  rf_reg_bit_u16 Rf_TxPa_TableAres[]={
-	/*{PHY_RFIP_TXPA_REG0_ADDR,	2,	0,	0	},	
-	{PHY_RFIP_TXPA_REG0_ADDR,	5,	3,	0	},	
+	/*{PHY_RFIP_TXPA_REG0_ADDR,	2,	0,	0	},
+	{PHY_RFIP_TXPA_REG0_ADDR,	5,	3,	0	},
 	{PHY_RFIP_TXPA_REG0_ADDR,	8, 6,	0	},
-	{PHY_RFIP_TXPA_REG0_ADDR,	11, 9, 0	},	
-	{PHY_RFIP_TXPA_REG0_ADDR,	14, 12, 0	},	
+	{PHY_RFIP_TXPA_REG0_ADDR,	11, 9, 0	},
+	{PHY_RFIP_TXPA_REG0_ADDR,	14, 12, 0	},
 	{PHY_RFIP_TXPA_REG0_ADDR,	17, 15, 0	},	*/
 #if 0//(RF_SUBTYPE_DEFINE == Ares_C)
-	{PHY_RFIP_TXPA_REG0_ADDR,	18, 0, 5	},	
-	{PHY_RFIP_TXPA_REG1_ADDR,	13, 7, 0x77	},	
-	{PHY_RFIP_TXCFG_ADDR,		13,8,0x30}, 	
+	{PHY_RFIP_TXPA_REG0_ADDR,	18, 0, 5	},
+	{PHY_RFIP_TXPA_REG1_ADDR,	13, 7, 0x77	},
+	{PHY_RFIP_TXCFG_ADDR,		13,8,0x30},
 #else
 	{PHY_RFIP_TXPA_REG0_ADDR,	18, 0, 0	},
-	{PHY_RFIP_TXPA_REG1_ADDR,	13, 7, 0x57	},	
+	{PHY_RFIP_TXPA_REG1_ADDR,	13, 7, 0x57	},
 #endif
-	//{PHY_RFIP_TXPA_REG0_ADDR,	20, 20, 0	}, 
-	{PHY_RFIP_TXPA_REG0_ADDR,	24, 20, 12	}, 
+	//{PHY_RFIP_TXPA_REG0_ADDR,	20, 20, 0	},
+	{PHY_RFIP_TXPA_REG0_ADDR,	24, 20, 12	},
 	//{PHY_RFIP_TXPA_REG1_ADDR,	0,	0,	0	},
-	{PHY_RFIP_TXPA_REG1_ADDR,	5,	0,	22 },	
-	/*{PHY_RFIP_TXPA_REG1_ADDR,	7,	7,	1 },	
-	{PHY_RFIP_TXPA_REG1_ADDR,	8,	8,	1 },	
-	{PHY_RFIP_TXPA_REG1_ADDR,	9,	9,	1 },	
-	{PHY_RFIP_TXPA_REG1_ADDR,	10,	10,	0 },*/	
-	
+	{PHY_RFIP_TXPA_REG1_ADDR,	5,	0,	22 },
+	/*{PHY_RFIP_TXPA_REG1_ADDR,	7,	7,	1 },
+	{PHY_RFIP_TXPA_REG1_ADDR,	8,	8,	1 },
+	{PHY_RFIP_TXPA_REG1_ADDR,	9,	9,	1 },
+	{PHY_RFIP_TXPA_REG1_ADDR,	10,	10,	0 },*/
+
 	{PHY_RFIP_TXPA_REG2_ADDR,	0,	0,	0	},
 	{PHY_RFIP_TXPA_REG2_ADDR,	3,	2,	3	},
 	//{PHY_RFIP_TXPA_REG2_ADDR,	8,	6,	5	},
@@ -231,13 +231,13 @@ const  rf_reg_bit_u16 Rf_TxPa_TableAres[]={
 	//{PHY_RFIP_TXPA_VSWR,		3,0,0x7},
 	//{PHY_RFIP_TXPA_VSWR,		7,4,0},
 	{PHY_RFIP_TXPA_VSWR,		8,0,0x7},
-	{PHY_RFIP_TXCFG_ADDR,		0,0,0}, 	
+	{PHY_RFIP_TXCFG_ADDR,		0,0,0},
 	{PHY_RFIP_INVALID,			31, 0,	0xffff}
 };
 /**************************AthenaBx Start***************************************/
 //Rx psm
 const rf_reg Rf_Rx_Psm[]=
-{	
+{
 	{PHY_RFIP_RXOFF0_PSM_ADDR,			0x00000641},
 	{PHY_RFIP_RXOFF1_PSM_ADDR,			0x00000020},
 	{PHY_RFIP_RX_BIAS_ON0_PSM,			0x00000f4b},
@@ -275,15 +275,15 @@ const  rf_reg Rf_RfPll_Table40[]=
 	{0xacc00AC,0x12C20003},
 	{0xacc00B4,0x05A73333},
 	{0xacc0120,0x00000000},
-	{0xacc0290,0x0000000C},		
-	{PHY_RFIP_INVALID,0xffffffff} 
+	{0xacc0290,0x0000000C},
+	{PHY_RFIP_INVALID,0xffffffff}
 };
 const  rf_reg Rf_RfPll_Table24[]=
 {
 	{0xacc0114,0x00000004},
 #if 0
 	{0xacc0288,0x30c208},
-#else	
+#else
 	{0xacc0288,0x0030C230},
 #endif
 	{0xacc00B0,0x20454000},
@@ -313,7 +313,7 @@ const rf_reg Rf_RfPll_Table16[]=
 //static rfPll reg
 const  rf_reg Rf_RfPll_Table[]=
 {
-#if (CFG_DPLL_CLOCK==40)		
+#if (CFG_DPLL_CLOCK==40)
 		{0xacc0114,0x00000000},
 		{0xacc0288,0x0030C200},
 		{0xacc00B0,0x20454000},
@@ -322,13 +322,13 @@ const  rf_reg Rf_RfPll_Table[]=
 		{0xacc00AC,0x12C20003},
 		{0xacc00B4,0x05A73333},
 		{0xacc0120,0x00000000},
-		{0xacc0290,0x0000000C},		
-		{PHY_RFIP_INVALID,0xffffffff} 
-#elif(CFG_DPLL_CLOCK==24)   
+		{0xacc0290,0x0000000C},
+		{PHY_RFIP_INVALID,0xffffffff}
+#elif(CFG_DPLL_CLOCK==24)
 		{0xacc0114,0x00000004},
 #if 0
 		{0xacc0288,0x30c208},
-#else	
+#else
 		{0xacc0288,0x0030C230},
 #endif
 		{0xacc00B0,0x20454000},
@@ -339,7 +339,7 @@ const  rf_reg Rf_RfPll_Table[]=
 		{0xacc0120,0x00000000},
 		{0xacc0290,0x0000000C},
 		{PHY_RFIP_INVALID,0xffffffff}
-#elif(CFG_DPLL_CLOCK==16)  
+#elif(CFG_DPLL_CLOCK==16)
 		{0xacc0114,0x00000004},
 		{0xacc0288,0x0030C230},
 		{0xacc00B0,0x20454000},
@@ -356,7 +356,7 @@ const  rf_reg Rf_RfPll_Table[]=
 };
 
 u16 Rf_Channel_Table[]=
-{	
+{
 2412 ,//ch1
 2417 ,//ch2
 2422 ,//ch3
@@ -372,12 +372,12 @@ u16 Rf_Channel_Table[]=
 2472 ,//ch13
 2484  //ch14
 };
-		
+
 u16 Rf_Special_Channel_Table[]=
 {
-2380 ,//ch23	
+2380 ,//ch23
 2308 ,//ch24
-2320 ,//ch25	
+2320 ,//ch25
 2332 ,//ch26
 2400 ,//ch27
 2480 ,//ch28
@@ -413,20 +413,20 @@ const NORELOC DTCM_CONST rf_reg_bit_Exvalue ROM_ro_Rf_Channel_TableAddr[]=
 const  u16 Rf_Channel_TableCfg[]=
 {
 #if (CFG_DPLL_CLOCK==40) // = (N1*freq_MHz*1.5/2/40); N1 is 85(dec);
-	0xF04,	
-	0xF0C,	
-	0xF14,	
-	0xF1C,	
-	0xF24,	
-	0xF2C,	
-	0xF34,	
-	0xF3C,	
-	0xF44,	
-	0xF4C,	
-	0xF54,	
-	0xF5C,	
-	0xF64,	
-	0xF77,	
+	0xF04,
+	0xF0C,
+	0xF14,
+	0xF1C,
+	0xF24,
+	0xF2C,
+	0xF34,
+	0xF3C,
+	0xF44,
+	0xF4C,
+	0xF54,
+	0xF5C,
+	0xF64,
+	0xF77,
 	//0xED1,
 #elif(CFG_DPLL_CLOCK==27)//27M
 	0xE65,
@@ -504,7 +504,7 @@ const  u16 Rf_Channel_TableCfg[]=
 	0x1CE9,
 	0x1CF8,
 	0x1D1C,
-#else 
+#else
 #error
 #endif
 };

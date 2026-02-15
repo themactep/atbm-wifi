@@ -40,15 +40,15 @@ static void ieee80211_suspend_sta_disconnect(struct ieee80211_sub_if_data *sdata
 	if(sdata->vif.type == NL80211_IFTYPE_STATION){
 		if(!(sdata->flags & IEEE80211_SDATA_DISCONNECT_RESUME))
 			ieee80211_connection_loss(&sdata->vif);
-	}else if(sdata->vif.type == NL80211_IFTYPE_AP){	
+	}else if(sdata->vif.type == NL80211_IFTYPE_AP){
 		mutex_lock(&local->sta_mtx);
 		list_for_each_entry(sta, &local->sta_list, list) {
-			if ((sta->uploaded)&&(sta->sdata == sdata)) {				
+			if ((sta->uploaded)&&(sta->sdata == sdata)) {
 				WARN_ON(ieee80211_rx_sta_cook_deauthen(sta)==false);
-				WARN_ON(ieee80211_tx_sta_deauthen(sta)==false);		
+				WARN_ON(ieee80211_tx_sta_deauthen(sta)==false);
 			}
 		}
-		mutex_unlock(&local->sta_mtx);		
+		mutex_unlock(&local->sta_mtx);
 	}
 
 	atbm_flush_workqueue(local->workqueue);
@@ -85,11 +85,11 @@ int __ieee80211_suspend(struct ieee80211_hw *hw, struct cfg80211_wowlan *wowlan)
 		goto suspend;
 
 	ieee80211_scan_cancel(local);
-	
+
 	list_for_each_entry(sdata, &local->interfaces, list) {
-		
+
 		atbm_cancel_work_sync(&sdata->work);
-	
+
 		if (!ieee80211_sdata_running(sdata))
 			continue;
 
@@ -101,7 +101,7 @@ int __ieee80211_suspend(struct ieee80211_hw *hw, struct cfg80211_wowlan *wowlan)
 			local->pending_scan_req = NULL;
 			ieee80211_scan_cancel(local);
 		}
-		
+
 		ieee80211_work_purge(sdata,NULL,IEEE80211_WORK_MAX,true);
 #ifdef CONFIG_ATBM_SUPPORT_P2P
 		ieee80211_roc_purge(sdata);
@@ -225,7 +225,7 @@ int __ieee80211_suspend(struct ieee80211_hw *hw, struct cfg80211_wowlan *wowlan)
 		int err = 0;
 		list_for_each_entry(sdata, &local->interfaces, list) {
 			atbm_cancel_work_sync(&sdata->work);
-		
+
 			if (!ieee80211_sdata_running(sdata))
 				continue;
 			ieee80211_work_purge(sdata,NULL,IEEE80211_WORK_MAX,true);

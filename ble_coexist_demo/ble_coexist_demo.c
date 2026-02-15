@@ -94,7 +94,7 @@ typedef unsigned long long u64;
 #define BLE_SMT_CFG_STATUS_SSID_ERR			0xF3
 #define BLE_SMT_CFG_STATUS_PWD_LEN_ERR		0xF4
 #define BLE_SMT_CFG_STATUS_PWD_ERR			0xF5
-#define BLE_SMT_CFG_STATUS_STOP		
+#define BLE_SMT_CFG_STATUS_STOP
 
 
 #define ATBM_BLE_SMART        			_IOW(ATBM_IOCTL,1, unsigned int)
@@ -435,7 +435,7 @@ int open_atbm_ioctl(void)
 		return -1;
 	}
 	fcntl(atbm_fp, F_SETOWN, getpid());
-	flags = fcntl(atbm_fp, F_GETFL); 
+	flags = fcntl(atbm_fp, F_GETFL);
 	fcntl(atbm_fp, F_SETFL, flags | FASYNC);
 
 	return 0;
@@ -470,7 +470,7 @@ void ioctl_msg_func(int sig_num)
 					break;
 			}
 		}
-		
+
 		if (status.list_empty)
 		{
 			break;
@@ -503,7 +503,7 @@ void ioctl_ble_msg_func(int sig_num)
 					break;
 			}
 		}
-		
+
 		if (status.list_empty)
 		{
 			break;
@@ -527,7 +527,7 @@ int ble_coexist_start(u32 interval, u32 scan_win, u8 adv_en, u8 scan_en, u8 adv_
 	ble_start.ble_scan_chan = scan_chan;
 	memset(ioctl_data, 0, sizeof(ioctl_data));
 	memcpy(ioctl_data, &ble_start, sizeof(struct ioctl_ble_start));
-	return ioctl(atbm_fp, ATBM_BLE_COEXIST_START, (unsigned long)(&ioctl_data));	
+	return ioctl(atbm_fp, ATBM_BLE_COEXIST_START, (unsigned long)(&ioctl_data));
 }
 
 
@@ -539,14 +539,14 @@ int ble_adv_resp_mode_start(u32 interval)
 	ble_start.ble_interval = interval;
 	memset(ioctl_data, 0, sizeof(ioctl_data));
 	memcpy(ioctl_data, &ble_start, sizeof(struct ioctl_ble_adv_resp_start));
-	return ioctl(atbm_fp, ATBM_BLE_ADV_RESP_MODE_START, (unsigned long)(&ioctl_data));	
+	return ioctl(atbm_fp, ATBM_BLE_ADV_RESP_MODE_START, (unsigned long)(&ioctl_data));
 }
 
 
 int ble_coexist_stop(void)
 {
 	memset(ioctl_data, 0, sizeof(ioctl_data));
-	return ioctl(atbm_fp, ATBM_BLE_COEXIST_STOP, (unsigned long)(&ioctl_data));	
+	return ioctl(atbm_fp, ATBM_BLE_COEXIST_STOP, (unsigned long)(&ioctl_data));
 }
 
 int ble_set_adv_data(struct ioctl_ble_adv_data *adv_data)
@@ -595,10 +595,10 @@ int ble_set_adv_data(struct ioctl_ble_adv_data *adv_data)
 	}
 	fprintf(stdout, "\n");
 #endif
-	
+
 	memset(ioctl_data, 0, sizeof(ioctl_data));
 	memcpy(ioctl_data, adv_data, sizeof(struct ioctl_ble_adv_data));
-	return ioctl(atbm_fp, ATBM_BLE_SET_ADV_DATA, (unsigned long)(&ioctl_data));	
+	return ioctl(atbm_fp, ATBM_BLE_SET_ADV_DATA, (unsigned long)(&ioctl_data));
 }
 
 
@@ -639,7 +639,7 @@ int ble_parse_smt_adv_data(struct ioctl_ble_adv_data *adv_data)
 	}
 
 
-	
+
 
 	fprintf(stdout, "ble_recv_adv_data,cnt:%d mac:", test_recv_cnt);
 	for(i=0; i<6; i++){
@@ -677,7 +677,7 @@ int ble_parse_smt_adv_data(struct ioctl_ble_adv_data *adv_data)
         }
    }
     if(fields.name[4] == 0x31)
-     {        
+     {
        if((broadcast_ssid_pwd_received_mask &0x02) == 0){   //save packet1
           broadcast_ssid_pwd_received_mask|=0x02;
           memcpy(&broadcast_ssid_pwd_data[BROADCAST_SMT_PACKET_SIZE+2], &fields.name[7], (fields.name_len-7));
@@ -686,7 +686,7 @@ int ble_parse_smt_adv_data(struct ioctl_ble_adv_data *adv_data)
       }
     }
     if(fields.name[4] == 0x32)
-    {        
+    {
        if((broadcast_ssid_pwd_received_mask & 0x04) == 0){   //save packet2
           broadcast_ssid_pwd_received_mask|=0x04;
           memcpy(&broadcast_ssid_pwd_data[BROADCAST_SMT_PACKET_SIZE*2 + 2],  &fields.name[7], (fields.name_len-7));
@@ -695,7 +695,7 @@ int ble_parse_smt_adv_data(struct ioctl_ble_adv_data *adv_data)
       }
     }
     if(fields.name[4] == 0x33)
-       {        
+       {
           if((broadcast_ssid_pwd_received_mask &0x08 )== 0){   //save packet3
              broadcast_ssid_pwd_received_mask|=0x08;
              memcpy(&broadcast_ssid_pwd_data[BROADCAST_SMT_PACKET_SIZE*3 + 2],  &fields.name[7], (fields.name_len-7));
@@ -704,7 +704,7 @@ int ble_parse_smt_adv_data(struct ioctl_ble_adv_data *adv_data)
          }
        }
 	  if(fields.name[4] == 0x34)
-       {        
+       {
           if((broadcast_ssid_pwd_received_mask &0x10 )== 0){   //save packet4
              broadcast_ssid_pwd_received_mask|=0x10;
              memcpy(&broadcast_ssid_pwd_data[BROADCAST_SMT_PACKET_SIZE*4 + 2],  &fields.name[6], (fields.name_len-6));
@@ -724,13 +724,13 @@ int ble_parse_smt_adv_data(struct ioctl_ble_adv_data *adv_data)
          memcpy(&ble_smt.ssid[0], &broadcast_ssid_pwd_data[2],  ble_smt.ssid_len);
          memcpy(&ble_smt.pwd[0], &broadcast_ssid_pwd_data[ble_smt.ssid_len+2],  ble_smt.pwd_len);
 		 if(ble_smt.status != BLE_SMT_CFG_STATUS_END){
-	         ble_smt.status = BLE_SMT_CFG_STATUS_SUCESS;           
-	         fprintf(stdout,"smartconfig done!, total:%d  ssidlen:%d pwd_len:%d ssid:%s pwd:%s\n",\		 	
+	         ble_smt.status = BLE_SMT_CFG_STATUS_SUCESS;
+	         fprintf(stdout,"smartconfig done!, total:%d  ssidlen:%d pwd_len:%d ssid:%s pwd:%s\n",\
 	         broadcast_ssid_pwd_data[0],ble_smt.ssid_len ,  ble_smt.pwd_len, ble_smt.ssid, ble_smt.pwd);
 		 }
-        }    
+        }
     }
-   
+
 #if 0
 	fprintf(stdout, "ble_set_adv_data, adv_data:");
 	for(i=0; i<adv_data->adv_data_len; i++){
@@ -740,7 +740,7 @@ int ble_parse_smt_adv_data(struct ioctl_ble_adv_data *adv_data)
 #endif
 
   if((ble_smt.status == BLE_SMT_CFG_STATUS_SUCESS)||(ble_smt.status == BLE_SMT_CFG_STATUS_END))
-  {      
+  {
      ble_smt_set_broadcast_adv_data();        //set smart config success BLE broadcast data.
   }
   else
@@ -748,7 +748,7 @@ int ble_parse_smt_adv_data(struct ioctl_ble_adv_data *adv_data)
 	memset(ioctl_data, 0, sizeof(ioctl_data));
 	memcpy(ioctl_data, adv_data, sizeof(struct ioctl_ble_adv_data));
   }
-return ioctl(atbm_fp, ATBM_BLE_SET_ADV_DATA, (unsigned long)(&ioctl_data));	
+return ioctl(atbm_fp, ATBM_BLE_SET_ADV_DATA, (unsigned long)(&ioctl_data));
 }
 
 
@@ -765,7 +765,7 @@ void put_le16(void *buf, u16 x)
 /*after SSID and Password received, send this broadcast data*/
 static void ble_smt_set_broadcast_adv_data(void)
 {
-	u8 mfg_data_br[3] = {0xAB, 0xBA, 0xA0};	
+	u8 mfg_data_br[3] = {0xAB, 0xBA, 0xA0};
 	u8 mfg_data_br_suc[3] = {0xAB, 0xBA, 0xA1};
 	u8 len = 0;
 	u8 total_len = 0;
@@ -795,16 +795,16 @@ static void ble_smt_set_broadcast_adv_data(void)
 		data += 2;
 		put_le16(data, (u16)BLE_ATBM_GAP_SVR_BR);
 
-	 	}else{	
+	 	}else{
 		put_le16(data, (u16)BLE_ATBM_GAP_SVR_BR);
 		data += 2;
 		put_le16(data, (u16)BLE_ATBM_GAP_SVR_BR_SUC);
 	 		}
 
-	
+
 	data += 2;
 	total_len += (len + 2);
-	
+
 	//mfa data
 	len = 3;
 	*data ++ = (len + 1);
@@ -818,7 +818,7 @@ static void ble_smt_set_broadcast_adv_data(void)
 	data += len;
 	total_len += (len + 2);
 	adv_data.adv_data_len = total_len;
-	
+
 
     if(wifi_connected_completed == 1)
     	{
@@ -827,7 +827,7 @@ static void ble_smt_set_broadcast_adv_data(void)
 		 *data ++ = (len + 1);
 		 *data ++ = BLE_HS_ADV_TYPE_COMP_NAME;
 		 memcpy(data, device_broadcast_name_suc, len);
-		
+
     	}else{
 	    // device name
 		len = strlen(device_broadcast_name);
@@ -838,14 +838,14 @@ static void ble_smt_set_broadcast_adv_data(void)
 	data += len;
 	total_len += (len + 2);
 	adv_data.adv_data_len = total_len;
-    
-	
+
+
 	fprintf(stdout,"adv_data_len:%d device_name:%s\n", total_len, device_broadcast_name);
 	memset(ioctl_data, 0, sizeof(ioctl_data));
-	
+
 	memcpy(ioctl_data, &adv_data, sizeof(struct ioctl_ble_adv_data));
-	
-	ioctl(atbm_fp, ATBM_BLE_SET_ADV_DATA, (unsigned long)(&ioctl_data));		
+
+	ioctl(atbm_fp, ATBM_BLE_SET_ADV_DATA, (unsigned long)(&ioctl_data));
 }
 
 
@@ -867,7 +867,7 @@ static void ble_smt_set_adv_data(void)
 	*data ++ = BLE_HS_ADV_TYPE_FLAGS;
 	*data ++ = (BLE_HS_ADV_F_DISC_GEN | BLE_HS_ADV_F_BREDR_UNSUP);
 	total_len += (len + 2);
-	
+
 	//UUID16
 	len = 2 + 2; //2*uuid16
 	*data ++ = (len + 1);
@@ -877,7 +877,7 @@ static void ble_smt_set_adv_data(void)
 	put_le16(data, (u16)BLE_ATBM_GAP_SVR1);
 	data += 2;
 	total_len += (len + 2);
-	
+
 	//mfa data
 	len = 3;
 	*data ++ = (len + 1);
@@ -886,11 +886,11 @@ static void ble_smt_set_adv_data(void)
 	data += len;
 	total_len += (len + 2);
 	adv_data.adv_data_len = total_len;
-	
+
 	fprintf(stdout,"adv_data_len:%d\n", total_len);
 	memset(ioctl_data, 0, sizeof(ioctl_data));
 	memcpy(ioctl_data, &adv_data, sizeof(struct ioctl_ble_adv_data));
-	ioctl(atbm_fp, ATBM_BLE_SET_ADV_DATA, (unsigned long)(&ioctl_data));		
+	ioctl(atbm_fp, ATBM_BLE_SET_ADV_DATA, (unsigned long)(&ioctl_data));
 }
 
 static void ble_smt_set_resp_data(void)
@@ -913,7 +913,7 @@ static void ble_smt_set_resp_data(void)
 	fprintf(stdout,"resp_data_len:%d\n", total_len);
 	memset(ioctl_data, 0, sizeof(ioctl_data));
 	memcpy(ioctl_data, &resp_data, sizeof(struct ioctl_ble_resp_data));
-	ioctl(atbm_fp, ATBM_BLE_SET_RESP_DATA, (unsigned long)(&ioctl_data));			
+	ioctl(atbm_fp, ATBM_BLE_SET_RESP_DATA, (unsigned long)(&ioctl_data));
 }
 
 
@@ -928,7 +928,7 @@ int change_driver_to_ble(char *bleName, char *wifiName)
 		fprintf(stdout,"driverName is NULL !!!\n");
 		return -1;
 	}
-	
+
 	if(atbm_fp > 0){
 		close(atbm_fp);
 		atbm_fp = -1;
@@ -936,16 +936,16 @@ int change_driver_to_ble(char *bleName, char *wifiName)
 	}
 
 	sprintf(gCmdStr, "ifconfig wlan0 down");
-    system(gCmdStr);	
+    system(gCmdStr);
 	usleep(50000);
 
     sprintf(gCmdStr, "killall wpa_supplicant");
     system(gCmdStr);
-	usleep(50000);	
+	usleep(50000);
 
     sprintf(gCmdStr, "killall hostapd");
     system(gCmdStr);
-	usleep(50000);	
+	usleep(50000);
 
 	str = strstr(wifiName, ".ko");
 	if(str){
@@ -960,11 +960,11 @@ int change_driver_to_ble(char *bleName, char *wifiName)
 	else{
 	    sprintf(gCmdStr, "rmmod %s", wifiName);
 	}
-	
+
     system(gCmdStr);
 	usleep(1000000);
-	
-    sprintf(gCmdStr, "insmod %s", bleName);	
+
+    sprintf(gCmdStr, "insmod %s", bleName);
     system(gCmdStr);
 	usleep(1000000);
 
@@ -973,7 +973,7 @@ int change_driver_to_ble(char *bleName, char *wifiName)
 	}while(atbm_fp < 0);
 
 	fcntl(atbm_fp, F_SETOWN, getpid());
-	flags = fcntl(atbm_fp, F_GETFL); 
+	flags = fcntl(atbm_fp, F_GETFL);
 	fcntl(atbm_fp, F_SETFL, flags | FASYNC);
 
 	return 0;
@@ -995,7 +995,7 @@ int change_driver_to_wifi(char *bleName, char *wifiName)
 		atbm_fp = -1;
 		usleep(100000);
 	}
-	
+
 	str = strstr(bleName, ".ko");
 	if(str){
 		len = str - bleName;
@@ -1012,7 +1012,7 @@ int change_driver_to_wifi(char *bleName, char *wifiName)
     system(gCmdStr);
 	usleep(1000000);
 
-    sprintf(gCmdStr, "insmod %s", wifiName);	
+    sprintf(gCmdStr, "insmod %s", wifiName);
     system(gCmdStr);
 	usleep(2000000);
 }
@@ -1032,7 +1032,7 @@ void connect_wifi_ap(u8 *ssid, u8 ssidLen, u8 *pwd, u8 pwdLen)
 	memcpy(pwdStr, pwd, pwdLen);
 
 	sprintf(gCmdStr, "ifconfig wlan0 down");
-    sret = system(gCmdStr);	
+    sret = system(gCmdStr);
 	usleep(100000);
 
     sprintf(gCmdStr, "killall wpa_supplicant");
@@ -1042,11 +1042,11 @@ void connect_wifi_ap(u8 *ssid, u8 ssidLen, u8 *pwd, u8 pwdLen)
 	sprintf(gCmdStr, "wpa_supplicant -D nl80211 -i wlan0 -c /usr/wpa_cfg/wpa_supplicant.conf -B");
 	sret = system(gCmdStr);
 	usleep(100000);
-	
+
     sprintf(gCmdStr, "ifconfig wlan0 up");
     sret = system(gCmdStr);
 	usleep(100000);
-	
+
     sprintf(gCmdStr, "wpa_cli -i wlan0 remove_network 0");
     sret = system(gCmdStr);
 	usleep(100000);
@@ -1061,7 +1061,7 @@ void connect_wifi_ap(u8 *ssid, u8 ssidLen, u8 *pwd, u8 pwdLen)
 
     sprintf(gCmdStr, "wpa_cli -i wlan0 set_network 0 ssid '\"%s\"'", ssidStr);
     sret = system(gCmdStr);
-	fprintf(stdout,"%s\n", gCmdStr);	
+	fprintf(stdout,"%s\n", gCmdStr);
 
 	if(pwdLen > 0){
 	    sprintf(gCmdStr, "wpa_cli -i wlan0 set_network 0 psk '\"%s\"'", pwdStr);
@@ -1081,7 +1081,7 @@ void connect_wifi_ap(u8 *ssid, u8 ssidLen, u8 *pwd, u8 pwdLen)
 
     sprintf(gCmdStr, "wpa_cli -i wlan0 set_network 0 scan_ssid 1", ssidStr);
     sret = system(gCmdStr);
-	
+
     sprintf(gCmdStr, "wpa_cli -i wlan0 select_network 0");
     sret = system(gCmdStr);
 }
@@ -1093,7 +1093,7 @@ int ble_smart_start(void)
 	memset(&at_cmd, 0, sizeof(at_cmd));
 	at_cmd.len = strlen("ble_smt_start");
 	memcpy(at_cmd.cmd, "ble_smt_start", at_cmd.len);
-	return ioctl(atbm_fp, ATBM_BLE_SMART, (unsigned int)(&at_cmd));	
+	return ioctl(atbm_fp, ATBM_BLE_SMART, (unsigned int)(&at_cmd));
 }
 
 
@@ -1119,19 +1119,19 @@ int check_wap_status()
    printf("check wpa for string %s\n", wpa_state);
 
    while ( fscanf(status_file,"%s", tmpstring) == 1)
-   {						   
+   {
 		   // printf("tmpstring %s\n", tmpstring);
 		   if(strstr(tmpstring, wpa_state)!=0) {//if match found
 		   	{
 		   		wpa_success = 1;
 			   wifi_connected_completed = 1;
-				 break;  
+				 break;
 		   	}
 		   }
-   }			
- 
+   }
+
    fclose(status_file);
-   
+
    printf("wpa_success %d\n", wpa_success);
    return wpa_success;
 
@@ -1154,15 +1154,15 @@ int main(int argc, char *argv[])
 	char *driverName_wifi = NULL;
 
      time_t broadcast_suc = 0;
-     time_t broadcast_suc_end = 0;    
+     time_t broadcast_suc_end = 0;
 	 wifi_connected_completed = 0;
 
 	if(argc < 3){
 		fprintf(stdout,"argc is not enough\n", argv[0]);
 		return -1;
 	}
-	
-	
+
+
 	atbm_fp = -1;
 	test_recv_cnt = 0;
 	sem_init(&sem_status, 0, 1);
@@ -1207,11 +1207,11 @@ int main(int argc, char *argv[])
 			interval = getData;
 			argc_num ++;
 		}
-		
+
 		if(argc <= argc_num){
 			goto BLE_COEXIST_START;
 		}
-		
+
 		pStr = strstr(argv[argc_num], "win=");
 		if(pStr){
 			pStr = pStr + strlen("win=");
@@ -1219,17 +1219,17 @@ int main(int argc, char *argv[])
 			scan_win = getData;
 			argc_num ++;
 		}
-		
+
 		if(argc <= argc_num){
 			goto BLE_COEXIST_START;
 		}
-		
+
 		pStr = strstr(argv[argc_num], "adv_en");
 		if(pStr){
 			adv_en = 1;
 			argc_num ++;
 		}
-		
+
 		if(argc <= argc_num){
 			goto BLE_COEXIST_START;
 		}
@@ -1239,7 +1239,7 @@ int main(int argc, char *argv[])
 			scan_en = 1;
 			argc_num ++;
 		}
-		
+
 		if(argc <= argc_num){
 			goto BLE_COEXIST_START;
 		}
@@ -1252,11 +1252,11 @@ int main(int argc, char *argv[])
 			adv_chan = getData;
 			argc_num ++;
 		}
-		
+
 		if(argc <= argc_num){
 			goto BLE_COEXIST_START;
 		}
-		
+
 		pStr = strstr(argv[argc_num], "scan_ch=");
 		if(pStr){
 			pStr = pStr + strlen("scan_ch=");
@@ -1264,7 +1264,7 @@ int main(int argc, char *argv[])
 			scan_chan = getData;
 			argc_num ++;
 		}
-		
+
 		if(argc <= argc_num){
 			goto BLE_COEXIST_START;
 		}
@@ -1287,7 +1287,7 @@ int main(int argc, char *argv[])
 			mac_filter_en = 1;
 			argc_num ++;
 		}
-		
+
 		if(argc <= argc_num){
 			goto BLE_COEXIST_START;
 		}
@@ -1308,18 +1308,18 @@ BLE_COEXIST_END:
 				ble_parse_smt_adv_data(&adv_data_recv);
 
                // memcpy(&ble_smt, status.event_buffer, sizeof(struct wsm_ble_smt_ind));
-				if(ble_smt.status == BLE_SMT_CFG_STATUS_SUCESS){	
-	
-					broadcast_suc = time((time_t *)NULL);				
+				if(ble_smt.status == BLE_SMT_CFG_STATUS_SUCESS){
+
+					broadcast_suc = time((time_t *)NULL);
 					ble_smt.status = BLE_SMT_CFG_STATUS_END;
 					fprintf(stdout, "###connect_wifi_ap broadcast_suc%ld!\n", broadcast_suc);
 					connect_wifi_ap(ble_smt.ssid, ble_smt.ssid_len, ble_smt.pwd, ble_smt.pwd_len);
-					//ble_smt.status = BLE_SMT_CFG_STATUS_END;						
+					//ble_smt.status = BLE_SMT_CFG_STATUS_END;
 				}
 				if(ble_smt.status == BLE_SMT_CFG_STATUS_END)
-				{ 
-					broadcast_suc_end = time((time_t *)NULL); 
-					//fprintf(stdout, "xconnect_wifi_ap broadcast_suc:%d end:%d\n", broadcast_suc, broadcast_suc_end);					
+				{
+					broadcast_suc_end = time((time_t *)NULL);
+					//fprintf(stdout, "xconnect_wifi_ap broadcast_suc:%d end:%d\n", broadcast_suc, broadcast_suc_end);
 					if(((broadcast_suc_end - broadcast_suc) > 30)||(cfg_done_checked == 1)){   //30 seconds timeout or recievd ack.
 					  fprintf(stdout, "xxconnect_wifi_ap broadcast_suc:%d end:%d, cfg_done_checked:%d\n", broadcast_suc, broadcast_suc_end, cfg_done_checked);
 				      ble_coexist_stop();
@@ -1329,14 +1329,14 @@ BLE_COEXIST_END:
 						// fprintf(stdout, "########## check_wap_status \n");
 						 check_wap_status();
 						}
-				}                
+				}
 				break;
 			case 2:
 				memcpy(&conn_rpt, status.event_buffer, sizeof(struct ioctl_ble_conn_rpt));
-				fprintf(stdout,"conn_rpt,init_addr:%02X%02X%02X%02X%02X%02X\n", 
+				fprintf(stdout,"conn_rpt,init_addr:%02X%02X%02X%02X%02X%02X\n",
 								conn_rpt.init_addr[0],conn_rpt.init_addr[1],conn_rpt.init_addr[2],
 								conn_rpt.init_addr[3],conn_rpt.init_addr[4],conn_rpt.init_addr[5]);
-				fprintf(stdout,"conn_rpt,adv_addr:%02X%02X%02X%02X%02X%02X\n", 
+				fprintf(stdout,"conn_rpt,adv_addr:%02X%02X%02X%02X%02X%02X\n",
 								conn_rpt.adv_addr[0],conn_rpt.adv_addr[1],conn_rpt.adv_addr[2],
 								conn_rpt.adv_addr[3],conn_rpt.adv_addr[4],conn_rpt.adv_addr[5]);
 				if(0 == memcmp(test_mac, conn_rpt.adv_addr, 6)){
@@ -1358,7 +1358,7 @@ BLE_COEXIST_END:
 					fprintf(stdout,"ble smart config err(0x%X)\n", ble_smt.status);
 					change_driver_to_wifi(driverName_ble, driverName_wifi);
 					goto config_err;
-				}				
+				}
 				break;
 			default:
 				break;

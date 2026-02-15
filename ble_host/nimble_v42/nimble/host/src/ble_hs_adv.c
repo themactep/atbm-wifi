@@ -47,8 +47,8 @@ ble_hs_adv_set_hdr(uint8_t type, uint8_t data_len, uint8_t max_len,
 
         return os_mbuf_append(om, &type, sizeof(type));
     }
-    /* Length | Adv Type | Adv Data 
-	 * Length = Adv Type + Adv Data 
+    /* Length | Adv Type | Adv Data
+	 * Length = Adv Type + Adv Data
 	 * Length = 1 byte
 	 * Adv Type = 1 byte
 	*/

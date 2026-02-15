@@ -52,7 +52,7 @@ struct atbm_work_struct{
 	wait_queue_head_t	running;
 	wait_queue_head_t	pending;
 	wait_queue_head_t	delayed;
-#endif	
+#endif
 };
 struct atbm_delayed_work{
 	struct atbm_work_struct work;
@@ -77,7 +77,7 @@ bool ieee80211_atbm_flush_work(struct atbm_work_struct *work);
 void ieee80211_atbm_workqueue_init(void);
 void ieee80211_atbm_workqueue_exit(void);
 
-#define atbm_cancel_delayed_work 		ieee80211_atbm_cancel_delayed_work	
+#define atbm_cancel_delayed_work 		ieee80211_atbm_cancel_delayed_work
 #define atbm_cancel_delayed_work_sync	ieee80211_atbm_cancel_delayed_work_sync
 #define atbm_cancel_work_sync			ieee80211_atbm_cancel_work_sync
 #define atbm_queue_work					ieee80211_atbm_queue_work

@@ -28,7 +28,7 @@
 #include "dev_int.h"
 #include "hw_defs.h"
 #include "ble_juno_reg.h"
-         
+
 
 /* IRQ prototype */
 typedef void (*hal_timer_irq_handler_t)(void);
@@ -50,14 +50,14 @@ void hal_timer_set_ocmp(struct atbm_ble_timer *bsptimer, uint32_t expiry)
 	}
 
 	HW_WRITE_REG(BLE_TIMER0_CC4, expiry);
-	
+
 	val = HW_READ_REG(BLE_TIMER_MATCH_EN);
 	val |= TIMER0_MATCH4_EN;
-	HW_WRITE_REG(BLE_TIMER_MATCH_EN, val);	
+	HW_WRITE_REG(BLE_TIMER_MATCH_EN, val);
 
 	val = HW_READ_REG(BLE_TIMER_MATCH_INT_EN);
 	val |= TIMER0_MATCH4_EN;
-	HW_WRITE_REG(BLE_TIMER_MATCH_INT_EN, val);	
+	HW_WRITE_REG(BLE_TIMER_MATCH_INT_EN, val);
 }
 
 void hal_timer_set_stop(void)
@@ -65,14 +65,14 @@ void hal_timer_set_stop(void)
 	uint32_t val;
 
 	HW_WRITE_REG(BLE_TIMER0_CC4, 0);
-	
+
 	val = HW_READ_REG(BLE_TIMER_MATCH_EN);
 	val &= ~TIMER0_MATCH4_EN;
-	HW_WRITE_REG(BLE_TIMER_MATCH_EN, val);	
+	HW_WRITE_REG(BLE_TIMER_MATCH_EN, val);
 
 	val = HW_READ_REG(BLE_TIMER_MATCH_INT_EN);
 	val &= ~TIMER0_MATCH4_EN;
-	HW_WRITE_REG(BLE_TIMER_MATCH_INT_EN, val);			
+	HW_WRITE_REG(BLE_TIMER_MATCH_INT_EN, val);
 }
 
 
@@ -96,7 +96,7 @@ NORELOC static void hal_timer_chk_queue(struct atbm_ble_timer *bsptimer)
 		if(diffTime < 20){
             TAILQ_REMOVE(&bsptimer->hal_timer_q, timer, link);
             timer->link.tqe_prev = NULL;
-            timer->cb_func(timer->cb_arg);			
+            timer->cb_func(timer->cb_arg);
 		}else{
 			break;
 		}
@@ -107,7 +107,7 @@ NORELOC static void hal_timer_chk_queue(struct atbm_ble_timer *bsptimer)
     if (timer) {
 		hal_timer_set_ocmp(bsptimer, timer->expiry);
     } else {
-        hal_timer_set_stop();     
+        hal_timer_set_stop();
     }
 	OS_EXIT_CRITICAL(sr);
 }
@@ -117,7 +117,7 @@ NORELOC static void hal_timer_call_direct(struct hal_timer *timer)
 {
 	int sr;
 	OS_ENTER_CRITICAL(sr);
-	timer->cb_func(timer->cb_arg);	
+	timer->cb_func(timer->cb_arg);
 	OS_EXIT_CRITICAL(sr);
 }
 
@@ -140,27 +140,27 @@ void hal_ble_timer_irq_handler(uint32_t IrqPriority, uint32_t irq_en)
 {
 	uint32_t val;
 	int32_t diff;
-	
+
 	val = HW_READ_REG(BLE_TIMER_MATCH_FLAG);
 	HW_WRITE_REG(BLE_TIMER_MATCH_FLAG, val);
 	//HW_WRITE_REG(BLE_TIMER_MATCH_FLAG, 0);
 
 	if(val&TIMER0_MATCH4_EN){
 		if((int)(HW_READ_REG(BLE_TIMER0_CNT)-HW_READ_REG(BLE_TIMER0_CC4)) > 1000){
-			iot_printf("timer irq too late, CNT:%X, CC4:%X\n", 
+			iot_printf("timer irq too late, CNT:%X, CC4:%X\n",
 					HW_READ_REG(BLE_TIMER0_CNT), HW_READ_REG(BLE_TIMER0_CC4));
 		}
 		hal_timer_chk_queue(&atbm_ble_timer0);
 	}
-	
+
 	if(val&TIMER0_MATCH5_EN){
 		//iot_printf("rx st to\n");
 		//iot_printf("rx start timeout,%d\n", hal_timer_read());
 		if(!(irq_en & BIT_MATCH_INT)){
 			ble_rx_timeout_isr();
-		}	
+		}
 	}
-	
+
 	if(val&TIMER0_MATCH6_EN){
 		//iot_printf("rx end timeout,%d\n", hal_timer_read());
 		ble_rx_timeout_isr();
@@ -182,15 +182,15 @@ void hal_ble_timer_irq_handler(uint32_t IrqPriority, uint32_t irq_en)
 int hal_timer_init(int timer_num, void *cfg)
 {
 	u32 val;
-	
+
 	val = HW_READ_REG(BLE_TIMER0_CTRL);
-	val = TIMER_START | TIMER_CLR | TIMER_PRES_1M; 
-	HW_WRITE_REG(BLE_TIMER0_CTRL, val);	
+	val = TIMER_START | TIMER_CLR | TIMER_PRES_1M;
+	HW_WRITE_REG(BLE_TIMER0_CTRL, val);
 
 	val = HW_READ_REG(BLE_TIMER_MATCH_INT_EN);
 	val |= LL_INT_EN;
-	HW_WRITE_REG(BLE_TIMER_MATCH_INT_EN, val);	
-	
+	HW_WRITE_REG(BLE_TIMER_MATCH_INT_EN, val);
+
 	IRQ_RegisterHandler(DEV_INT_NUM_BLE, ble_phy_isr);
 
 	return 0;
@@ -223,15 +223,15 @@ int hal_timer_config(int timer_num, uint32_t freq_hz)
 int hal_timer_deinit(int timer_num)
 {
 	u32 val;
-	
+
 	val = HW_READ_REG(BLE_TIMER0_CTRL);
-	val = TIMER_STOP | TIMER_CLR; 
+	val = TIMER_STOP | TIMER_CLR;
 	HW_WRITE_REG(BLE_TIMER0_CTRL, val);
 
 	val = HW_READ_REG(BLE_TIMER_MATCH_EN);
 	val &= ~TIMER0_MATCH4_EN;
-	HW_WRITE_REG(BLE_TIMER_MATCH_EN, val);	
-	
+	HW_WRITE_REG(BLE_TIMER_MATCH_EN, val);
+
 	val = HW_READ_REG(BLE_TIMER_MATCH_INT_EN);
 	val &= ~TIMER0_MATCH4_EN;
 	HW_WRITE_REG(BLE_TIMER_MATCH_INT_EN, val);		//use time0_match4 irq en
@@ -291,7 +291,7 @@ int hal_timer_set_cb(int timer_num, struct hal_timer *timer, hal_timer_cb cb_fun
     timer->cb_arg = arg;
     timer->link.tqe_prev = NULL;
     timer->bsp_timer = &atbm_ble_timer0;
-	
+
     return 0;
 
 }
@@ -329,7 +329,7 @@ int hal_timer_start_at(struct hal_timer *timer, uint32_t tick)
 	            if ((int32_t)(timer->expiry - entry->expiry) < 0) {
 	                TAILQ_INSERT_BEFORE(entry, timer, link);
 	                break;
-	            }				
+	            }
 			}else {
 	            if ((int32_t)(timer->expiry - entry->expiry) > 0) {
 	                TAILQ_INSERT_BEFORE(entry, timer, link);
@@ -394,7 +394,7 @@ int hal_timer_stop(struct hal_timer *timer)
 				if(diffTime < 20){
 					TAILQ_REMOVE(&bsptimer->hal_timer_q, entry, link);
 					entry->link.tqe_prev = NULL;
-					entry->cb_func(entry->cb_arg);			
+					entry->cb_func(entry->cb_arg);
 				}else{
 					break;
 				}
@@ -402,7 +402,7 @@ int hal_timer_stop(struct hal_timer *timer)
             if (entry) {
 				hal_timer_set_ocmp(entry->bsp_timer, entry->expiry);
             } else {
-                hal_timer_set_stop();          
+                hal_timer_set_stop();
             }
         }
     }

@@ -1,4 +1,4 @@
-//#define DBG_EVENT_LOG 
+//#define DBG_EVENT_LOG
 #ifdef DBG_EVENT_LOG
 #include <net/atbm_mac80211.h>
 #define ELOG_LEN 64
@@ -48,11 +48,11 @@ void ELOG_Add(u8 id,u32 data)
 		elog->e_id[elog->index].tim = jiffies;
 		elog->e_id[elog->index].valid = 1;
 		elog->index++;
-		if(elog->index >= elog->len){			
+		if(elog->index >= elog->len){
 			elog->index = 0;
 		}
 	}
-	
+
 }
 void ELOG_Stop(void)
 {
@@ -82,7 +82,7 @@ void ELOG_Show(void)
 	atbm_printk_always("ELOG_Show id:data:tim (%d:%d)\n",elog->index,elog->len);
 	do {
 		loop++;
-		if(index >= elog->len){			
+		if(index >= elog->len){
 			index = 0;
 		}
 		if(!elog->e_id[index].valid){

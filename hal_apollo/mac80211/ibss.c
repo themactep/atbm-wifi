@@ -956,7 +956,7 @@ int ieee80211_ibss_join(struct ieee80211_sub_if_data *sdata,
 
 	sdata->vif.bss_conf.beacon_int = params->beacon_interval;
 
-	
+
 	#if (LINUX_VERSION_CODE < KERNEL_VERSION(3, 10, 0))
 	sdata->u.ibss.channel = params->channel;
 	#else

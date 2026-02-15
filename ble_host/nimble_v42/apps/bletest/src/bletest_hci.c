@@ -235,7 +235,7 @@ bletest_hci_rd_local_version(void)
     uint8_t rspbuf[BLE_HCI_RD_LOC_VER_INFO_RSPLEN];
     uint8_t rsplen;
 
-    rc = ble_hs_hci_cmd_tx(BLE_HCI_OP(BLE_HCI_OGF_INFO_PARAMS, BLE_HCI_OCF_IP_RD_LOCAL_VER), 
+    rc = ble_hs_hci_cmd_tx(BLE_HCI_OP(BLE_HCI_OGF_INFO_PARAMS, BLE_HCI_OCF_IP_RD_LOCAL_VER),
                             NULL, 0, rspbuf, BLE_HCI_RD_LOC_VER_INFO_RSPLEN, &rsplen);
     if (rc != 0) {
         return rc;
@@ -539,7 +539,7 @@ bletest_hci_le_rd_chanmap(uint16_t handle)
     uint8_t rsplen;
 
     put_le16(buf, handle);
-    rc = ble_hs_hci_cmd_tx(BLE_HCI_OP(BLE_HCI_OGF_LE, BLE_HCI_OCF_LE_RD_CHAN_MAP), 
+    rc = ble_hs_hci_cmd_tx(BLE_HCI_OP(BLE_HCI_OGF_LE, BLE_HCI_OCF_LE_RD_CHAN_MAP),
                         buf, sizeof(buf), rspbuf, BLE_HCI_RD_CHANMAP_RSP_LEN, &rsplen);
     if (rc != 0) {
         return rc;

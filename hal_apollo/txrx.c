@@ -39,14 +39,14 @@ int ieee80211_is_eapol_frame(struct sk_buff *skb)
 	struct iphdr *skbiphdr = NULL;
 	int iphdr_index = 0;
 	struct ieee80211_hdr *frame = (struct ieee80211_hdr *)skb->data;
+	struct atbm_ieee80211_mgmt *mgmt = (struct atbm_ieee80211_mgmt *)skb->data;
 	iphdr_index = ieee80211_hdrlen(frame->frame_control)+8;
 	skbiphdr = (struct iphdr *)(skb->data+iphdr_index);
-	struct atbm_ieee80211_mgmt *mgmt = (struct atbm_ieee80211_mgmt *)skb->data;
 
 	if(!ieee80211_is_data(frame->frame_control)){
 		return 0;
 	}
-	
+
 	if(skbiphdr->protocol == 0x8e88)
 	{
 		atbm_printk_err("send eapol! \n");
@@ -333,7 +333,7 @@ static int tx_policy_get(struct atbm_common *hw_priv,
 	tx_policy_build(hw_priv, &wanted, rates, count);
 
 	spin_lock_bh(&cache->lock);
-	
+
 	idx = tx_policy_find(cache, &wanted);
 	if (idx >= 0) {
 		tx_policy_printk( "[TX policy] Used TX policy: %d\n",
@@ -592,7 +592,7 @@ atbm_tx_h_crypt(struct atbm_vif *priv,
 {
 	u32 iv_len;
 	u32 icv_len;
-	u8 *newhdr;	
+	u8 *newhdr;
 	struct ieee80211_mmie *mmie;
 #ifndef ATBM_11W_TEST
 	if(t->tx_info->control.hw_key)
@@ -630,7 +630,7 @@ atbm_tx_h_crypt(struct atbm_vif *priv,
 }
 
 #endif
-	
+
 	t->tx_info->sg_tailneed = 0;
 
 	if (!t->tx_info->control.hw_key ||
@@ -670,7 +670,7 @@ atbm_tx_h_crypt(struct atbm_vif *priv,
 				"Req: %d, got: %d.\n",icv_len, atbm_skb_tailroom(t->skb));
 				return -ENOMEM;
 			}
-			
+
 		}
 		atbm_skb_put(t->skb, icv_len);
 	}else {
@@ -746,7 +746,7 @@ atbm_tx_h_wsm(struct atbm_vif *priv,
 	wsm->hdr.id = __cpu_to_le16(WSM_TRANSMIT_REQ_MSG_ID);
 	wsm->queueId = (t->txpriv.raw_link_id << 2) | wsm_queue_id_to_wsm(t->queue);
 	priv->hw_priv->sbus_ops->sbus_adjust(priv->hw_priv->sbus_priv,wsm);
-	
+
 	return wsm;
 }
 #ifdef CONFIG_ATBM_BT_COMB
@@ -866,7 +866,7 @@ static bool atbm_rate_control_send_low(struct atbm_common *hw_priv,struct atbm_t
 		info_sta = container_of(tx_info->control.sta, struct sta_info, sta);
 	if(info_sta)
 		assoc = test_sta_flag(info_sta,WLAN_STA_ASSOC) ? true:false;
-	
+
 	if(!ieee80211_is_data(t->hdr->frame_control)){
 		tx_info->flags |= IEEE80211_TX_CTL_USE_MINRATE;
 	}
@@ -877,7 +877,7 @@ static bool atbm_rate_control_send_low(struct atbm_common *hw_priv,struct atbm_t
 	if(ieee80211_is_qos_nullfunc(t->hdr->frame_control)){
 		tx_info->flags |= IEEE80211_TX_CTL_USE_MINRATE;
 	}
-	
+
 	if((assoc == false)||
 		(tx_info->flags&IEEE80211_TX_CTL_USE_MINRATE)||
 		(tx_info->flags&IEEE80211_TX_CTL_NO_CCK_RATE)){
@@ -901,7 +901,7 @@ static bool atbm_rate_control_send_low(struct atbm_common *hw_priv,struct atbm_t
 		   int j = 0;
 		   u32 suport_rates = 0;
 		   int min_rate = INT_MAX, min_rate_index = -1;
-		   
+
 		   cbss = ieee80211_atbm_get_bss(hw_priv->hw->wiphy,hw_priv->channel,t->hdr->addr1,NULL,0,0,0);
 
 		   if(cbss == NULL){
@@ -917,11 +917,11 @@ static bool atbm_rate_control_send_low(struct atbm_common *hw_priv,struct atbm_t
 		   atbm_printk_debug("%s:supp_rates_len(%zu),rate_index(%d)\n",__func__,bss->supp_rates_len,tx_info->control.rates[0].idx);
 		  	for (i = 0; i < bss->supp_rates_len; i++) {
 				int rate = (bss->supp_rates[i] & 0x7f) * 5;
-		
+
 				for (j = 0; j < sband->n_bitrates; j++) {
 					if (sband->bitrates[j].bitrate == rate) {
 						suport_rates |= BIT(j);
-						
+
 						if (rate < min_rate) {
 							min_rate = rate;
 							min_rate_index = j;
@@ -930,7 +930,7 @@ static bool atbm_rate_control_send_low(struct atbm_common *hw_priv,struct atbm_t
 					}
 				}
 			}
-			
+
 			atbm_printk_debug("%s:suport_rates(%x),rate_index(%d)\n",__func__,suport_rates,tx_info->control.rates[0].idx);
 			if(suport_rates == 0){
 				ieee80211_atbm_put_bss(hw_priv->hw->wiphy,cbss);
@@ -962,7 +962,7 @@ static int atbm_tx_h_rate_policy(struct atbm_common *hw_priv,
 	struct ieee80211_tx_info *tx_info = t->tx_info;
 	struct atbm_vif *priv = ABwifi_get_vif_from_ieee80211(t->tx_info->control.vif);
 	int i = 0;
-	
+
 	t->txpriv.rate_id = 0;
 	wsm->flags |= t->txpriv.rate_id << 4;
 	/*
@@ -973,9 +973,9 @@ static int atbm_tx_h_rate_policy(struct atbm_common *hw_priv,
 		tx_info->control.rates[i].flags = 0;
 		tx_info->control.rates[i].count = 1;
 	}
-	
+
 	if(atbm_rate_control_send_low(hw_priv,t) == false){
-		
+
 		if(tx_info->control.sta){
 			u32 rate_mask = 0;
 			/*
@@ -1005,7 +1005,7 @@ static int atbm_tx_h_rate_policy(struct atbm_common *hw_priv,
 				tx_info->control.rates[0].idx = fls(rate_mask)-1;
 				tx_info->control.rates[0].flags = 0;
 				tx_info->control.rates[0].count = 10;
-				
+
 				atbm_printk_debug("%s:last set (%d)\n",__func__,fls(rate_mask)-1);
 #ifdef CONFIG_LMAC_RATECTRL_RATE_BUG_FIX
 				if(hweight32(tx_info->control.sta->supp_rates[hw_priv->channel->band]) < 5){
@@ -1027,7 +1027,7 @@ static int atbm_tx_h_rate_policy(struct atbm_common *hw_priv,
 			}
 			tx_info->flags |= IEEE80211_TX_CTL_USE_MINRATE;
 		}
-		
+
 	}
 
 	t->rate = atbm_get_tx_rate(hw_priv,
@@ -1086,12 +1086,12 @@ static int atbm_tx_h_rate_policy(struct atbm_common *hw_priv,
 				wsm->htTxParameters |= __cpu_to_le32(WSM_HT_TX_WIDTH_40M);
 			}
 		}
-		
+
 	}
 	if(IEEE80211_TX_CTL_ASSIGN_SEQ & tx_info->flags){
 		wsm->htTxParameters |= __cpu_to_le32(WSM_HT_NEED_SEQ);
 	}
-	
+
 	if(t->tx_info->flags &  IEEE80211_TX_CTL_USE_MINRATE){
 		wsm->htTxParameters |= __cpu_to_le32(WSM_HT_TX_USE_MINRATE);
 	}
@@ -1372,14 +1372,14 @@ void atbm_tx(struct ieee80211_hw *dev, struct sk_buff *skb)
 	int ret;
 	struct atbm_vif *priv;
 	struct ieee80211_hdr *frame = (struct ieee80211_hdr *)skb->data;
-	
+
 	if (!skb->data)
 		BUG_ON(1);
 
 
-	ieee80211_is_eapol_frame(skb);	
+	ieee80211_is_eapol_frame(skb);
 
-	
+
 	priv = ABwifi_get_vif_from_ieee80211(t.tx_info->control.vif);
 	if (!priv)
 		goto drop;
@@ -1726,12 +1726,12 @@ void atbm_tx_confirm_cb(struct atbm_common *hw_priv,
 				atbm_printk_err( "[confirm]:retry to many times(%x)\n",arg->packetID);
 				break;
 			}
-			
+
 			if(arg->status != WSM_STATUS_RETRY_EXCEEDED){
 				atbm_printk_err("[confirm]:status(%d)\n",arg->status);
 				break;
 			}
-			
+
 			if(!atomic_read(&hw_priv->remain_on_channel)){
 				break;
 			}
@@ -1739,14 +1739,14 @@ void atbm_tx_confirm_cb(struct atbm_common *hw_priv,
 			if(txpriv->if_id != hw_priv->roc_if_id){
 				break;
 			}
-			
+
 			if(!(tx->flags & IEEE80211_TX_INTFL_NL80211_FRAME_TX)){
 				break;
 			}
 			if(!(tx->flags & IEEE80211_TX_CTL_REQ_TX_STATUS)){
 				break;
 			}
-			
+
 			if(!time_is_after_jiffies(hw_priv->roc_start_time+msecs_to_jiffies(hw_priv->roc_duration+35))){
 				atbm_printk_err( "[confirm]:timeout\n");
 				break;
@@ -1769,7 +1769,7 @@ void atbm_tx_confirm_cb(struct atbm_common *hw_priv,
 
 			atbm_bh_wakeup(hw_priv);
 			return;
-			
+
 		}
 #endif
 		if (priv->association_mode.greenfieldMode)
@@ -1834,7 +1834,7 @@ void atbm_tx_confirm_cb(struct atbm_common *hw_priv,
 		{
                      if(tx_count > 20)
                      printk(KERN_ERR "%s:Error LMAC retry too may times!! rate i:%d  tx_count:%d\n",__func__, i,tx_count);
-                     //tx->status.rates[i].count =  tx->status.rates[i].count  + tx_count;    
+                     //tx->status.rates[i].count =  tx->status.rates[i].count  + tx_count;
                 }
 #endif */
 		for (++i; i < IEEE80211_TX_MAX_RATES; ++i) {
@@ -1888,8 +1888,8 @@ void atbm_skb_dtor(struct atbm_common *hw_priv,
 		__ABwifi_hwpriv_to_vifpriv(hw_priv, txpriv->if_id);
 
 	atbm_skb_pull(skb, txpriv->offset);
-	
-#ifndef CONFIG_RATE_HW_CONTROL	
+
+#ifndef CONFIG_RATE_HW_CONTROL
 	if (priv && txpriv->rate_id != ATBM_APOLLO_INVALID_RATE_ID) {
 		atbm_notify_buffered_tx(priv, skb,
 				txpriv->raw_link_id, txpriv->tid);
@@ -2007,7 +2007,7 @@ void atbm_rx_cb(struct atbm_vif *priv,
 			if(sta && test_sta_flag(sta, WLAN_STA_MFP)){
 				if(atbm_ieee80211_is_robust_mgmt_frame(skb) == true){
 					 rcu_read_unlock();
-					 atbm_printk_err("[RX]:drop PMF\n"); 
+					 atbm_printk_err("[RX]:drop PMF\n");
 					 goto drop;
 				}
 			}
@@ -2043,7 +2043,7 @@ void atbm_rx_cb(struct atbm_vif *priv,
 		}else{
 			hdr->flag &=~RX_FLAG_HW_CHKSUM_ERROR;
 		}
-	}	
+	}
 #endif
 	if (skb->len < sizeof(struct ieee80211_pspoll)) {
 		atbm_printk_err( "(skb->len < sizeof(struct ieee80211_pspoll),seq(%x)\n",frame->seq_ctrl);
@@ -2192,7 +2192,7 @@ void atbm_rx_cb(struct atbm_vif *priv,
 		grace_period = 5 * HZ;
 	else if (ieee80211_is_deauth(frame->frame_control))
 		grace_period = 5 * HZ;
-	else 
+	else
 		grace_period = 0;
 	if(grace_period != 0)
 		atbm_pm_stay_awake(&hw_priv->pm_state, grace_period);
@@ -2203,7 +2203,7 @@ void atbm_rx_cb(struct atbm_vif *priv,
 #endif
 	//atbm_skb_trim(skb, skb->len);
 #ifdef CONFIG_ATBM_SUPPORT_P2P
-#ifdef ATBM_P2P_CHANGE	
+#ifdef ATBM_P2P_CHANGE
 	atbm_parase_p2p_action_frame(priv,skb,false);
 	atbm_parase_p2p_scan_resp(priv,skb);
 #endif

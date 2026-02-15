@@ -347,7 +347,7 @@ void ieee80211_tx_status(struct ieee80211_hw *hw, struct sk_buff *skb)
 	rcu_read_lock();
 	sdata = vif_to_sdata(info->control.vif);
 	sband = local->hw.wiphy->bands[info->band];
-#if defined (CONFIG_ATBM_MAC80211_NO_USE) || defined (CONFIG_ATBM_DRIVER_PROCESS_BA)	
+#if defined (CONFIG_ATBM_MAC80211_NO_USE) || defined (CONFIG_ATBM_DRIVER_PROCESS_BA)
 	fc = hdr->frame_control;
 #endif
 	for_each_sta_info(local, hdr->addr1, sta, tmp) {
@@ -377,7 +377,7 @@ void ieee80211_tx_status(struct ieee80211_hw *hw, struct sk_buff *skb)
 			ieee80211_handle_filtered_frame(local, sta, skb);
 			rcu_read_unlock();
 			return;
-		} else 
+		} else
 #endif
 		{
 			if (!acked)
@@ -398,7 +398,7 @@ void ieee80211_tx_status(struct ieee80211_hw *hw, struct sk_buff *skb)
 				}
 				if(acked){
 					atbm_printk_mgmt("%s:4/4 Pairwise Succeed\n",sta->sdata->name);
-					
+
 				}else {
 					atbm_printk_err("%s:4/4 Pairwise Failed\n",sta->sdata->name);
 					/*

@@ -3161,7 +3161,7 @@ static void hb_sub_send_status(struct bt_mesh_model *model,
 	if (bt_mesh_model_send(model, ctx, msg, NULL, NULL)) {
 		BT_ERR("Unable to send Heartbeat Subscription Status");
 	}
-    
+
 	os_mbuf_free_chain(msg);
 }
 
@@ -3463,7 +3463,7 @@ void bt_mesh_heartbeat(u16_t src, u16_t dst, u8_t hops, u16_t feat)
 		BT_WARN("No subscription for received heartbeat");
 		return;
 	}
-	
+
 	if (k_uptime_get_32() > cfg->hb_sub.expiry) {
 		BT_WARN("Heartbeat subscription period expired");
 		return;

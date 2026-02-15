@@ -312,7 +312,7 @@
 /*****************************
 * PAC_RXC_ (Receive Control Block) Registers
 *****************************/
-#define PAC_RXC_BUF_OVERFLOW_BIT			BIT(21) 
+#define PAC_RXC_BUF_OVERFLOW_BIT			BIT(21)
 #define PAC_RXC_FIFO_OVERFLOW_BIT			BIT(22)
 #define PAC_RXC_OVERFLOW_MASK			(PAC_RXC_BUF_OVERFLOW_BIT|PAC_RXC_FIFO_OVERFLOW_BIT)
 
@@ -324,9 +324,9 @@
 #define PAC_RXC_CCA_IFS_COMPENSATION            (PAC_RXC_REGS + 0x14)
 #define PAC_RXC_RXRDY_IFS_COMPENSATION          (PAC_RXC_REGS + 0x18)
 #define PAC_RXC_PHY_EXTEND_COUNT                (PAC_RXC_REGS + 0x1C)
-#define PAC_RXC_ERR_CLEAR_BIT					BIT(30) 
-#define PAC_RXC_ERR_ENIRQ_BIT					BIT(29) 
-#define PAC_RXC_ERR_ENIRQ_THRESHOLD_BIT			BIT(28) 
+#define PAC_RXC_ERR_CLEAR_BIT					BIT(30)
+#define PAC_RXC_ERR_ENIRQ_BIT					BIT(29)
+#define PAC_RXC_ERR_ENIRQ_THRESHOLD_BIT			BIT(28)
 #define PAC_RXC_ERROR_CODE                      (PAC_RXC_REGS + 0x20)
 #undef PAC_RXC_PHY_EXTEND_COUNT
 #define PAC_RXC_BUFFER_SIZE                     (PAC_RXC_REGS+0x1C)
@@ -445,23 +445,23 @@
 #define PAC_PTA_INT_CLEAR  					    (PAC_PTA_REGS + 72  )
 
 #define PAC_PTA_SW_OVERRIDE  				    (PAC_PTA_REGS + 76  )
-																	
+
 #define PAC_PTA_SERIAL_IF_CONTROL  			    (PAC_PTA_REGS + 80  )
 #define PAC_PTA_SERIAL_IF_TRIGGER  			    (PAC_PTA_REGS + 84  )
 #define PAC_PTA_SERIAL_IF_INT_ENABLE  		    (PAC_PTA_REGS + 88  )
 #define PAC_PTA_SERIAL_IF_INT_STATUS  		    (PAC_PTA_REGS + 92  )
 #define PAC_PTA_SERIAL_IF_INT_CLEAR  		    (PAC_PTA_REGS + 96  )
 #define PAC_PTA_SERIAL_TIMER   				    (PAC_PTA_REGS + 100 )
-																	
+
 #define PAC_PTA_BT_TO_WLAN_MESSAGE  		    (PAC_PTA_REGS + 104 )
 #define PAC_PTA_BT_TO_WLAN_PARAMETER  		    (PAC_PTA_REGS + 108 )
 #define PAC_PTA_WLAN_TO_BT_MESSAGE  		    (PAC_PTA_REGS + 112 )
 #define PAC_PTA_WLAN_TO_BT_PARAMETER  		    (PAC_PTA_REGS + 116 )
-																	
+
 #define PAC_PTA_WLAN_SW_OVERRIDE_1  		    (PAC_PTA_REGS + 120 )
 #define PAC_PTA_WLAN_SW_OVERRIDE_2  		    (PAC_PTA_REGS + 124 )
 #define PAC_PTA_BT_SW_OVERRIDE 				    (PAC_PTA_REGS + 128 )
-																	
+
 #define PAC_PTA_PRIORITY_MATRIX_0  			    (PAC_PTA_REGS + 132	)
 #define PAC_PTA_PRIORITY_MATRIX_1  			    (PAC_PTA_REGS + 136	)
 #define PAC_PTA_PRIORITY_MATRIX_2  			    (PAC_PTA_REGS + 140	)
@@ -478,7 +478,7 @@
 #define PAC_PTA_PRIORITY_MATRIX_13  		    (PAC_PTA_REGS + 184	)
 #define PAC_PTA_PRIORITY_MATRIX_14  		    (PAC_PTA_REGS + 188	)
 #define PAC_PTA_PRIORITY_MATRIX_15  		    (PAC_PTA_REGS + 192	)
-																	
+
 #define PAC_PTA_LINKIDS2MONITOR_ARRAY_0  	    (PAC_PTA_REGS + 196 )
 #define PAC_PTA_LINKIDS2MONITOR_ARRAY_1  	    (PAC_PTA_REGS + 200 )
 #define PAC_PTA_LINKIDS2MONITOR_ARRAY_2  	    (PAC_PTA_REGS + 204 )
@@ -487,7 +487,7 @@
 #define PAC_PTA_LINKIDS2MONITOR_ARRAY_5  	    (PAC_PTA_REGS + 216 )
 #define PAC_PTA_LINKIDS2MONITOR_ARRAY_6  	    (PAC_PTA_REGS + 220 )
 #define PAC_PTA_LINKIDS2MONITOR_ARRAY_7  	    (PAC_PTA_REGS + 224 )
-																	
+
 #define PAC_PTA_LINKINTERVALS_ARRAY_0	  	    (PAC_PTA_REGS + 228 )
 #define PAC_PTA_LINKINTERVALS_ARRAY_1	  	    (PAC_PTA_REGS + 232 )
 #define PAC_PTA_LINKINTERVALS_ARRAY_2	  	    (PAC_PTA_REGS + 236 )
@@ -496,7 +496,7 @@
 #define PAC_PTA_LINKINTERVALS_ARRAY_5	  	    (PAC_PTA_REGS + 248 )
 #define PAC_PTA_LINKINTERVALS_ARRAY_6	  	    (PAC_PTA_REGS + 252 )
 #define PAC_PTA_LINKINTERVALS_ARRAY_7	  	    (PAC_PTA_REGS + 256 )
-																	
+
 #define PAC_PTA_STAT_ENABLE  				    (PAC_PTA_REGS + 260 )
 #define PAC_PTA_STAT_CLEAR  				    (PAC_PTA_REGS + 264 )
 #define PAC_PTA_STAT_ANTENNA_OCCUPANCY 		    (PAC_PTA_REGS + 268 )
@@ -504,7 +504,7 @@
 #define PAC_PTA_STAT_BT_IS_GRANTED  		    (PAC_PTA_REGS + 276 )
 #define PAC_PTA_STAT_BT_IS_NOT_GRANTED 		    (PAC_PTA_REGS + 280 )
 #define PAC_PTA_STAT_WLAN_ACTIVE  			    (PAC_PTA_REGS + 284 )
-											    				
+
 #define PAC_PTA_STAT_ACTIVE_LINKIDS_0  		    (PAC_PTA_REGS + 288 )
 #define PAC_PTA_STAT_ACTIVE_LINKIDS_1  		    (PAC_PTA_REGS + 292 )
 #define PAC_PTA_STAT_LINKIDS2MONITOR  		    (PAC_PTA_REGS + 296 )
@@ -513,7 +513,7 @@
 #define PAC_PTA_STAT_LINKID_2_ANT_OCC  		    (PAC_PTA_REGS + 308 )
 #define PAC_PTA_STAT_LINKID_3_ANT_OCC  		    (PAC_PTA_REGS + 312 )
 #define PAC_PTA_STAT_LINKID_4_ANT_OCC  		    (PAC_PTA_REGS + 316 )
-											 						
+
 #define PAC_PTA_RESERVED_1  				    (PAC_PTA_REGS + 320 )
 #define PAC_PTA_RESERVED_2  				    (PAC_PTA_REGS + 324 )
 #define PAC_PTA_RESERVED_3  				    (PAC_PTA_REGS + 328 )
@@ -529,7 +529,7 @@
 #define PAC_PTA_RESERVED_13 				    (PAC_PTA_REGS + 368 )
 #define PAC_PTA_RESERVED_14 				    (PAC_PTA_REGS + 372 )
 #define PAC_PTA_RESERVED_15 				    (PAC_PTA_REGS + 376 )
-																	
+
 #define PAC_PTA_ENABLE_OUTPUT_ARRAYS  		    (PAC_PTA_REGS + 380 )
 #define PAC_PTA_WIB_OUTPUT_ARRAY_1  		    (PAC_PTA_REGS + 384 )
 #define PAC_PTA_WIB_OUTPUT_ARRAY_2  		    (PAC_PTA_REGS + 388 )
@@ -544,7 +544,7 @@
 #define PAC_PTA_DEBUG_PORT_SELECT  			    (PAC_PTA_REGS + 424 )
 #define PAC_PTA_EPTA_VERSION				    (PAC_PTA_REGS + 428 )
 #define PAC_PTA_RESERVED_16  				    (PAC_PTA_REGS + 428 )
-#define PAC_PTA_LAST  						    (PAC_PTA_REGS + 512 )										
+#define PAC_PTA_LAST  						    (PAC_PTA_REGS + 512 )
 
 
 /*****************************
@@ -590,7 +590,7 @@
 #define PAC_TIM_EBM_STAT                        (PAC_TIM_REGS + 0x90)
 #define PAC_TIM_TSF_OFFSET                      (PAC_TIM_REGS + 0x94)
 /*
-"	Int contention indicates if an AC has lost an internal contention (1= contention), Bit3 AC3, bit2 AC2, bit1 AC1, bit0, AC0. 
+"	Int contention indicates if an AC has lost an internal contention (1= contention), Bit3 AC3, bit2 AC2, bit1 AC1, bit0, AC0.
 "      Note that this bit can also be set if a tx_error has occurred - in this case the NTD status will contain a PTCS_ABORT.
 "	First frame error indicates that the first frame in an AC queue will not fit within the TXOPlimit, Bit7 AC3, bit6 AC2, bit5 AC1, bit4, AC0
 "	Ack_fail indicates that there has been an ack failure, Bit11 AC3, bit10 AC2, bit9 AC1, bit8, AC0

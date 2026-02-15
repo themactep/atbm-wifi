@@ -18,7 +18,7 @@ typedef struct urb atbm_urb_s;
 #define atbm_usb_endpoint_descriptor usb_endpoint_descriptor
 #define atbm_usb_device	usb_device
 /*USB Interface*/
-#define atbm_usb_register(a) usb_register(a)	
+#define atbm_usb_register(a) usb_register(a)
 #define atbm_usb_deregister(a)	usb_deregister(a)
 #define atbm_usb_alloc_urb(a, b) usb_alloc_urb(a, b)
 #define atbm_usb_free_urb(a)  usb_free_urb(a)
