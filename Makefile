@@ -3,6 +3,13 @@
 #CONFIG_ATBM601x: 1T1R 80211b/g/n, HT20
 #if yout want to change .conf ,please do make menuconfig in current path
 ############################################################################
+ifneq ($(KERNELRELEASE),)
+-include $(M)/.config
+WIFI_PROJ_DIR := $(M)
+export WIFI_PROJ_DIR
+-include $(src)/Makefile.build.kernel
+else
+
 -include $(PWD)/.config
 ############################################################################
 #
@@ -131,3 +138,5 @@ hal_clean:
 	find ./ -name "*.cmd" -exec rm -f {} \;
 	find ./ -name "*.mod" -exec rm -f {} \;
 	find ./ -name "*.order" -exec rm -f {} \;
+
+endif
