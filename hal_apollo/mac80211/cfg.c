@@ -2146,6 +2146,7 @@ static int ieee80211_scan(struct wiphy *wiphy
 		 * for now fall through to allow scanning only when
 		 * beaconing hasn't been configured yet
 		 */
+		fallthrough;
 #else
 		break;
 #endif	

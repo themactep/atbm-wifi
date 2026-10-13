@@ -54,6 +54,7 @@
 #define ATBM_DEV_IOCTL_DEBUG 1
 
 #if ATBM_DEV_IOCTL_DEBUG
+#undef dev_printk
 #define dev_printk(...) atbm_printk_always(__VA_ARGS__)
 #else
 #define dev_printk(...)
@@ -292,7 +293,7 @@ static int atbm_dev_set_private_mgmt_frame(struct net_device *dev, struct altm_w
 				}else{
 					struct atbm_vendor_cfg_ie private_ie;
 					struct atbm_ap_vendor_cfg_ie ap_vendor_cfg_ie;
-					char *ptr = NULL,*str = NULL;
+					char *ptr = NULL;
 					memset(&ap_vendor_cfg_ie,0,sizeof(struct atbm_ap_vendor_cfg_ie));
 					memset(&private_ie,0,sizeof(struct atbm_vendor_cfg_ie));
 					private_ie.ie_id = 221;
@@ -900,7 +901,7 @@ static bool atbm_dev_handle_scan_sta(struct ieee80211_hw *hw,struct atbm_interna
 	pos_info->channel = sta->channel;
 	pos_info->Rssi = sta->signal;
 	memcpy(pos_info->Bssid,sta->bssid,6);
-	if(sta->ssid_len && sta->ssid)
+	if(sta->ssid_len)
 		memcpy(pos_info->Ssid,sta->ssid,sta->ssid_len);
 	if(sta->ie&&sta->ie_len)
 		memcpy(pos_info->User_data,sta->ie,sta->ie_len);
@@ -911,7 +912,7 @@ static int scan_result_filter_single_channel(u8 * recv_info,int channel)
 	Wifi_Recv_Info_t *recv = NULL;
 	//Wifi_Recv_Info_t recv_bak[MAC_FILTER_NUM];
 	Wifi_Recv_Info_t *recv_bak = NULL;
-	int i = 0,j = 0;
+	int i = 0;
 	if(!recv_info){
 		atbm_printk_err("scan_result_filter_channel recv_info NULL \n");
 		return -1;
@@ -1611,7 +1612,7 @@ static bool atbm_dev_handle_ap_list(struct ieee80211_hw *hw,struct atbm_internal
 {
 	BEST_CHANNEL_INFO *info     = (BEST_CHANNEL_INFO *)req->priv;
 	BEST_CHANNEL_INFO *pos_info = NULL;
-	int i = 0,j = 0;
+	int i = 0;
 	
 	if(req->n_stas >= CHANNEL_NUM*AP_SCAN_NUM_MAX){
 		return false;
@@ -1635,7 +1636,7 @@ static bool atbm_dev_handle_ap_list(struct ieee80211_hw *hw,struct atbm_internal
 		pos_info->enc_type_name = sta->ieee80211_enc_type_name;
 		pos_info->rssi = sta->signal;	
 		memcpy(pos_info->mac_addr,sta->bssid,6);
-		if(sta->ssid_len && sta->ssid){
+		if(sta->ssid_len){
 			memcpy(pos_info->ssid,sta->ssid,sta->ssid_len);
 		//	atbm_printk_err("ssid:[%s]ssid_len:[%d] ",pos_info->ssid,sta->ssid_len);
 		//	for(j=0;j<sta->ssid_len;j++)
@@ -1833,10 +1834,7 @@ int atbm_dev_etf_get_result(struct net_device *dev, struct altm_wext_msg *msg)
     gRxs_s.result
     );
 
-	if(&msg->externData[0] != NULL)
-	{
-		memcpy(&msg->externData[0], buff, strlen(buff));
-	}
+	memcpy(&msg->externData[0], buff, strlen(buff));
 	else
 	{
 		atbm_printk_always("error:msg->externData[0] is null\n");

@@ -3477,7 +3477,7 @@ static void ieee80211_rx_handlers_result(struct ieee80211_rx_data *rx,
 		I802_DEBUG_INC(rx->sdata->local->rx_handlers_drop);
 		if (rx->sta)
 			rx->sta->rx_dropped++;
-		/* fall through */
+		fallthrough;
 	case RX_CONTINUE: {
 		struct ieee80211_rate *rate = NULL;
 		struct ieee80211_supported_band *sband;
@@ -3608,7 +3608,6 @@ static void ieee80211_rx_handlers(struct ieee80211_rx_data *rx,struct sk_buff_he
 	} while (0);
 		
 	while ((skb = __atbm_skb_dequeue(frames))) {
-		struct ieee80211_rx_status *status = IEEE80211_SKB_RXCB(skb);
 		/*
 		 * all the other fields are valid across frames
 		 * that belong to an aMPDU since they are on the

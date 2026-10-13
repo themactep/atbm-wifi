@@ -453,7 +453,7 @@ ieee80211_bss_info_update(struct ieee80211_local *local,
 		schedule_work(&local->save_bss_work);
 		local->is_associated = 0;
 	}
-#endif`
+#endif
 
 	if(ieee80211_2_4G_scan_results_limit(local,NULL,channel) < 0)
 		return NULL;

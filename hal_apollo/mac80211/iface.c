@@ -2088,7 +2088,7 @@ static void ieee80211_setup_sdata(struct ieee80211_sub_if_data *sdata,
 		type = NL80211_IFTYPE_AP;
 		sdata->vif.type = type;
 		sdata->vif.p2p = true;
-		/* fall through */
+		fallthrough;
 #endif
 	case NL80211_IFTYPE_AP:
 		atbm_skb_queue_head_init(&sdata->u.ap.ps_bc_buf);
@@ -2100,7 +2100,7 @@ static void ieee80211_setup_sdata(struct ieee80211_sub_if_data *sdata,
 		type = NL80211_IFTYPE_STATION;
 		sdata->vif.type = type;
 		sdata->vif.p2p = true;
-		/* fall through */
+		fallthrough;
 #endif
 	case NL80211_IFTYPE_STATION:
 		ieee80211_sta_setup_sdata(sdata);

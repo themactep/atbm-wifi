@@ -172,7 +172,7 @@ void atbm_bh_wake_unlock(struct atbm_common *hw_priv)
 int atbm_register_bh(struct atbm_common *hw_priv)
 {
 	int err = 0;
-	struct sched_param param = { .sched_priority = 1 };
+	struct sched_param param __maybe_unused = { .sched_priority = 1 };
 	atbm_printk_init("[BH] register.\n");
 	BUG_ON(hw_priv->bh_thread);
 	atomic_set(&hw_priv->bh_rx, 0);
@@ -1362,7 +1362,6 @@ static int atbm_bh(void *arg)
 	long status;
 	bool powersave_enabled;
 	int i;
-	int ret_flush;				
 
 	
 #define __ALL_HW_BUFS_USED (hw_priv->hw_bufs_used)

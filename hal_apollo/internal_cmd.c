@@ -3155,7 +3155,7 @@ int atbm_internal_stop_rx(struct ieee80211_sub_if_data *sdata,fixed_freq_rx_data
 	struct ieee80211_local *local = sdata->local;
 	struct atbm_common *hw_priv=local->hw.priv;
 	struct atbm_vif *vif;
-	if((0 == ETF_bStartRx) || (NULL == ch_and_type)){
+	if(0 == ETF_bStartRx){
 		atbm_printk_err("please start start_rx first,then stop_rx\n");
 		return -EINVAL;
 	}
@@ -3170,10 +3170,7 @@ int atbm_internal_stop_rx(struct ieee80211_sub_if_data *sdata,fixed_freq_rx_data
 		goto exit;
 	}
 	if(rx_data){
-		if(rx_data->status_data == NULL){
-			status = atbm_kzalloc(512,GFP_KERNEL);
-		}else
-			status = rx_data->status_data;
+		status = rx_data->status_data;
 	}else{
 		status = atbm_kzalloc(512,GFP_KERNEL);
 	}

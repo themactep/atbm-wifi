@@ -172,7 +172,6 @@ static int atbm_ieee80211_send_private_mgmt_thread(void *arg)
 {
 	
 	struct atbm_common *hw_priv = arg;
-	struct ieee80211_hw *hw = hw_priv->hw;
 //	struct ieee80211_local *local = 
 //		container_of(hw, struct ieee80211_local, hw);
 	

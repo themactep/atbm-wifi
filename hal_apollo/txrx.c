@@ -35,13 +35,11 @@
 
 int ieee80211_is_eapol_frame(struct sk_buff *skb)
 {
-	char *ip = NULL;
 	struct iphdr *skbiphdr = NULL;
 	int iphdr_index = 0;
 	struct ieee80211_hdr *frame = (struct ieee80211_hdr *)skb->data;
 	iphdr_index = ieee80211_hdrlen(frame->frame_control)+8;
 	skbiphdr = (struct iphdr *)(skb->data+iphdr_index);
-	struct atbm_ieee80211_mgmt *mgmt = (struct atbm_ieee80211_mgmt *)skb->data;
 
 	if(!ieee80211_is_data(frame->frame_control)){
 		return 0;
@@ -96,7 +94,7 @@ static void tx_policy_dump(struct tx_policy *policy)
 }
 #endif
 #ifdef CONFIG_ATBM_SUPPORT_P2P
-static void atbm_check_go_neg_conf_success(struct atbm_common *hw_priv,
+static void __maybe_unused atbm_check_go_neg_conf_success(struct atbm_common *hw_priv,
 						u8 *action)
 {
 	if (action[2] == 0x50 && action[3] == 0x6F && action[4] == 0x9A &&
@@ -110,7 +108,7 @@ static void atbm_check_go_neg_conf_success(struct atbm_common *hw_priv,
 	}
 }
 
-static void atbm_check_prov_desc_req(struct atbm_common *hw_priv,
+static void __maybe_unused atbm_check_prov_desc_req(struct atbm_common *hw_priv,
                                                 u8 *action)
 {
 	if (action[2] == 0x50 && action[3] == 0x6F && action[4] == 0x9A &&
@@ -1933,7 +1931,6 @@ void atbm_rx_cb(struct atbm_vif *priv,
 		  struct wsm_rx *arg,
 		  struct sk_buff **skb_p)
 {
-	struct atbm_common *hw_priv = ABwifi_vifpriv_to_hwpriv(priv);
 	struct sk_buff *skb = *skb_p;
 	struct ieee80211_rx_status *hdr = IEEE80211_SKB_RXCB(skb);
 	struct ieee80211_hdr *frame = (struct ieee80211_hdr *)skb->data;
@@ -2026,13 +2023,14 @@ void atbm_rx_cb(struct atbm_vif *priv,
                             goto drop;
                     }
             } else {
-            	if(priv->join_status != ATBM_APOLLO_JOIN_STATUS_STA_LISTEN)
+            if(priv->join_status != ATBM_APOLLO_JOIN_STATUS_STA_LISTEN) {
                     atbm_printk_err("[RX] Receive failure: %d.ENCRYPTION [%d] da:[%pM],sa:[%pM],fc(%x)\n",
                             arg->status,WSM_RX_STATUS_ENCRYPTION(arg->flags),da,sa,mgmt->frame_control);
-                    hdr->flag |= RX_FLAG_UNKOWN_STA_FRAME;
-                    if(priv->join_status != ATBM_APOLLO_JOIN_STATUS_AP){
-                            goto drop;
-                    }
+            }
+            hdr->flag |= RX_FLAG_UNKOWN_STA_FRAME;
+            if(priv->join_status != ATBM_APOLLO_JOIN_STATUS_AP){
+                    goto drop;
+            }
             }
 	 	}
 #ifdef CHKSUM_HW_SUPPORT

@@ -4392,7 +4392,7 @@ static void ieee80211_send_assoc(struct ieee80211_sub_if_data *sdata,
 	}
 
 	/* if present, add any custom IEs that go before HT */
-	if (wk->ie_len && wk->ie) {
+	if (wk->ie_len) {
 		static const u8 before_ht[] = {
 			ATBM_WLAN_EID_SSID,
 			ATBM_WLAN_EID_SUPP_RATES,
@@ -4419,7 +4419,7 @@ static void ieee80211_send_assoc(struct ieee80211_sub_if_data *sdata,
 				    sband, wk->chan, wk->assoc.smps,sdata->vif.p2p == true ? IEEE80211_CHAN_NO_HT40PLUS | IEEE80211_CHAN_NO_HT40MINUS:0);
 
 	/* if present, add any custom non-vendor IEs that go after HT */
-	if (wk->ie_len && wk->ie) {
+	if (wk->ie_len) {
 		noffset = ieee80211_ie_split_vendor(wk->ie, wk->ie_len,
 						    offset);
 		pos = atbm_skb_put(skb, noffset - offset);
@@ -4449,7 +4449,7 @@ static void ieee80211_send_assoc(struct ieee80211_sub_if_data *sdata,
 	}
 
 	/* add any remaining custom (i.e. vendor specific here) IEs */
-	if (wk->ie_len && wk->ie) {
+	if (wk->ie_len) {
 		noffset = wk->ie_len;
 		pos = atbm_skb_put(skb, noffset - offset);
 		memcpy(pos, wk->ie + offset, noffset - offset);

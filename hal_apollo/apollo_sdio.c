@@ -395,7 +395,7 @@ static int atbm_sdio_rx_post_sched(struct atbm_sdio_thread *thread)
 static int atbm_sdio_rx_thread(void *priv)
 {
 	struct sbus_priv *self = (struct sbus_priv *)priv;
-	struct sched_param param = { .sched_priority = 1 };
+	struct sched_param param __maybe_unused = { .sched_priority = 1 };
 	
 	atbm_printk_init("%s\n",__func__);
 	/*
@@ -423,9 +423,9 @@ static int atbm_sdio_tx_thread(void *priv)
 #ifdef CONFIG_ATBM_SDIO_TX_THREAD_FIFO
 
 #ifdef CONFIG_ATBM_SDIO_SMP
-	struct sched_param param = { .sched_priority = 1 };
+	struct sched_param param __maybe_unused = { .sched_priority = 1 };
 #else
-	struct sched_param param = { .sched_priority = 2 };
+	struct sched_param param __maybe_unused = { .sched_priority = 2 };
 #endif
 
 	atbm_printk_init("%s\n",__func__);
@@ -956,7 +956,7 @@ static int atbm_sdio_off(const struct atbm_platform_data *pdata)
 #if ((ATBM_WIFI_PLATFORM != 10) && (ATBM_WIFI_PLATFORM != PLATFORM_AMLOGIC_S805) \
 	&& (ATBM_WIFI_PLATFORM != PLATFORM_AMLOGIC_905))
 
-static int atbm_sdio_on(const struct atbm_platform_data *pdata)
+static int __maybe_unused atbm_sdio_on(const struct atbm_platform_data *pdata)
 {
 	int ret = 0;
     if (pdata->insert_ctrl)
@@ -1110,7 +1110,7 @@ void atbm_wtd_wakeup( struct sbus_priv *self)
 	wake_up(&self->wtd->wtd_evt_wq);
 #endif //CONFIG_ATBMWIFI_WDT
 }
-static int atbm_wtd_process(void *arg)
+static int __maybe_unused atbm_wtd_process(void *arg)
 {
 #ifdef CONFIG_ATBMWIFI_WDT
 	int status=0;
@@ -1143,7 +1143,7 @@ __stop:
 static void atbm_wtd_init(void)
 {
 #ifdef CONFIG_ATBMWIFI_WDT
-	struct sched_param param = { .sched_priority = 1 };
+	struct sched_param param __maybe_unused = { .sched_priority = 1 };
 	if(g_wtd.wtd_init)
 		return;
 	atbm_printk_exit( "[wtd] register.\n");
@@ -1708,7 +1708,7 @@ static int atbm_reboot_notifier(struct notifier_block *nb,
 }
 
 /* Probe Function to be called by USB stack when device is discovered */
-static struct notifier_block atbm_reboot_nb = {
+static struct notifier_block atbm_reboot_nb __maybe_unused = {
 	.notifier_call = atbm_reboot_notifier,
 	.priority=1,
 };

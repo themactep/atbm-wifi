@@ -2139,7 +2139,7 @@ static netdev_tx_t _ieee80211_subif_start_xmit(struct sk_buff *skb,
 		rcu_read_unlock();
 		if (sta)
 			break;
-		/* fall through */
+		fallthrough;
 	case NL80211_IFTYPE_AP:
 		fc |= cpu_to_le16(IEEE80211_FCTL_FROMDS);
 		/* DA BSSID SA */

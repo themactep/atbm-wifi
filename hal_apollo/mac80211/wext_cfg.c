@@ -153,7 +153,7 @@ extern int etf_v2_scan_end(struct atbm_common *hw_priv, struct ieee80211_vif *vi
 extern void etf_v2_scan_rx(struct atbm_common *hw_priv,struct sk_buff *skb,u8 rssi );
 
 #ifdef CONFIG_ATBM_IWPRIV_USELESS
-static int Test_FreqOffset(struct atbm_common *hw_priv, u32 *dcxo, int *pfreqErrorHz, struct rxstatus_signed *rxs_s, int channel);
+static int __maybe_unused Test_FreqOffset(struct atbm_common *hw_priv, u32 *dcxo, int *pfreqErrorHz, struct rxstatus_signed *rxs_s, int channel);
 #endif
 /*
 static const u32 band_table[21] = {10, 20, 55, 110, 60, 90, 120,
@@ -8754,7 +8754,7 @@ static int _getMaxRssiInd(struct rxstatus_signed rxs_arr[], int cnt)
 
 	return cntMax;
 }
-static int Test_FreqOffset(struct atbm_common *hw_priv, u32 *dcxo, int *pfreqErrorHz, struct rxstatus_signed *rxs_s, int channel)
+static int __maybe_unused Test_FreqOffset(struct atbm_common *hw_priv, u32 *dcxo, int *pfreqErrorHz, struct rxstatus_signed *rxs_s, int channel)
 {
 	u8 CodeValue;
 	u8 CodeValuebak;
