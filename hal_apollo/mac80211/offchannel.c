@@ -357,7 +357,7 @@ bool ieee80211_parase_p2p_action_frame(struct ieee80211_sub_if_data *sdata,struc
 		bool combination = false;
 		
 		combination = ieee80211_check_channel_combination(sdata);		
-		atbm_printk_p2p("%s:chan_mode(%x)(%d)\n",__func__,(int)combination);
+		atbm_printk_p2p("%s:chan_mode(%x)\n",__func__,(int)combination);
 		// attr_id(1)+len(2)+contry_string(3)+operating_class(1)+channel_num(1)
 		operating_channel_num = p2p_msg.operating_channel[7];
 		local_channel = operating_channel_num >14?6:operating_channel_num;

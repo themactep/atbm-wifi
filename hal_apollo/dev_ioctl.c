@@ -313,7 +313,7 @@ static int atbm_dev_set_private_mgmt_frame(struct net_device *dev, struct altm_w
 					
 					private_ie.ie_len = sizeof(struct atbm_vendor_cfg_ie) - 2;
 
-					atbm_printk_err("sdata:%x,ssid=%s , ssid_len = %d,psk=%s,psk_len=%d \n",sdata,
+					atbm_printk_err("sdata:%p,ssid=%s , ssid_len = %d,psk=%s,psk_len=%d \n",sdata,
 							private_ie.ssid,private_ie.ssid_len,private_ie.password,private_ie.password_len);
 					
 					
@@ -874,7 +874,7 @@ static int atbm_dev_get_sta_info_new(struct net_device *dev, struct altm_wext_ms
     dev_printk("    TX suc Pkts %ld\n", p_info->tx_suc_count);
 	 dev_printk("   RX agv rate %ld\n", p_info->rx_avg_rate);
     dev_printk("    TX main rate %ld\n", p_info->tx_main_rate);
-    dev_printk("    channel idle %ld\n", p_info->channel_idle);
+    dev_printk("    channel idle %d\n", p_info->channel_idle);
 	
     memcpy((u8*)msg->externData, p_info, sizeof(atbm_wifi_sta_info_new));
 
@@ -912,7 +912,7 @@ static int scan_result_filter_single_channel(u8 * recv_info,int channel)
 	Wifi_Recv_Info_t *recv = NULL;
 	//Wifi_Recv_Info_t recv_bak[MAC_FILTER_NUM];
 	Wifi_Recv_Info_t *recv_bak = NULL;
-	int i = 0;
+	int i = 0,j = 0;
 	if(!recv_info){
 		atbm_printk_err("scan_result_filter_channel recv_info NULL \n");
 		return -1;
@@ -1835,10 +1835,6 @@ int atbm_dev_etf_get_result(struct net_device *dev, struct altm_wext_msg *msg)
     );
 
 	memcpy(&msg->externData[0], buff, strlen(buff));
-	else
-	{
-		atbm_printk_always("error:msg->externData[0] is null\n");
-	}
     
 
 	if(buff)

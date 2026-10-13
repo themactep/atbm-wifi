@@ -3234,7 +3234,7 @@ int atbm_get_txrx_status(struct atbm_common * hw_priv,char *buf , int buf_len)
 	struct TX_RX_Statistics_S txrx_status;
 
 	if(!buf || buf_len < sizeof(struct TX_RX_Statistics_S)){
-		atbm_printk_err("buff = %x , buf_len=%d \n",buf,buf_len);
+		atbm_printk_err("buff = %p , buf_len=%d \n",buf,buf_len);
 		return -1;
 	}
 
@@ -3253,7 +3253,7 @@ int atbm_get_temperature(struct atbm_common * hw_priv,char *buf , int buf_len)
 	int temp;
 
 	if(!buf || buf_len < sizeof(int)){
-		atbm_printk_err("buff = %x , buf_len=%d \n",buf,buf_len);
+		atbm_printk_err("buff = %p , buf_len=%d \n",buf,buf_len);
 		return -1;
 	}
 	
