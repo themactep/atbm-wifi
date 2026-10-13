@@ -1099,7 +1099,7 @@ static  int ieee80211_change_beacon(struct wiphy *wiphy, struct net_device *dev,
 }
 
 #endif
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 15, 0))
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 1, 0))
 static int ieee80211_del_beacon(struct wiphy *wiphy, struct net_device *dev,unsigned int link_id)
 #else
 static int ieee80211_del_beacon(struct wiphy *wiphy, struct net_device *dev)

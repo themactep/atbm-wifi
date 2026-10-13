@@ -288,7 +288,12 @@ static int atbm_sdio_wait_action(struct atbm_sdio_thread *thread)
 	unsigned long period = idle_period;
 wake:
 	period = idle_period;
-	set_current_state(TASK_INTERRUPTIBLE);	
+	/*
+	 * period_handle/pre_sched below claim the SDIO host via sdio_claim_host(),
+	 * which sleeps. A blocking call is only legal while RUNNING, so the task
+	 * must not stay INTERRUPTIBLE across those handlers.
+	 */
+	__set_current_state(TASK_RUNNING);
 	while (!atbm_kthread_should_stop(thread)) {
 		if (test_and_clear_bit(THREAD_WAKEUP,
 				       &thread->flags)) {
@@ -312,7 +317,8 @@ wake:
 		set_current_state(TASK_INTERRUPTIBLE);
 		if (!atbm_kthread_should_stop(thread))
 			period = schedule_timeout(idle_period);
-		set_current_state(TASK_INTERRUPTIBLE);
+		/* Woken: handlers at the top of the loop may sleep again. */
+		__set_current_state(TASK_RUNNING);
 		
 	}
 	__set_current_state(TASK_RUNNING);

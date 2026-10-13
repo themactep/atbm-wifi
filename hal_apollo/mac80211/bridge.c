@@ -25,7 +25,7 @@
 #include <net/ieee80211_radiotap.h>
 #include <net/cfg80211.h>
 #include <net/atbm_mac80211.h>
-#include <asm/unaligned.h>
+#include <linux/unaligned.h>
 #include <linux/udp.h>
 #include <net/ip.h>
 	 
@@ -34,7 +34,7 @@
 
 #include <linux/if_arp.h>
 #include <net/ip.h>
-#include <net/ipx.h>
+/* net/ipx.h removed */
 #include <linux/atalk.h>
 #include <linux/udp.h>
 #include <linux/if_pppox.h>
