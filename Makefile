@@ -14,6 +14,7 @@ WIFI_INSTALL_DIR := $(PWD)/driver_install
 
 export WIFI_PROJ_DIR=$(PWD)
 export
+unexport size_append cmd_gzip cmd_bzip2 cmd_lzma cmd_lzo cmd_lz4 cmd_xzkern cmd_xzmisc
 -include $(src)/Makefile.build.kernel
 
 export DRIVER_PATH ?= $(PWD)
