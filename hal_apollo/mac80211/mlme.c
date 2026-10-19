@@ -3429,6 +3429,16 @@ static void ieee80211_mgd_assoc_timeout(struct ieee80211_work* wk)
 	
 #if (LINUX_VERSION_IS_LESS_AND_NOT_CPTCFG(3, 11, 0))
 	cfg80211_send_assoc_timeout(wk->sdata->dev, wk->filter_bssid);
+#elif (LINUX_VERSION_CODE >= KERNEL_VERSION(6,7,0))
+	struct wireless_dev *wdev = wk->sdata->dev->ieee80211_ptr;
+	struct cfg80211_assoc_failure data = {
+		.timeout = true,
+	};
+
+	data.bss[0] = wk->assoc.bss;
+	atbm_wdev_lock(wdev);
+	cfg80211_assoc_failure(wk->sdata->dev, &data);
+	atbm_wdev_unlock(wdev);
 #else
 	struct wireless_dev* wdev = wk->sdata->dev->ieee80211_ptr;
 	atbm_wdev_lock(wdev);
@@ -4291,7 +4301,12 @@ int ieee80211_mgd_disassoc(struct ieee80211_sub_if_data* sdata,
 	 * to cfg80211 while that's in a locked section already
 	 * trying to tell us that the user wants to disconnect.
 	 */
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6,7,0))
+	if (!ifmgd->associated ||
+	    memcmp(ifmgd->associated->bssid, req->ap_addr, ETH_ALEN)) {
+#else
 	if (ifmgd->associated != req->bss) {
+#endif
 		mutex_unlock(&ifmgd->mtx);
 		return -ENOLINK;
 	}

@@ -793,7 +793,7 @@ void mesh_rx_path_sel_frame(struct ieee80211_sub_if_data *sdata,
 	struct sta_info *sta;
 
 	/* need action_code */
-	if (len < IEEE80211_MIN_ACTION_SIZE + 1)
+	if (len < ATBM_MIN_ACTION_SIZE + 1)
 		return;
 
 	rcu_read_lock();

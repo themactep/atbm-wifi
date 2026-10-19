@@ -222,11 +222,19 @@ int atbm_change_iface_to_monitor(struct net_device *dev)
 #endif
 }
 
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 7, 0))
+static int ieee80211_add_key(struct wiphy *wiphy, struct wireless_dev *wdev,
+			     int link_id, u8 key_idx, bool pairwise, const u8 *mac_addr,
+			     struct key_params *params)
+{
+	struct ieee80211_sub_if_data *sdata = IEEE80211_WDEV_TO_SUB_IF(wdev);
+#else
 static int ieee80211_add_key(struct wiphy *wiphy, struct net_device *dev,
 			     u8 key_idx, bool pairwise, const u8 *mac_addr,
 			     struct key_params *params)
 {
 	struct ieee80211_sub_if_data *sdata = IEEE80211_DEV_TO_SUB_IF(dev);
+#endif
 	struct sta_info *sta = NULL;
 	struct ieee80211_key *key;
 	int err;
@@ -285,10 +293,17 @@ static int ieee80211_add_key(struct wiphy *wiphy, struct net_device *dev,
 	return err;
 }
 
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 7, 0))
+static int ieee80211_del_key(struct wiphy *wiphy, struct wireless_dev *wdev,
+			     int link_id, u8 key_idx, bool pairwise, const u8 *mac_addr)
+{
+	struct ieee80211_sub_if_data *sdata = IEEE80211_WDEV_TO_SUB_IF(wdev);
+#else
 static int ieee80211_del_key(struct wiphy *wiphy, struct net_device *dev,
 			     u8 key_idx, bool pairwise, const u8 *mac_addr)
 {
 	struct ieee80211_sub_if_data *sdata = IEEE80211_DEV_TO_SUB_IF(dev);
+#endif
 	struct ieee80211_local *local = sdata->local;
 	struct sta_info *sta;
 	struct ieee80211_key *key = NULL;
@@ -326,6 +341,15 @@ static int ieee80211_del_key(struct wiphy *wiphy, struct net_device *dev,
 	return ret;
 }
 
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 7, 0))
+static int ieee80211_get_key(struct wiphy *wiphy, struct wireless_dev *wdev,
+			     int link_id, u8 key_idx, bool pairwise, const u8 *mac_addr,
+			     void *cookie,
+			     void (*callback)(void *cookie,
+					      struct key_params *params))
+{
+	struct ieee80211_sub_if_data *sdata;
+#else
 static int ieee80211_get_key(struct wiphy *wiphy, struct net_device *dev,
 			     u8 key_idx, bool pairwise, const u8 *mac_addr,
 			     void *cookie,
@@ -333,6 +357,7 @@ static int ieee80211_get_key(struct wiphy *wiphy, struct net_device *dev,
 					      struct key_params *params))
 {
 	struct ieee80211_sub_if_data *sdata;
+#endif
 	struct sta_info *sta = NULL;
 	u8 seq[6] = {0};
 	struct key_params params;
@@ -342,7 +367,11 @@ static int ieee80211_get_key(struct wiphy *wiphy, struct net_device *dev,
 	u16 iv16;
 	int err = -ENOENT;
 
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 7, 0))
+	sdata = IEEE80211_WDEV_TO_SUB_IF(wdev);
+#else
 	sdata = IEEE80211_DEV_TO_SUB_IF(dev);
+#endif
 
 	rcu_read_lock();
 
@@ -419,23 +448,42 @@ static int ieee80211_get_key(struct wiphy *wiphy, struct net_device *dev,
 	return err;
 }
 
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 7, 0))
+static int ieee80211_config_default_key(struct wiphy *wiphy,
+					struct net_device *dev,
+					int link_id,
+					u8 key_idx, bool uni,
+					bool multi)
+{
+	struct ieee80211_sub_if_data *sdata = IEEE80211_DEV_TO_SUB_IF(dev);
+#else
 static int ieee80211_config_default_key(struct wiphy *wiphy,
 					struct net_device *dev,
 					u8 key_idx, bool uni,
 					bool multi)
 {
 	struct ieee80211_sub_if_data *sdata = IEEE80211_DEV_TO_SUB_IF(dev);
+#endif
 
 	ieee80211_set_default_key(sdata, key_idx, uni, multi);
 
 	return 0;
 }
 
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 7, 0))
+static int ieee80211_config_default_mgmt_key(struct wiphy *wiphy,
+					     struct wireless_dev *wdev,
+					     int link_id,
+					     u8 key_idx)
+{
+	struct ieee80211_sub_if_data *sdata = IEEE80211_WDEV_TO_SUB_IF(wdev);
+#else
 static int ieee80211_config_default_mgmt_key(struct wiphy *wiphy,
 					     struct net_device *dev,
 					     u8 key_idx)
 {
 	struct ieee80211_sub_if_data *sdata = IEEE80211_DEV_TO_SUB_IF(dev);
+#endif
 
 	ieee80211_set_default_mgmt_key(sdata, key_idx);
 
@@ -608,10 +656,17 @@ static void sta_set_sinfo(struct sta_info *sta, struct station_info *sinfo)
 }
 
 
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 7, 0))
+static int ieee80211_dump_station(struct wiphy *wiphy, struct wireless_dev *wdev,
+				 int idx, u8 *mac, struct station_info *sinfo)
+{
+	struct ieee80211_sub_if_data *sdata = IEEE80211_WDEV_TO_SUB_IF(wdev);
+#else
 static int ieee80211_dump_station(struct wiphy *wiphy, struct net_device *dev,
 				 int idx, u8 *mac, struct station_info *sinfo)
 {
 	struct ieee80211_sub_if_data *sdata = IEEE80211_DEV_TO_SUB_IF(dev);
+#endif
 	struct sta_info *sta;
 	int ret = -ENOENT;
 
@@ -636,7 +691,11 @@ static int ieee80211_get_station(struct wiphy *wiphy, struct net_device *dev,
 				 #endif
 				 struct station_info *sinfo)
 {
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 7, 0))
+	struct ieee80211_sub_if_data *sdata = IEEE80211_WDEV_TO_SUB_IF(wdev);
+#else
 	struct ieee80211_sub_if_data *sdata = IEEE80211_DEV_TO_SUB_IF(dev);
+#endif
 	struct sta_info *sta;
 	int ret = -ENOENT;
 
@@ -1220,6 +1279,16 @@ static int ieee80211_start_ap(struct wiphy *wiphy, struct net_device *dev,
 	return ieee80211_add_beacon(wiphy,dev,&params);	
 }
 static  int ieee80211_change_beacon(struct wiphy *wiphy, struct net_device *dev,
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 7, 0))
+									   struct cfg80211_ap_update *info)
+{
+	struct beacon_parameters params;
+	memset(&params,0,sizeof(struct beacon_parameters));
+	BEACON_PARAMS_CPY(params,&info->beacon);
+
+	return ieee80211_set_beacon(wiphy, dev,&params);
+}
+#else
 									   struct cfg80211_beacon_data *info)
 {
 	struct ieee80211_sub_if_data *sdata = IEEE80211_DEV_TO_SUB_IF(dev);
@@ -1235,6 +1304,7 @@ static  int ieee80211_change_beacon(struct wiphy *wiphy, struct net_device *dev,
 						  NL80211_HIDDEN_SSID_ZERO_CONTENTS : NL80211_HIDDEN_SSID_NOT_IN_USE;
 	return ieee80211_set_beacon(wiphy, dev,&params);
 }
+#endif
 
 #endif
 static int ieee80211_del_beacon(struct wiphy *wiphy, struct net_device *dev)
@@ -1434,11 +1504,18 @@ static void sta_apply_parameters(struct ieee80211_local *local,
 	if (params->listen_interval >= 0)
 		sta->listen_interval = params->listen_interval;
 
-	if (params->supported_rates) {
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 1, 0))
+	{
+	const struct link_station_parameters *lsp = &params->link_sta_params;
+#else
+	{
+	const struct station_parameters *lsp = params;
+#endif
+	if (lsp->supported_rates) {
 		rates = 0;
 
-		for (i = 0; i < params->supported_rates_len; i++) {
-			int rate = (params->supported_rates[i] & 0x7f) * 5;
+		for (i = 0; i < lsp->supported_rates_len; i++) {
+			int rate = (lsp->supported_rates[i] & 0x7f) * 5;
 			for (j = 0; j < sband->n_bitrates; j++) {
 				if(ieee80211_rate_unmap(&sband->bitrates[j]))
 					continue;
@@ -1449,11 +1526,12 @@ static void sta_apply_parameters(struct ieee80211_local *local,
 		sta->sta.supp_rates[chan_state->oper_channel->band] = rates;
 	}
 
-	if (params->ht_capa){
+	if (lsp->ht_capa){
 		ieee80211_ht_cap_ie_to_sta_ht_cap(sband,
-						  params->ht_capa,
+						  lsp->ht_capa,
 						  &sta->sta.ht_cap);
 		ieee80211_ht_cap_to_sta_channel_type(sta);
+	}
 	}
 	if(sta->sta.ht_cap.ht_supported){
 		set_sta_flag(sta, WLAN_STA_WME);
@@ -1521,7 +1599,11 @@ static int ieee80211_add_station(struct wiphy *wiphy, struct net_device *dev,
 		    sdata->vif.type != NL80211_IFTYPE_AP)
 			return -EINVAL;
 	} else
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 7, 0))
+		sdata = IEEE80211_WDEV_TO_SUB_IF(wdev);
+#else
 		sdata = IEEE80211_DEV_TO_SUB_IF(dev);
+#endif
 
 	if (atbm_compare_ether_addr(mac, sdata->vif.addr) == 0)
 		return -EINVAL;
@@ -1583,7 +1665,11 @@ static int ieee80211_del_station(struct wiphy *wiphy, struct net_device *dev,
 #endif
 	struct ieee80211_sub_if_data *sdata;
 
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 7, 0))
+	sdata = IEEE80211_WDEV_TO_SUB_IF(wdev);
+#else
 	sdata = IEEE80211_DEV_TO_SUB_IF(dev);
+#endif
 	#ifndef ATBM_AP_SME
 	if (mac)
 		return sta_info_destroy_addr_bss(sdata, (u8*)mac);
@@ -1626,6 +1712,9 @@ static int ieee80211_del_station(struct wiphy *wiphy, struct net_device *dev,
 }
 
 static int ieee80211_change_station(struct wiphy *wiphy,
+				    #if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 7, 0))
+				    struct wireless_dev *wdev,
+				    #else
 				    struct net_device *dev,
 				    #if (LINUX_VERSION_IS_LESS_AND_NOT_CPTCFG(3, 18, 31))
 					u8 *mac,
@@ -1634,7 +1723,11 @@ static int ieee80211_change_station(struct wiphy *wiphy,
 					#endif
 				    struct station_parameters *params)
 {
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 7, 0))
+	struct ieee80211_sub_if_data *sdata = IEEE80211_WDEV_TO_SUB_IF(wdev);
+#else
 	struct ieee80211_sub_if_data *sdata = IEEE80211_DEV_TO_SUB_IF(dev);
+#endif
 	struct ieee80211_local *local = wiphy_priv(wiphy);
 	struct sta_info *sta;
 	struct ieee80211_sub_if_data *vlansdata;
@@ -2235,6 +2328,9 @@ int ieee80211_set_channel(struct wiphy *wiphy,
 }
 #if (LINUX_VERSION_IS_GEQ_OR_CPTCFG(3, 8, 0))
 static int ieee80211_set_monitor_channel(struct wiphy *wiphy,
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 7, 0))
+					 struct net_device *dev,
+#endif
 					 struct cfg80211_chan_def *chandef)
 {
 	 enum nl80211_channel_type chtype;
@@ -2242,7 +2338,11 @@ static int ieee80211_set_monitor_channel(struct wiphy *wiphy,
 
 	 chtype = cfg80211_get_chandef_type(chandef);
 	 chan = chandef->chan;
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 7, 0))
+	 return ieee80211_set_channel(wiphy,dev,chan,chtype);
+#else
 	 return ieee80211_set_channel(wiphy,NULL,chan,chtype);
+#endif
 }
 #elif (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 6, 0))
 static int ieee80211_set_monitor_channel(struct wiphy *wiphy,
@@ -3256,13 +3356,20 @@ static int ieee80211_remain_on_channel(struct wiphy *wiphy,
 				       enum nl80211_channel_type channel_type,
 				       #endif
 				       unsigned int duration,
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(7,2,0))
+				       u64 *cookie, const u8 *rx_addr)
+#else
 				       u64 *cookie)
+#endif
 {
 #if (LINUX_VERSION_IS_GEQ_OR_CPTCFG(3,6,0))
 	struct net_device *dev = wdev_to_ndev(wdev);
 #endif
 #if (!LINUX_VERSION_IS_LESS_AND_NOT_CPTCFG(3,8,0))
     enum nl80211_channel_type channel_type = NL80211_CHAN_HT20;
+#endif
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(7,2,0))
+	(void)rx_addr;
 #endif
 	struct ieee80211_sub_if_data *sdata = IEEE80211_DEV_TO_SUB_IF(dev);
 	struct ieee80211_local *local = sdata->local;

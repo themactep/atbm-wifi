@@ -447,7 +447,7 @@ void mesh_rx_plink_frame(struct ieee80211_sub_if_data *sdata, struct atbm_ieee80
 #endif
 
 	/* need action_code, aux */
-	if (len < IEEE80211_MIN_ACTION_SIZE + 3)
+	if (len < ATBM_MIN_ACTION_SIZE + 3)
 		return;
 
 	if (is_multicast_ether_addr(mgmt->da)) {

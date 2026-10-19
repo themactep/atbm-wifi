@@ -14,6 +14,7 @@
 #include <linux/kernel.h>
 #include <linux/if_arp.h>
 #include <linux/netdevice.h>
+#include <linux/etherdevice.h>
 #include <linux/rtnetlink.h>
 #include <net/atbm_mac80211.h>
 #include <net/ieee80211_radiotap.h>
@@ -672,9 +673,7 @@ static int ieee80211_do_open(struct net_device *dev, bool coming_up)
 	 * this interface, if it has the special null one.
 	 */
 	if (is_zero_ether_addr(dev->dev_addr)) {
-		memcpy(dev->dev_addr,
-		       local->hw.wiphy->perm_addr,
-		       ETH_ALEN);
+		eth_hw_addr_set(dev, local->hw.wiphy->perm_addr);
 		memcpy(dev->perm_addr, dev->dev_addr, ETH_ALEN);
 
 		if (!is_valid_ether_addr(dev->dev_addr)) {

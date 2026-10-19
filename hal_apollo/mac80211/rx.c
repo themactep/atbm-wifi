@@ -1053,7 +1053,7 @@ ieee80211_rx_h_check(struct ieee80211_rx_data *rx)
 	if((status->flag & RX_FLAG_UNKOWN_STA_FRAME)&&(rx->sdata->vif.type == NL80211_IFTYPE_AP)){
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 3, 0))
 		if(rx->sdata->vif.type == NL80211_IFTYPE_AP){
-	    	if(cfg80211_rx_spurious_frame(rx->sdata->dev,hdr->addr2,GFP_ATOMIC)==true)
+	    	if(ATBM_RX_SPURIOUS_FRAME(rx->sdata->dev, hdr->addr2)==true)
 				return RX_DROP_UNUSABLE;
 		}
 #endif
@@ -1081,7 +1081,7 @@ ieee80211_rx_h_check(struct ieee80211_rx_data *rx)
 			//	printk(KERN_ERR "%s:[%s]:sta[%pM] not assoc\n",__func__,rx->sdata->name,hdr->addr2);
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 3, 0))
 			if(rx->sdata->vif.type == NL80211_IFTYPE_AP){
-		    	if(cfg80211_rx_spurious_frame(rx->sdata->dev,hdr->addr2,GFP_ATOMIC)==true)
+		    	if(ATBM_RX_SPURIOUS_FRAME(rx->sdata->dev, hdr->addr2)==true)
 					return RX_DROP_UNUSABLE;
 			}
 #endif
@@ -2997,17 +2997,17 @@ ieee80211_rx_h_action(struct ieee80211_rx_data *rx)
 
 		switch (mgmt->u.action.u.addba_req.action_code) {
 		case WLAN_ACTION_ADDBA_REQ:
-			if (len < (IEEE80211_MIN_ACTION_SIZE +
+			if (len < (ATBM_MIN_ACTION_SIZE +
 				   sizeof(mgmt->u.action.u.addba_req)))
 				goto invalid;
 			break;
 		case WLAN_ACTION_ADDBA_RESP:
-			if (len < (IEEE80211_MIN_ACTION_SIZE +
+			if (len < (ATBM_MIN_ACTION_SIZE +
 				   sizeof(mgmt->u.action.u.addba_resp)))
 				goto invalid;
 			break;
 		case WLAN_ACTION_DELBA:
-			if (len < (IEEE80211_MIN_ACTION_SIZE +
+			if (len < (ATBM_MIN_ACTION_SIZE +
 				   sizeof(mgmt->u.action.u.delba)))
 				goto invalid;
 			break;

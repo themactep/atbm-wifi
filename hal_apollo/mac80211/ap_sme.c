@@ -2085,14 +2085,14 @@ static void ieee80211_ap_sme_event_work(struct atbm_work_struct *work)
 					sta->associate_ie_len = 0;
 				}
 				rcu_read_unlock();
-				cfg80211_new_sta(sdata->dev, (const u8*)event->sta_addr, &sinfo, GFP_KERNEL);
+				cfg80211_new_sta(ATBM_STA_NOTIFY_WDEV(sdata), (const u8*)event->sta_addr, &sinfo, GFP_KERNEL);
 				if(associate_ie)
 					atbm_kfree(associate_ie);
 				break;
 			}
 			case STA_EVENT__DEAUTHEN:
 			{
-				cfg80211_del_sta(sdata->dev, (const u8*)event->sta_addr, GFP_KERNEL);
+				cfg80211_del_sta(ATBM_STA_NOTIFY_WDEV(sdata), (const u8*)event->sta_addr, GFP_KERNEL);
 			}
 			case STA_EVENT__FREE:
 			sta_free:
