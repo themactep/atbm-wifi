@@ -454,7 +454,7 @@ bool atbm_parase_p2p_action_frame(struct atbm_vif *priv,struct sk_buff *skb,bool
 	}
 
 	/* drop too small frames */
-	if (len < IEEE80211_MIN_ACTION_SIZE){
+	if (len < ATBM_MIN_ACTION_SIZE){
 		return false;
 	}
 

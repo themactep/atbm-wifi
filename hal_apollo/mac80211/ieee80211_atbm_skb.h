@@ -231,6 +231,16 @@ extern void ieee80211_atbm_skb_orphan(struct sk_buff *skb,const char *func);
 #endif
 
 
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6,7,0))
+#define atbm_amsdu_to_8023s(_skb, _list,_addr,_iftype,_extra_headroom)		\
+		do {																\
+			struct ethhdr _eth;												\
+			if(atbm_ieee80211_data_to_8023_exthdr(_skb,&_eth,_addr,_iftype) == 0)	\
+				ieee80211_amsdu_to_8023s(_skb, _list,_addr,_iftype,_extra_headroom,NULL,NULL,0);	\
+			else	\
+				atbm_dev_kfree_skb(_skb);	\
+		}while(0)
+#else
 #define atbm_amsdu_to_8023s(_skb, _list,_addr,_iftype,_extra_headroom)		\
 		do {																\
 			struct ethhdr _eth;												\
@@ -239,6 +249,7 @@ extern void ieee80211_atbm_skb_orphan(struct sk_buff *skb,const char *func);
 			else	\
 				atbm_dev_kfree_skb(_skb);	\
 		}while(0)
+#endif
 //#endif
 #if 0
 #define atbm_amsdu_to_8023s(_skb, _list,_addr,_iftype,_extra_headroom)		\

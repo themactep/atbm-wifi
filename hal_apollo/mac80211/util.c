@@ -2967,7 +2967,7 @@ static inline bool _atbm_ieee80211_is_robust_mgmt_frame(struct ieee80211_hdr *hd
  */
 bool atbm_ieee80211_is_robust_mgmt_frame(struct sk_buff *skb)
 {
-	if (skb->len < IEEE80211_MIN_ACTION_SIZE)
+	if (skb->len < ATBM_MIN_ACTION_SIZE)
 		return false;
 	return _atbm_ieee80211_is_robust_mgmt_frame((void *)skb->data);
 }

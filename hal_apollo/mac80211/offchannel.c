@@ -294,7 +294,7 @@ bool ieee80211_parase_p2p_action_frame(struct ieee80211_sub_if_data *sdata,struc
 	struct atbm_p2p_message p2p_msg;
 
 	/* drop too small frames */
-	if (len < IEEE80211_MIN_ACTION_SIZE){
+	if (len < ATBM_MIN_ACTION_SIZE){
 		return false;
 	}
 

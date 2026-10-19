@@ -28,6 +28,16 @@
 #include <uapi/linux/sched/types.h>
 #endif
 
+/*
+ * IEEE80211_MIN_ACTION_SIZE is an object-like macro through 6.x; newer kernels
+ * made it function-like, taking the action member whose end it measures.
+ */
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 7, 0))
+#define ATBM_MIN_ACTION_SIZE IEEE80211_MIN_ACTION_SIZE(action_code)
+#else
+#define ATBM_MIN_ACTION_SIZE IEEE80211_MIN_ACTION_SIZE
+#endif
+
 #ifdef CONFIG_ATBM_SELF_WORKQUEUE
 struct atbm_work_struct;
 struct atbm_delayed_work;
@@ -817,7 +827,7 @@ static inline bool ieee80211_is_public_action(struct ieee80211_hdr *hdr,
 {
 	struct atbm_ieee80211_mgmt *mgmt = (void *)hdr;
 
-	if (len < IEEE80211_MIN_ACTION_SIZE)
+	if (len < ATBM_MIN_ACTION_SIZE)
 		return false;
 	if (!ieee80211_is_action(hdr->frame_control))
 		return false;
@@ -4845,16 +4855,46 @@ ieee80211_vif_type_p2p(struct ieee80211_vif *vif)
 static inline void atbm_wdev_lock(struct wireless_dev *wdev)
 	__acquires(wdev)
 {
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 5, 0))
+	wiphy_lock(wdev->wiphy);
+#else
 	mutex_lock(&wdev->mtx);
 	__acquire(wdev->mtx);
+#endif
 }
 
 static inline void atbm_wdev_unlock(struct wireless_dev *wdev)
 	__releases(wdev)
 {
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 5, 0))
+	wiphy_unlock(wdev->wiphy);
+#else
 	__release(wdev->mtx);
 	mutex_unlock(&wdev->mtx);
+#endif
 }
+
+/* cfg80211_new_sta()/del_sta() take a wireless_dev since 6.5, the net_device before. */
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 5, 0))
+#define ATBM_STA_NOTIFY_WDEV(sdata) (&(sdata)->wdev)
+#else
+#define ATBM_STA_NOTIFY_WDEV(sdata) ((sdata)->dev)
+#endif
+
+/* cfg80211_disassoc_request carries the AP address since 6.7, the BSS before. */
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 7, 0))
+#define ATBM_DISASSOC_REQ_BSSID(req) ((req)->ap_addr)
+#else
+#define ATBM_DISASSOC_REQ_BSSID(req) ((req)->bss->bssid)
+#endif
+
+/* cfg80211_rx_spurious_frame() gained a link_id argument for MLO in 6.7. */
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 7, 0))
+#define ATBM_RX_SPURIOUS_FRAME(dev, addr) cfg80211_rx_spurious_frame((dev), (addr), -1, GFP_ATOMIC)
+#else
+#define ATBM_RX_SPURIOUS_FRAME(dev, addr) cfg80211_rx_spurious_frame((dev), (addr), GFP_ATOMIC)
+#endif
+
 #ifdef CONFIG_ATBM_MAC80211_NO_USE
 void ieee80211_enable_rssi_reports(struct ieee80211_vif *vif,
 				   int rssi_min_thold,
@@ -5047,7 +5087,9 @@ static inline void atbm_timer_handle(struct timer_list *in_timer)
 static inline void atbm_timer_handle(unsigned long data)
 #endif
 {
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 14, 0))
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 15, 0))
+	struct atbm_timer_list *atbm_timer = timer_container_of(atbm_timer, in_timer, timer);
+#elif (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 14, 0))
 	struct atbm_timer_list *atbm_timer = from_timer(atbm_timer, in_timer, timer);
 #else
 	struct atbm_timer_list *atbm_timer = (struct atbm_timer_list *)data;
@@ -5086,7 +5128,11 @@ static inline void atbm_setup_timer(struct atbm_timer_list *atbm_timer,
 }
 static inline int atbm_del_timer_sync(struct atbm_timer_list *atbm_timer)
 {
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 15, 0))
+	return timer_delete_sync(&atbm_timer->timer);
+#else
 	return del_timer_sync(&atbm_timer->timer);
+#endif
 }
 static inline int atbm_mod_timer(struct atbm_timer_list *atbm_timer, unsigned long expires)
 {
@@ -5105,7 +5151,11 @@ static inline void atbm_add_timer(struct atbm_timer_list *atbm_timer)
 
 static inline int atbm_del_timer(struct atbm_timer_list *atbm_timer)
 {
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 15, 0))
+	return timer_delete(&atbm_timer->timer);
+#else
 	return del_timer(&atbm_timer->timer);
+#endif
 }
 static inline int atbm_timer_pending(struct atbm_timer_list *atbm_timer)
 {

@@ -13,7 +13,13 @@ PWD:=$(shell pwd)
 WIFI_INSTALL_DIR := $(PWD)/driver_install
 
 export WIFI_PROJ_DIR=$(PWD)
+# A blanket export also exports kbuild's per-object deps_* variables, which hold
+# the full header list and overflow ARG_MAX on modern kernels. Only the vendor's
+# own (non-kbuild) build needs it; external-module builds get their config from
+# .config and the explicitly exported variables above.
+ifndef KBUILD_EXTMOD
 export
+endif
 unexport size_append cmd_gzip cmd_bzip2 cmd_lzma cmd_lzo cmd_lz4 cmd_xzkern cmd_xzmisc
 -include $(src)/Makefile.build.kernel
 

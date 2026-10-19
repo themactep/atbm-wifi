@@ -485,10 +485,10 @@ static int sta_info_finish_insert(struct sta_info *sta,
 #ifdef ATBM_AP_SME
 	if (!((sdata->vif.type == NL80211_IFTYPE_AP)||(sdata->vif.type == NL80211_IFTYPE_P2P_GO))){
 		
-			cfg80211_new_sta(sdata->dev, sta->sta.addr, &sinfo, GFP_KERNEL);
+			cfg80211_new_sta(ATBM_STA_NOTIFY_WDEV(sdata), sta->sta.addr, &sinfo, GFP_KERNEL);
 		}
 #else
-		cfg80211_new_sta(sdata->dev, sta->sta.addr, &sinfo, GFP_KERNEL);
+		cfg80211_new_sta(ATBM_STA_NOTIFY_WDEV(sdata), sta->sta.addr, &sinfo, GFP_KERNEL);
 #endif
 	}
 
@@ -1046,7 +1046,7 @@ static int __must_check __sta_info_destroy(struct sta_info *sta)
 	 * roaming time.
 	 */
 	if (sdata->vif.type == NL80211_IFTYPE_STATION) {
-		cfg80211_del_sta(sdata->dev, sta->sta.addr, GFP_KERNEL);
+		cfg80211_del_sta(ATBM_STA_NOTIFY_WDEV(sdata), sta->sta.addr, GFP_KERNEL);
 
 #ifdef CONFIG_MAC80211_ATBM_VERBOSE_DEBUG
 		wiphy_debug(local->hw.wiphy,
@@ -1084,7 +1084,7 @@ static int __must_check __sta_info_destroy(struct sta_info *sta)
 	atbm_cancel_work_sync(&sta->drv_unblock_wk);
 #endif
 
-	cfg80211_del_sta(sdata->dev, sta->sta.addr, GFP_KERNEL);
+	cfg80211_del_sta(ATBM_STA_NOTIFY_WDEV(sdata), sta->sta.addr, GFP_KERNEL);
 #ifndef CONFIG_RATE_HW_CONTROL
 	rate_control_remove_sta_debugfs(sta);
 #endif

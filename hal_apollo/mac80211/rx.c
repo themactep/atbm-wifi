@@ -1050,7 +1050,7 @@ ieee80211_rx_h_check(struct ieee80211_rx_data *rx)
 	if((status->flag & RX_FLAG_UNKOWN_STA_FRAME)&&(rx->sdata->vif.type == NL80211_IFTYPE_AP)){
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 3, 0))
 		if(rx->sdata->vif.type == NL80211_IFTYPE_AP){
-	    	if(cfg80211_rx_spurious_frame(rx->sdata->dev,hdr->addr2,GFP_ATOMIC)==true)
+	    	if(ATBM_RX_SPURIOUS_FRAME(rx->sdata->dev, hdr->addr2)==true)
 				return RX_DROP_UNUSABLE;
 		}
 #endif
@@ -1079,7 +1079,7 @@ ieee80211_rx_h_check(struct ieee80211_rx_data *rx)
 
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 3, 0))
 			if(rx->sdata->vif.type == NL80211_IFTYPE_AP){
-		    	if(cfg80211_rx_spurious_frame(rx->sdata->dev,hdr->addr2,GFP_ATOMIC)==true)
+		    	if(ATBM_RX_SPURIOUS_FRAME(rx->sdata->dev, hdr->addr2)==true)
 					return RX_DROP_UNUSABLE;
 			}
 #endif
@@ -2832,7 +2832,7 @@ ieee80211_rx_h_action(struct ieee80211_rx_data *rx)
 		return RX_CONTINUE;
 
 	/* drop too small frames */
-	if (len < IEEE80211_MIN_ACTION_SIZE)
+	if (len < ATBM_MIN_ACTION_SIZE)
 		return RX_DROP_UNUSABLE;
 
 	if (!rx->sta && mgmt->u.action.category != ATBM_WLAN_CATEGORY_PUBLIC)
@@ -2890,22 +2890,22 @@ ieee80211_rx_h_action(struct ieee80211_rx_data *rx)
 			break;
 
 		/* verify action_code is present */
-		if (len < IEEE80211_MIN_ACTION_SIZE + 1)
+		if (len < ATBM_MIN_ACTION_SIZE + 1)
 			break;
 
 		switch (mgmt->u.action.u.addba_req.action_code) {
 		case WLAN_ACTION_ADDBA_REQ:
-			if (len < (IEEE80211_MIN_ACTION_SIZE +
+			if (len < (ATBM_MIN_ACTION_SIZE +
 				   sizeof(mgmt->u.action.u.addba_req)))
 				goto invalid;
 			break;
 		case WLAN_ACTION_ADDBA_RESP:
-			if (len < (IEEE80211_MIN_ACTION_SIZE +
+			if (len < (ATBM_MIN_ACTION_SIZE +
 				   sizeof(mgmt->u.action.u.addba_resp)))
 				goto invalid;
 			break;
 		case WLAN_ACTION_DELBA:
-			if (len < (IEEE80211_MIN_ACTION_SIZE +
+			if (len < (ATBM_MIN_ACTION_SIZE +
 				   sizeof(mgmt->u.action.u.delba)))
 				goto invalid;
 			break;
@@ -2923,18 +2923,18 @@ ieee80211_rx_h_action(struct ieee80211_rx_data *rx)
 			break;
 
 		/* verify action_code is present */
-		if (len < IEEE80211_MIN_ACTION_SIZE + 1)
+		if (len < ATBM_MIN_ACTION_SIZE + 1)
 			break;
 
 		switch (mgmt->u.action.u.measurement.action_code) {
 		case WLAN_ACTION_SPCT_MSR_REQ:
-			if (len < (IEEE80211_MIN_ACTION_SIZE +
+			if (len < (ATBM_MIN_ACTION_SIZE +
 				   sizeof(mgmt->u.action.u.measurement)))
 				break;
 //			ieee80211_process_measurement_req(sdata, mgmt, len);
 			goto queue;
 		case WLAN_ACTION_SPCT_CHL_SWITCH:
-			if (len < (IEEE80211_MIN_ACTION_SIZE +
+			if (len < (ATBM_MIN_ACTION_SIZE +
 				   sizeof(mgmt->u.action.u.chan_switch)))
 				break;
 
@@ -2950,7 +2950,7 @@ ieee80211_rx_h_action(struct ieee80211_rx_data *rx)
 #endif
 #ifdef CONFIG_ATBM_SA_QUERY
 	case ATBM_WLAN_CATEGORY_SA_QUERY:
-		if (len < (IEEE80211_MIN_ACTION_SIZE +
+		if (len < (ATBM_MIN_ACTION_SIZE +
 			   sizeof(mgmt->u.action.u.sa_query)))
 			break;
 
