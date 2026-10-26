@@ -683,7 +683,12 @@ static int ieee80211_dump_station(struct wiphy *wiphy, struct net_device *dev,
 
 	return ret;
 }
-static int ieee80211_get_station(struct wiphy *wiphy, struct net_device *dev,
+static int ieee80211_get_station(struct wiphy *wiphy,
+				 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 7, 0))
+				 struct wireless_dev *wdev,
+				 #else
+				 struct net_device *dev,
+				 #endif
 				 #if (LINUX_VERSION_IS_LESS_AND_NOT_CPTCFG(3, 16, 0))
 				 u8 *mac,
 				 #else
@@ -1307,7 +1312,8 @@ static  int ieee80211_change_beacon(struct wiphy *wiphy, struct net_device *dev,
 #endif
 
 #endif
-static int ieee80211_del_beacon(struct wiphy *wiphy, struct net_device *dev)
+static int ieee80211_del_beacon(struct wiphy *wiphy, struct net_device *dev,
+			       unsigned int link_id)
 {
 	struct ieee80211_sub_if_data *sdata;
 	struct beacon_data *old;
@@ -1577,7 +1583,12 @@ static void sta_apply_parameters(struct ieee80211_local *local,
 #endif
 }
 
-static int ieee80211_add_station(struct wiphy *wiphy, struct net_device *dev,
+static int ieee80211_add_station(struct wiphy *wiphy,
+				#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 7, 0))
+				struct wireless_dev *wdev,
+				#else
+				struct net_device *dev,
+				#endif
 				#if (LINUX_VERSION_IS_LESS_AND_NOT_CPTCFG(3, 16, 0))
 				u8 *mac,
 				#else
@@ -1647,7 +1658,12 @@ static int ieee80211_add_station(struct wiphy *wiphy, struct net_device *dev,
 	return 0;
 }
 
-static int ieee80211_del_station(struct wiphy *wiphy, struct net_device *dev,
+static int ieee80211_del_station(struct wiphy *wiphy,
+				#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 7, 0))
+				struct wireless_dev *wdev,
+				#else
+				struct net_device *dev,
+				#endif
 				#if (LINUX_VERSION_IS_LESS_AND_NOT_CPTCFG(3, 18, 31))
 				u8 *mac
 				#elif (LINUX_VERSION_IS_LESS_AND_NOT_CPTCFG(3, 19, 0))
@@ -1716,6 +1732,7 @@ static int ieee80211_change_station(struct wiphy *wiphy,
 				    struct wireless_dev *wdev,
 				    #else
 				    struct net_device *dev,
+				    #endif
 				    #if (LINUX_VERSION_IS_LESS_AND_NOT_CPTCFG(3, 18, 31))
 					u8 *mac,
 					#else
@@ -2782,10 +2799,7 @@ static int ieee80211_leave_ibss(struct wiphy *wiphy, struct net_device *dev)
 	return ieee80211_ibss_leave(sdata);
 }
 #endif
-static int ieee80211_set_wiphy_params(struct wiphy *wiphy,
-		#if (LINUX_VERSION_IS_LESS_AND_NOT_CPTCFG(3, 0, 0))
-		struct net_device *dev, 
-		#endif
+static int ieee80211_set_wiphy_params(struct wiphy *wiphy, int radio_idx,
 		u32 changed)
 {
 	struct ieee80211_local *local = wiphy_priv(wiphy);

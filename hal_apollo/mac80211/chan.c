@@ -1046,7 +1046,7 @@ void ieee80211_ch_switch_notify(struct ieee80211_sub_if_data *sdata,struct cfg80
 #elif (LINUX_VERSION_CODE < KERNEL_VERSION(6,3,0))
 	cfg80211_ch_switch_notify(sdata->dev,chandef,0);
 #else
-	cfg80211_ch_switch_notify(sdata->dev,chandef,0,0);
+	cfg80211_ch_switch_notify(sdata->dev,chandef,0);
 #endif
 }
 #endif

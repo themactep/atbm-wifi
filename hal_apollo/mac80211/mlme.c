@@ -377,12 +377,12 @@ static void ieee80211_send_deauth_disassoc(struct ieee80211_sub_if_data* sdata,
 					  IEEE80211_DEAUTH_FRAME_LEN);
 	*/
 	if (cookie)
-		cfg80211_tx_mlme_mgmt(sdata->dev, (u8*)mgmt, skb->len);
+		cfg80211_tx_mlme_mgmt(sdata->dev, (u8*)mgmt, skb->len, 0);
 	else {
 		struct wireless_dev* wdev = sdata->dev->ieee80211_ptr;
 
 		atbm_wdev_lock(wdev);
-		cfg80211_tx_mlme_mgmt(sdata->dev, (u8*)mgmt, skb->len);
+		cfg80211_tx_mlme_mgmt(sdata->dev, (u8*)mgmt, skb->len, 0);
 		atbm_wdev_unlock(wdev);
 	}
 #else
@@ -391,12 +391,12 @@ static void ieee80211_send_deauth_disassoc(struct ieee80211_sub_if_data* sdata,
 					  IEEE80211_DEAUTH_FRAME_LEN);
 	*/
 	if (cookie)
-		cfg80211_tx_mlme_mgmt(sdata->dev, (u8*)mgmt, skb->len);
+		cfg80211_tx_mlme_mgmt(sdata->dev, (u8*)mgmt, skb->len, 0);
 	else {
 		struct wireless_dev* wdev = sdata->dev->ieee80211_ptr;
 
 		atbm_wdev_lock(wdev);
-		cfg80211_tx_mlme_mgmt(sdata->dev, (u8*)mgmt, skb->len);
+		cfg80211_tx_mlme_mgmt(sdata->dev, (u8*)mgmt, skb->len, 0);
 		atbm_wdev_unlock(wdev);
 	}
 #endif //	CONFIG_CPTCFG_CFG80211
@@ -3414,6 +3414,18 @@ static void ieee80211_mgd_assoc_rx_resp(struct ieee80211_work* wk,struct atbm_ie
 	atbm_wdev_lock(wdev);
 	cfg80211_rx_assoc_resp(wk->sdata->dev, wk->assoc.bss, (u8*)mgmt, len);
 	atbm_wdev_unlock(wdev);
+#elif (LINUX_VERSION_CODE >= KERNEL_VERSION(6,7,0))
+	{
+		struct cfg80211_rx_assoc_resp_data resp = {
+			.uapsd_queues = -1,
+		};
+		resp.buf = (u8*)mgmt;
+		resp.len = len;
+		resp.links[0].bss = wk->assoc.bss;
+		atbm_wdev_lock(wdev);
+		cfg80211_rx_assoc_resp(wk->sdata->dev, &resp);
+		atbm_wdev_unlock(wdev);
+	}
 #elif (LINUX_VERSION_IS_GEQ_OR_CPTCFG(5, 0, 0))
 	atbm_wdev_lock(wdev);
 	cfg80211_rx_assoc_resp(wk->sdata->dev, wk->assoc.bss, (u8*)mgmt, len, -1, NULL, 0);
@@ -4312,14 +4324,14 @@ int ieee80211_mgd_disassoc(struct ieee80211_sub_if_data* sdata,
 	}
 
 	atbm_printk_mgmt("%s: disassociating from %pM by local choice (reason=%d)\n",
-		sdata->name, req->bss->bssid, req->reason_code);
+		sdata->name, ATBM_DISASSOC_REQ_BSSID(req), req->reason_code);
 	
-	memcpy(bssid, req->bss->bssid, ETH_ALEN);
+	memcpy(bssid, ATBM_DISASSOC_REQ_BSSID(req), ETH_ALEN);
 	ieee80211_set_disassoc(sdata, false, true);
 
 	mutex_unlock(&ifmgd->mtx);
 
-	ieee80211_send_deauth_disassoc(sdata, req->bss->bssid,
+	ieee80211_send_deauth_disassoc(sdata, ATBM_DISASSOC_REQ_BSSID(req),
 		IEEE80211_STYPE_DISASSOC, req->reason_code,
 		cookie, !req->local_state_change);
 	sta_info_flush(sdata->local, sdata);

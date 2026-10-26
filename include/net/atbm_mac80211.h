@@ -6370,4 +6370,34 @@ static inline const char* atbm_skip_space(const char *target,ssize_t len)
 #define atbm_module_parent			(NULL)
 #endif
 
+
+/* cfg80211_new_sta()/del_sta() take a wireless_dev since 6.5, the net_device before. */
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 5, 0))
+#define ATBM_STA_NOTIFY_WDEV(sdata) (&(sdata)->wdev)
+#else
+#define ATBM_STA_NOTIFY_WDEV(sdata) ((sdata)->dev)
+#endif
+
+/* cfg80211_disassoc_request carries the AP address since 6.7, the BSS before. */
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 7, 0))
+#define ATBM_DISASSOC_REQ_BSSID(req) ((req)->ap_addr)
+#else
+#define ATBM_DISASSOC_REQ_BSSID(req) ((req)->bss->bssid)
+#endif
+
+
+/* HE action frames pass their code to the size check since 6.1. */
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 1, 0))
+#define ATBM_MIN_ACTION_SIZE IEEE80211_MIN_ACTION_SIZE(action_code)
+#else
+#define ATBM_MIN_ACTION_SIZE IEEE80211_MIN_ACTION_SIZE
+#endif
+
+/* cfg80211_rx_spurious_frame() gained a link_id argument for MLO in 6.7. */
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 7, 0))
+#define ATBM_RX_SPURIOUS_FRAME(dev, addr) cfg80211_rx_spurious_frame((dev), (addr), -1, GFP_ATOMIC)
+#else
+#define ATBM_RX_SPURIOUS_FRAME(dev, addr) cfg80211_rx_spurious_frame((dev), (addr), GFP_ATOMIC)
+#endif
+
 #endif /* MAC80211_H */

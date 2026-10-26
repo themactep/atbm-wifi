@@ -570,12 +570,12 @@ bool ieee80211_twt_sta_teardown(struct sta_info *sta)
 	u8 *id;
 
 	skb = atbm_dev_alloc_skb(local->hw.extra_tx_headroom +
-			    IEEE80211_MIN_ACTION_SIZE + 2);
+			    ATBM_IEEE80211_MIN_ACTION_SIZE + 2);
 	if (!skb)
 		goto err;
 
 	atbm_skb_reserve(skb, local->hw.extra_tx_headroom);
-	mgmt = skb_put_zero(skb, IEEE80211_MIN_ACTION_SIZE + 2);
+	mgmt = skb_put_zero(skb, ATBM_IEEE80211_MIN_ACTION_SIZE + 2);
 	mgmt->frame_control = cpu_to_le16(IEEE80211_FTYPE_MGMT |
 					  IEEE80211_STYPE_ACTION);
 	memcpy(mgmt->da, sta->sta.addr, ETH_ALEN);
