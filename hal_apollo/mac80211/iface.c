@@ -220,7 +220,7 @@ static void ieee80211_sdata_gro_setup(struct ieee80211_sub_if_data *sdata)
 	if(sdata->vif.type == NL80211_IFTYPE_AP || sdata->vif.type == NL80211_IFTYPE_STATION){
 		ndev->hw_features |= NETIF_F_GRO | NETIF_F_RXCSUM;
 		ndev->features    |= NETIF_F_GRO | NETIF_F_RXCSUM;
-		netif_napi_add(ndev,&sdata->napi_rx,ieee80211_rx_napi_poll,64);
+		netif_napi_add(ndev,&sdata->napi_rx,ieee80211_rx_napi_poll);
 		sdata->napi_enable = true;
 	}
 }

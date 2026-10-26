@@ -2467,26 +2467,26 @@ static inline bool atbm_ieee80211_suspend(struct ieee80211_local *local)
 }
 
 static inline void sdata_lock(struct ieee80211_sub_if_data *sdata)
-	__acquires(&sdata->wdev.mtx)
+	__acquires(&sdata->wdev.wiphy->mtx)
 {
-	mutex_lock(&sdata->wdev.mtx);
-	__acquire(&sdata->wdev.mtx);
+	mutex_lock(&sdata->wdev.wiphy->mtx);
+	__acquire(&sdata->wdev.wiphy->mtx);
 }
 
 static inline void sdata_unlock(struct ieee80211_sub_if_data *sdata)
-	__releases(&sdata->wdev.mtx)
+	__releases(&sdata->wdev.wiphy->mtx)
 {
-	mutex_unlock(&sdata->wdev.mtx);
-	__release(&sdata->wdev.mtx);
+	mutex_unlock(&sdata->wdev.wiphy->mtx);
+	__release(&sdata->wdev.wiphy->mtx);
 }
 
 #define sdata_dereference(p, sdata) \
-	rcu_dereference_protected(p, lockdep_is_held(&sdata->wdev.mtx))
+	rcu_dereference_protected(p, lockdep_is_held(&sdata->wdev.wiphy->mtx))
 
 static inline void
 sdata_assert_lock(struct ieee80211_sub_if_data *sdata)
 {
-	lockdep_assert_held(&sdata->wdev.mtx);
+	lockdep_assert_held(&sdata->wdev.wiphy->mtx);
 }
 
 /* tx handling */

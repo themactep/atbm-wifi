@@ -6,7 +6,7 @@
  * newer kernels include this already and some
  * users rely on getting this indirectly
  */
-#include <asm/unaligned.h>
+#include <linux/unaligned.h>
 #ifndef ETH_ALEN
 #define ETH_ALEN 6
 #endif  //ETH_ALEN

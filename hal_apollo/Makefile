@@ -16,9 +16,6 @@
 #####################################################################################################################################################################################################################
 #ccflags-y += -DCONFIG_ATBM_APOLLO_5GHZ_SUPPORT
 #ccflags-y += -DCONFIG_ATBM_APOLLO_WAPI_SUPPORT
-#ccflags-y  += -I$(shell pwd)/../include/ \
-        -include $(shell pwd)/../include/linux/compat-2.6.h \
-        -DCOMPAT_STATIC
 
 ATBM_BUILD_TIME = $(shell date "+%Y-%m-%d_%H:%M:%S")
 ccflags-y += -DCONFIG_ATBM_BUILD_TIME=\"$(ATBM_BUILD_TIME)\"

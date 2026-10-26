@@ -14,12 +14,23 @@
 #define ATBM_MAC80211_H
 
 #include <linux/kernel.h>
+#include <linux/timer.h>
+#ifndef from_timer
+#define from_timer(var, callback_timer, timer_fieldname) \
+	timer_container_of(var, callback_timer, timer_fieldname)
+#endif
+#ifndef del_timer
+#define del_timer(timer) timer_delete(timer)
+#endif
+#ifndef del_timer_sync
+#define del_timer_sync(timer) timer_delete_sync(timer)
+#endif
 #include <linux/if_ether.h>
 #include <linux/skbuff.h>
 #include <linux/device.h>
 #include <linux/ieee80211.h>
 #include <net/cfg80211.h>
-#include <asm/unaligned.h>
+#include <linux/unaligned.h>
 #include <linux/hash.h>
 #include <linux/module.h>
 #include <net/ieee80211_radiotap.h>
@@ -5620,7 +5631,7 @@ ieee80211_vif_type_p2p(struct ieee80211_vif *vif)
 static inline void atbm_wdev_lock(struct wireless_dev *wdev)
 	__acquires(wdev)
 {
-	mutex_lock(&wdev->mtx);
+	mutex_lock(&wdev->wiphy->mtx);
 	__acquire(wdev->mtx);
 }
 
@@ -5628,7 +5639,7 @@ static inline void atbm_wdev_unlock(struct wireless_dev *wdev)
 	__releases(wdev)
 {
 	__release(wdev->mtx);
-	mutex_unlock(&wdev->mtx);
+	mutex_unlock(&wdev->wiphy->mtx);
 }
 #if defined(CONFIG_MAC80211_ATBM_MESH) || defined(ATBM_SURPORT_TDLS)
 int ieee80211_add_srates_ie(struct ieee80211_vif *vif, struct sk_buff *skb);

@@ -16,7 +16,7 @@
 #include <linux/export.h>
 #include <linux/trace_seq.h>
 #include <linux/ftrace_event.h>
-#include <asm/unaligned.h>
+#include <linux/unaligned.h>
 #if LINUX_VERSION_IS_LESS(4,4,0)
 
 /**
